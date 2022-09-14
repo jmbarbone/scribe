@@ -72,7 +72,7 @@ Arg$methods(
 
   help = function() {
     # should return a matrix
-    arg_help()
+    arg_help(.self)
   },
 
   do_action = function(value = NULL) {
