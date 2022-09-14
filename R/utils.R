@@ -36,3 +36,9 @@ maybe_quit <- function(force = !interactive()) {
 first <- function(x) {
   if (length(x)) x[1L] else x[0L]
 }
+
+wapply <- function(x, FUN, ...) {
+  FUN <- match.fun(FUN)
+  fun <- function(x, ...) isTRUE(FUN(x, ...))
+  do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA))
+}
