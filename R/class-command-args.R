@@ -12,7 +12,7 @@ command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
 
 # ReferenceClass ----------------------------------------------------------
 
-CommandArgs <- setRefClass(
+CommandArgs <- methods::setRefClass(
   "scribeCommandArgs",
   fields = list(
     call = "character",

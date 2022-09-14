@@ -25,7 +25,7 @@ new_arg <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
-Arg <- setRefClass(
+Arg <- methods::setRefClass(
   "scribeArg",
   fields = list(
     id = "integer",
