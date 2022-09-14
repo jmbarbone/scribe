@@ -115,7 +115,18 @@ ca_resolve_args <- function(self) {
   # reset if not unsuccessful
   on.exit(if (!self$resolved) self$commands <- character(), add = TRUE)
 
-  for (i in seq_along(self$argList)) {
+  # Sort smarter.  Flag argument just need to be present and then can be
+  # dropped.  Single value arguments are easier to match, should always have
+  # that value present if arg is present. Non-multiple value arguments have at
+  # least a limit to the number of values that can be found.
+  arg_order <- unique(c(
+    wapply(self$argList, function(i) i$action == "flag"),
+    wapply(self$argList, function(i) i$action == "value" & i$n == 1),
+    wapply(self$argList, function(i) i$action == "value" & !i$mult),
+    seq_along(self$argList)
+  ))
+
+  for (i in arg_order) {
     arg <- self$argList[[i]]
     m <- match(attr(arg, "alias"), self$call, 0L)
     m <- m[m > 0L]
