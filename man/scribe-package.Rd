@@ -4,8 +4,12 @@
 \name{scribe-package}
 \alias{scribe}
 \alias{scribe-package}
-\title{scribe: What the Package Does (Title Case)}
+\title{scribe: What the Package Does (One Line, Title Case)}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+What the package does (one paragraph).
+}
+\author{
+\strong{Maintainer}: Jordan Mark Barbone \email{jmbarbone@gmail.com} (\href{https://orcid.org/0000-0001-9788-3628}{ORCID}) [copyright holder]
+
 }
 \keyword{internal}
