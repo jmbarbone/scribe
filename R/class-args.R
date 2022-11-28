@@ -17,8 +17,8 @@
 #' @returns A `scribeArg` object
 #' @noRd
 new_arg <- function(
-    id,
     aliases = NULL,
+    id = NA_integer_,
     action = arg_actions(),
     type = arg_types(),
     options = NULL,
@@ -27,8 +27,8 @@ new_arg <- function(
     n = 0L
 ) {
   Arg$new(
-    id      = id,
     aliases = aliases,
+    id      = id,
     action  = action,
     options = options,
     type    = type,
@@ -139,12 +139,38 @@ arg_initialize <- function(
   help    <- help    %||% ""
   n       <- n       %||% 1L
 
-  if (is.null(type)) {
-    type <- if (is.null(default)) {
-      "any"
-    } else {
-      typeof(default)
+
+
+  if (is.character(type)) {
+    type <- match.arg(tolower(type), arg_types())
+  } else if (!is.function(type)) {
+    stop("type must be a character or a function")
+  }
+
+  if (!is.null(default)) {
+    default_type <- c(class(default), "default")
+    default_type <- match.arg(
+      arg = tolower(default_type),
+      choices = arg_types(),
+      # multiple matches but use the first found
+      several.ok = TRUE
+    )[1]
+
+    if (!is.function(type)) {
+      # if it's a function, then whatever
+      if (identical(type, "default")) {
+        # if it's "default" we'll update this
+        type <- default_type
+      } else if (!identical(default_type, type)) {
+        # if they don't match, then error
+        stop("type and default supplied don't appear to be compatable", call. = FALSE)
+      }
     }
+  }
+
+  if (action == "default") {
+    # TODO need to determine when actions can be anything other than list
+    action <- "list"
   }
 
   switch(
@@ -177,7 +203,7 @@ arg_initialize <- function(
     length(id) == 1L,
     length(aliases) > 0L,
     length(n) == 1L,
-    isTRUE(n) || (is_intish(n) & n >= 0L)
+    (is_intish(n) & n >= 0L)
   )
 
   aliases <- unlist(aliases, recursive = TRUE, use.names = FALSE)
@@ -197,12 +223,6 @@ arg_initialize <- function(
   stopifnot(
     !grepl("[[:space:]]", aliases)
   )
-
-  if (is.character(type)) {
-    type <- match.arg(type, arg_types())
-  } else if (!is.function(type)) {
-    stop("type must be a character or a function")
-  }
 
   action <- match.arg(action, arg_actions())
 
@@ -306,17 +326,17 @@ arg_parse_value <- function(self, ca) {
   ok <- which(m > 0L)
   m <- m[ok]
 
-  if (length(m) == 2L) {
+  if (length(m) == 0L) {
+    return(self$get_default())
+  }
+
+  if (length(m) > 1L) {
     warning(
       sprintf("w Multiple command args matched for [%s]", to_string(alias)),
       "i Using first found",
       call = FALSE
     )
     m <- m[1L]
-  }
-
-  if (length(m) != 1L) {
-    return(NULL)
   }
 
   if (self$n) {
@@ -375,9 +395,9 @@ is_command <- function(x) {
 }
 
 arg_types <- function() {
-  c("any", "logical", "integer", "numeric", "double", "complex", "character", "raw")
+  c("default", "any", "logical", "integer", "numeric", "double", "complex", "character", "raw")
 }
 
 arg_actions <- function() {
-  c("list", "flag")
+  c("default", "list", "flag")
 }
