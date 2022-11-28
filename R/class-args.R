@@ -291,19 +291,16 @@ arg_get_aliases <- function(self) {
 }
 
 arg_get_name <- function(self) {
-  al <- self$get_aliases()
+  aliases <- self$get_aliases()
 
   if (self$action == "dots") {
-    ind <- seq_along(al)[-1L]
+    ind <- seq_along(aliases)[-1L]
   } else {
-    ind <- grep("^--", al)
+    ind <- grep("^--", aliases)
   }
 
-  if (length(ind)) {
-    al[ind[1L]]
-  } else {
-    al[1L]
-  }
+  # always choose the last one
+  aliases[ind[length(ind)]]
 }
 
 arg_get_action  <- function(self) {
