@@ -29,3 +29,13 @@ test_that("command_args() handles defaults", {
   exp <- list(alpha = 2L, beta = 3L)
   expect_identical(obj, exp)
 })
+
+test_that("command_args() handles dots", {
+  x <- c("-a", "1", "2", "3")
+  ca <- command_args(x)
+  ca$add_argument("-a", "--alpha", type = "integer")
+  ca$add_argument("...", "values", type = "integer")
+  obj <- ca$parse()
+  exp <- list(alpha = 1L, values = 2:3)
+  expect_identical(obj, exp)
+})
