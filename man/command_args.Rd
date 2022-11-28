@@ -15,3 +15,4 @@ A \code{scribeCommandArgs} Reference object
 \description{
 Command args
 }
+\concept{scribe}

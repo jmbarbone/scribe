@@ -1,5 +1,5 @@
 Package: scribe
-Title: What the Package Does (One Line, Title Case)
+Title: Argument Sarsing for Rscript
 Version: 0.0.0.9000
 Authors@R: 
     person(
@@ -9,16 +9,19 @@ Authors@R:
       role    = c("aut", "cph", "cre"),
       comment = c(ORCID = "0000-0001-9788-3628")
     )
-Description: What the package does (one paragraph).
+Description: A base R solution with basic argument parsing for use with Rscript.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Requires:
     R (>= 3.6)
 Imports:
     methods
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

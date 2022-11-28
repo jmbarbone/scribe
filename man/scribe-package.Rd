@@ -4,9 +4,9 @@
 \name{scribe-package}
 \alias{scribe}
 \alias{scribe-package}
-\title{scribe: What the Package Does (One Line, Title Case)}
+\title{scribe: Argument Sarsing for Rscript}
 \description{
-What the package does (one paragraph).
+A base R solution with basic argument parsing for use with Rscript.
 }
 \author{
 \strong{Maintainer}: Jordan Mark Barbone \email{jmbarbone@gmail.com} (\href{https://orcid.org/0000-0001-9788-3628}{ORCID}) [copyright holder]
