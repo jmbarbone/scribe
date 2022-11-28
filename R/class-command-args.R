@@ -252,7 +252,7 @@ ca_add_argument <- function(
     n = NA_integer_
   )
   self$argList[[self$nArgs]] <- new
-  self
+  invisible(self)
 }
 
 ca_add_command <- function(self, options = NULL, help = NULL) {
