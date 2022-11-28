@@ -1,12 +1,27 @@
 
 # TODO Arg as ReferenceClass, too
 
+#' New Arg
+#'
+#' @param id Integer
+#' @param aliases A list of aliases for the arg
+#' @param action An action to perform
+#' @param options If not `NULL`,  a `list` of set possible values
+#' @param type The type of the value.  Accepts either single characters passed
+#'   to `as.vector(mode = type)` or a function to convert values.  When `NULL`:
+#'   if `default` is not `NULL`, uses the value of `typeof(default)`, otherwise
+#'   uses `"any"`
+#' @param default Default value
+#' @param help Help text for this argument
+#' @param n The number of values
+#' @returns A `scribeArg` object
+#' @noRd
 new_arg <- function(
     id,
     aliases = NULL,
-    action = NULL,
+    action = arg_actions(),
+    type = arg_types(),
     options = NULL,
-    type = NULL,
     default = NULL,
     help = NULL,
     n = 0L
@@ -32,12 +47,13 @@ Arg <- methods::setRefClass(
     aliases = "character",
     action = "character",
     options = "character",
-    type = "character",
-    default = "character",
+    type = "ANY",
+    default = "ANY",
     help = "character",
     choices = "list",
     n = "integer",
-    mult = "logical"
+    mult = "logical",
+    values = "list"
   )
 )
 
@@ -75,8 +91,8 @@ Arg$methods(
     arg_help(.self)
   },
 
-  do_action = function(value = NULL) {
-    arg_do_action(.self, value = value)
+  get_value = function(ca, value = NULL) {
+    arg_get_value(.self, ca = ca, value = value)
   },
 
   get_aliases = function() {
@@ -91,12 +107,16 @@ Arg$methods(
     arg_get_action(.self)
   },
 
+  parse_value = function(command_arg) {
+    arg_parse_value(.self, ca = command_arg)
+  },
+
   get_default = function() {
     arg_get_default(.self)
   },
 
-  match = function(commands) {
-    arg_match(.self)
+  match_cmd = function(commands) {
+    arg_match_cmd(.self, commands)
   }
 )
 
@@ -104,21 +124,53 @@ Arg$methods(
 
 arg_initialize <- function(
     self,
-    id,
+    id = NA_integer_,
     aliases,
-    action,
-    type,
-    default,
-    options,
-    n,
-    help
+    action = arg_actions(),
+    type = arg_types(),
+    default = NULL,
+    # acceptable values
+    options = NULL,
+    n = NA_integer_,
+    help = ""
 ) {
-  action  <- action  %||% "none"
-  type    <- type    %||% "any"
-  default <- default %||% first(options) %||% ""
+  action  <- match.arg(action, arg_actions())
   options <- options %||% ""
   help    <- help    %||% ""
   n       <- n       %||% 1L
+
+  if (is.null(type)) {
+    type <- if (is.null(default)) {
+      "any"
+    } else {
+      typeof(default)
+    }
+  }
+
+  switch(
+    action,
+    flag = {
+      type <- "logical"
+      default <- as.logical(default)
+
+      if (is.na(n)) {
+        n <- 0L
+      }
+
+      if (n != 0L) {
+        stop("n must be 0L when action=\"flag\"", call. = FALSE)
+      }
+    },
+    list = {
+      if (is.na(n)) {
+        n <- 1L
+      }
+
+      if (n == 0L) {
+        stop("n cannot be 0L when action=\"list\"", call. = FALSE)
+      }
+    }
+  )
 
   stopifnot(
     is_intish(id),
@@ -128,29 +180,42 @@ arg_initialize <- function(
     isTRUE(n) || (is_intish(n) & n >= 0L)
   )
 
-  if (action == "command") {
-    if (any(grepl(ARG_PAT, alises, ignore.case = TRUE))) {
-      stop("command must ")
-    }
-  } else if (is.null(aliases)) {
-    aliases <- "..."
+  aliases <- unlist(aliases, recursive = TRUE, use.names = FALSE)
+
+  # determine if either an argument or a command
+  dashes <- grepl(ARG_PAT, aliases, ignore.case = TRUE)
+
+  if (all(dashes)) {
+    command <- FALSE
+  } else if (all(!dashes)) {
+    command <- TRUE
   } else {
-    aliases <- unlist(aliases, recursive = TRUE, use.names = FALSE)
-    # TODO add "strict" requirement?
-    stopifnot(
-      grepl(ARG_PAT, aliases, ignore.case = TRUE),
-      !grepl("[[:space:]]", aliases)
-    )
+    stop("aliases should either all contain dashes or contain no dashes")
   }
+
+  # TODO add "strict" requirement?
+  stopifnot(
+    !grepl("[[:space:]]", aliases)
+  )
+
+  if (is.character(type)) {
+    type <- match.arg(type, arg_types())
+  } else if (!is.function(type)) {
+    stop("type must be a character or a function")
+  }
+
+  action <- match.arg(action, arg_actions())
 
   self$id      <- as.integer(id)
   self$aliases <- aliases
   self$action  <- action
   self$type    <- type %||% typeof(default) %||% "any"
-  self$default <- default
+  self$options <- options
   self$help    <- help
   self$n       <- if (isTRUE(n)) 0L else n
   self$mult    <- isTRUE(n)
+  self$values  <- list()
+  self$default <- default
   self
 }
 
@@ -164,7 +229,13 @@ arg_show <- function(self) {
       paste(vapply(value, format, NA_character_), collapse = " ")
     }
 
-  aliases <- to_string(self$get_aliases())
+  aliases <- self$get_aliases()
+  if (is.null(aliases)) {
+    aliases <- "..."
+  } else {
+    aliases <- to_string(aliases)
+  }
+
   print_line(sprintf("Argument [%s] : %s", aliases, value))
   invisible(self)
 }
@@ -175,7 +246,7 @@ arg_help <- function(self) {
   )
 }
 
-arg_do_action <- function(self, ca) {
+arg_do_action <- function(self, ca, value) {
   # Pass the scribeCommandArg so we can update/remove
   stopifnot(is_command_args(ca))
 
@@ -197,10 +268,13 @@ arg_do_action <- function(self, ca) {
   )
 }
 
-action_validate <- function(action = c("none", "command", "bool", "flag")) {
-  match.arg(action %||% "none")
+scribe_actions <- function() {
+  c("character", "numeric", "bool", "flag")
 }
 
+action_validate <- function(action = NULL) {
+  mach.arg(action %||% "none", scribe_actions())
+}
 
 arg_get_aliases <- function(self) {
   self$aliases
@@ -218,14 +292,59 @@ arg_get_name <- function(self) {
 }
 
 arg_get_action  <- function(self) {
-  self$action %||% "none"
+  self$action %||% character()
 }
 
 arg_get_default <- function(self) {
   self$default
 }
 
-arg_match <- function(self, commands, n = 1L) {
+arg_parse_value <- function(self, ca) {
+  # find alias in working
+  alias <- self$get_aliases()
+  m <- match(alias, ca$get_working(), 0L)
+  ok <- which(m > 0L)
+  m <- m[ok]
+
+  if (length(m) == 2L) {
+    warning(
+      sprintf("w Multiple command args matched for [%s]", to_string(alias)),
+      "i Using first found",
+      call = FALSE
+    )
+    m <- m[1L]
+  }
+
+  if (length(m) != 1L) {
+    return(NULL)
+  }
+
+  if (self$n) {
+    m <- m + seq.int(0L, self$n)
+    value <- ca$get_working(m[-1L])
+    ca$remove_working(m)
+  }
+
+  if (is.character(self$type)) {
+    value <- switch(
+      self$type,
+      any = value,
+      character = as.character(value),
+      logical = as.logical(value),
+      integer = as.integer(value),
+      numeric = as.numeric(value),
+      complex = as.complex(value),
+      raw = charToRaw(value),
+      stop("something has gone wrong")
+    )
+  } else if (is.function(self$type)) {
+    value <- (self$type)(value)
+  }
+
+  value
+}
+
+arg_match_cmd <- function(self, commands, n = 1L) {
   m <- match(self$get_aliases(), commands, 0L)
   m <- m[m > 0L]
 
@@ -253,4 +372,12 @@ ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"
 is_command <- function(x) {
   stopifnot(is.list(x))
   vapply(x, function(i) i$get_action(), NA_character_) == "command"
+}
+
+arg_types <- function() {
+  c("any", "logical", "integer", "numeric", "double", "complex", "character", "raw")
+}
+
+arg_actions <- function() {
+  c("list", "flag")
 }

@@ -4,7 +4,11 @@
 `%||%` <- function(x, y) { if (is_empty(x)) y else x }
 
 is_empty <- function(x) {
-  is.null(x) || !nzchar(x) || length(x) == 0L
+  if (is.function(x)) {
+    FALSE
+  } else {
+    is.null(x) || length(x) == 0L || !any(nzchar(x))
+  }
 }
 
 to_string <- function(..., sep = " ") {
@@ -40,5 +44,5 @@ first <- function(x) {
 wapply <- function(x, FUN, ...) {
   FUN <- match.fun(FUN)
   fun <- function(x, ...) isTRUE(FUN(x, ...))
-  do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA))
+  which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
