@@ -192,9 +192,11 @@ ca_resolve <- function(self) {
 
   arg_order <- unique(c(
     wapply(args, function(i) i$action == "flag"),
-    wapply(args, function(i) i$action == "value" & i$n == 1),
-    wapply(args, function(i) i$action == "value" & !i$mult),
-    seq_along(args)
+    wapply(args, function(i) i$action == "list"),
+    wapply(args, function(i) i$action == "list"),
+    seq_along(args),
+    # dots must always be parsed last
+    wapply(args, function(i) i$action == "dots")
   ))
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)

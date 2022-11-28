@@ -52,7 +52,6 @@ Arg <- methods::setRefClass(
     help = "character",
     choices = "list",
     n = "integer",
-    mult = "logical",
     values = "list"
   )
 )
@@ -139,8 +138,6 @@ arg_initialize <- function(
   help    <- help    %||% ""
   n       <- n       %||% 1L
 
-
-
   if (is.character(type)) {
     type <- match.arg(tolower(type), arg_types())
   } else if (!is.function(type)) {
@@ -211,18 +208,12 @@ arg_initialize <- function(
   # determine if either an argument or a command
   dashes <- grepl(ARG_PAT, aliases, ignore.case = TRUE)
 
-  if (all(dashes)) {
-    command <- FALSE
-  } else if (all(!dashes)) {
-    command <- TRUE
-  } else {
-    stop("aliases should either all contain dashes or contain no dashes")
+  if ("..." %in% aliases) {
+    action <- "dots"
+    n <- NA_integer_
+  } else if (!xor(all(dashes), all(!dashes))) {
+    stop("aliases must have all dashes or none")
   }
-
-  # TODO add "strict" requirement?
-  stopifnot(
-    !grepl("[[:space:]]", aliases)
-  )
 
   action <- match.arg(action, arg_actions())
 
@@ -232,8 +223,7 @@ arg_initialize <- function(
   self$type    <- type %||% typeof(default) %||% "any"
   self$options <- options
   self$help    <- help
-  self$n       <- if (isTRUE(n)) 0L else n
-  self$mult    <- isTRUE(n)
+  self$n       <- n
   self$values  <- list()
   self$default <- default
   self
@@ -302,7 +292,12 @@ arg_get_aliases <- function(self) {
 
 arg_get_name <- function(self) {
   al <- self$get_aliases()
-  ind <- grep("^--", al)
+
+  if (self$action == "dots") {
+    ind <- seq_along(al)[-1L]
+  } else {
+    ind <- grep("^--", al)
+  }
 
   if (length(ind)) {
     al[ind[1L]]
@@ -322,9 +317,16 @@ arg_get_default <- function(self) {
 arg_parse_value <- function(self, ca) {
   # find alias in working
   alias <- self$get_aliases()
-  m <- match(alias, ca$get_working(), 0L)
-  ok <- which(m > 0L)
-  m <- m[ok]
+
+  if (self$action == "dots") {
+    m <- 1L
+    off <- 0L
+  } else {
+    off <- 1L
+    m <- match(alias, ca$get_working(), 0L)
+    ok <- which(m > 0L)
+    m <- m[ok]
+  }
 
   if (length(m) == 0L) {
     return(self$get_default())
@@ -339,9 +341,13 @@ arg_parse_value <- function(self, ca) {
     m <- m[1L]
   }
 
-  if (self$n) {
+  if (self$action == "dots") {
+    value <- ca$get_working()
+    ca$remove_working(seq_along(value))
+  } else {
+    # TODO consider if multiple n values should be used?
     m <- m + seq.int(0L, self$n)
-    value <- ca$get_working(m[-1L])
+    value <- ca$get_working(m[-off])
     ca$remove_working(m)
   }
 
@@ -399,5 +405,5 @@ arg_types <- function() {
 }
 
 arg_actions <- function() {
-  c("default", "list", "flag")
+  c("default", "list", "flag", "dots")
 }
