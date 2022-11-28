@@ -18,39 +18,17 @@ Workflows with intention to support:
 
 ``` r
 ca <- command_args(c("-a", "1", "-b", "2"))
-ca$add_argument("-a")
-ca$add_argument("-b")
+ca$add_argument("-a", type = "integer")
+#> Initial call:  -a 1 -b 2
+#> Argument [-a] : <null>
+ca$add_argument("-b", type = "integer")
+#> Initial call:  -a 1 -b 2
+#> Argument [-a] : <null>
+#> Argument [-b] : <null>
 args <- ca$parse()
 
-args$a + args$b
-#> [1] 3
-```
-
-``` r
-ca <- command_args(c("sum", "1", "2", "3"))
-ca$add_argument("summary", action = "command", options = c("sum", "cumsum"))
-ca$add_argument(
-  "values",
-  action = "command_vvalues",
-  command = "summary",
-  value = "integer"
-)
-args <- ca$parse()
-
-print(args)
-#> $summary
-#> [1] "sum"
-#> 
-#> $values
-#> [1] 1 2 3
-
-switch(
-  args$summary,
-  sum = sum(args$values),
-  cumsum = cumsum(args$value),
-  mean = mean(args$value)
-)
-#> [1] 6
+str(args$a + args$b)
+#>  int 3
 ```
 
 ``` r
@@ -67,7 +45,8 @@ foo <- function(a, b) {
   a + b
 }
 
-foo(args$a, args$b)
+print(foo(args$a, args$b))
+print(do.call(foo, args))
 "
 
 file <- tempfile()
@@ -82,9 +61,9 @@ system2("Rscript", c("--vanilla", file, "-a 0 -b 10"))
 This isn’t the first package. Most contain other dependencies, some even
 in different langauges (e.g., `python`).
 
--   [`{argparse}`](https://github.com/trevorld/r-argparse)
--   [`{optparse}`](https://github.com/trevorld/r-optparse)
--   [`{getopt}`](https://github.com/trevorld/r-getopt)
--   [`{minimist}`](https://github.com/jeroen/minimist) (CRAN archived)
--   [`{optigrab}`](https://github.com/decisionpatterns/optigrab)
--   [`{docopt}`](https://github.com/docopt/docopt.R)
+- [`{argparse}`](https://github.com/trevorld/r-argparse)
+- [`{optparse}`](https://github.com/trevorld/r-optparse)
+- [`{getopt}`](https://github.com/trevorld/r-getopt)
+- [`{minimist}`](https://github.com/jeroen/minimist) (CRAN archived)
+- [`{optigrab}`](https://github.com/decisionpatterns/optigrab)
+- [`{docopt}`](https://github.com/docopt/docopt.R)

@@ -1,5 +1,7 @@
 ---
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -28,44 +30,17 @@ library(scribe)
 
 Workflows with intention to support:
 
-``` r
+```{r}
 ca <- command_args(c("-a", "1", "-b", "2"))
-ca$add_argument("-a")
-ca$add_argument("-b")
+ca$add_argument("-a", type = "integer")
+ca$add_argument("-b", type = "integer")
 args <- ca$parse()
 
-args$a + args$b
-#> [1] 3
+str(args$a + args$b)
 ```
 
-``` r
-ca <- command_args(c("sum", "1", "2", "3"))
-ca$add_argument("summary", action = "command", options = c("sum", "cumsum"))
-ca$add_argument(
-  "values",
-  action = "command_vvalues",
-  command = "summary",
-  value = "integer"
-)
-args <- ca$parse()
 
-print(args)
-#> $summary
-#> [1] "sum"
-#> 
-#> $values
-#> [1] 1 2 3
-
-switch(
-  args$summary,
-  sum = sum(args$values),
-  cumsum = cumsum(args$value),
-  mean = mean(args$value)
-)
-#> [1] 6
-```
-
-``` r
+```{r}
 lines <- "
 #! /usr/bin/Rscript -S
 
@@ -79,7 +54,8 @@ foo <- function(a, b) {
   a + b
 }
 
-foo(args$a, args$b)
+print(foo(args$a, args$b))
+print(do.call(foo, args))
 "
 
 file <- tempfile()
@@ -87,6 +63,11 @@ writeLines(lines, file)
 system2("Rscript", c("--vanilla", file))
 system2("Rscript", c("--vanilla", file, "-a 0"))
 system2("Rscript", c("--vanilla", file, "-a 0 -b 10"))
+```
+
+```{r}
+#| include: false
+file.remove(file)
 ```
 
 ## Other packages
