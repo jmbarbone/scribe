@@ -39,3 +39,10 @@ test_that("command_args() handles dots", {
   exp <- list(alpha = 1L, values = 2:3)
   expect_identical(obj, exp)
 })
+
+test_that("bad arguments don't create NULLs", {
+  ca <- command_args()
+  expect_error(ca$add_argument("-a", type = "integer", default = "1"))
+  expect_identical(ca$nArgs, 0L)
+  expect_identical(ca$argList, list())
+})

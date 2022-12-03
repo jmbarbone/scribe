@@ -239,8 +239,6 @@ ca_add_argument <- function(
     default = NULL,
     help = NULL
 ) {
-  self$nArgs <- self$nArgs + 1L
-  self$resolved <- FALSE
   new <- new_arg(
     self$nArgs,
     aliases = list(...),
@@ -251,7 +249,9 @@ ca_add_argument <- function(
     help = help,
     n = NA_integer_
   )
+  self$nArgs <- self$nArgs + 1L
   self$argList[[self$nArgs]] <- new
+  self$resolved <- FALSE
   invisible(self)
 }
 
