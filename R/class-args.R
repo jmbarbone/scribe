@@ -296,7 +296,7 @@ arg_get_name <- function(self) {
   if (self$action == "dots") {
     ind <- seq_along(aliases)[-1L]
   } else {
-    ind <- grep("^--", aliases)
+    ind <- grep("^--?", aliases)
   }
 
   # always choose the last one
