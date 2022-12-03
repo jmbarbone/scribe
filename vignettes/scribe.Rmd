@@ -1,0 +1,76 @@
+---
+title: "scribe"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{scribe}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(scribe)
+```
+
+This represents a script:
+
+```r
+#! /usr/bin/env -S Rscript --vanilla
+# filename: foo.R
+
+main <- function(n, method = c("letters", "numbers")) {
+  switch(
+    match.arg(method),
+    letters = sample(letters, n, TRUE),
+    numbers = sample(n, n, TRUE)
+  )
+}
+
+ca <- scribe::command_args()
+ca$add_argument("-n", type = "integer", default = 1L)
+ca$add_argument("-m", "--method", type = "character", default = "letters")
+# debugonce(arg_get_name)
+params <- ca$parse()
+
+main(
+  n = params$n,
+  method = params$method
+)
+```
+
+```sh
+foo.R -n 3 --method letters
+#> [1] "a" "b" "c"
+```
+
+You can also pass the command args as a character vector to test how they will be resolved.
+
+```{r}
+main <- function(n, method = c("letters", "numbers")) {
+  switch(
+    match.arg(method),
+    letters = letters[seq_len(n)],
+    numbers = seq_len(n)
+  )
+}
+
+ca <- scribe::command_args(c("-n", "5", "--method", "numbers"))
+ca$add_argument("-n", type = "integer", default = 1L)
+ca$add_argument("-m", "--method", type = "character", default = "letters")
+# debugonce(arg_get_name)
+params <- ca$parse()
+
+main(
+  n = params$n,
+  method = params$method
+)
+```
+
