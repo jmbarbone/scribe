@@ -1,8 +1,8 @@
 test_that("command_args() works", {
   x <- c("-a", "1", "-b", "2")
   ca <- command_args(x)
-  ca$add_argument("-a", "--alpha", type = "integer")
-  ca$add_argument("-b", "--beta", type = "integer")
+  ca$add_argument("-a", "--alpha")
+  ca$add_argument("-b", "--beta")
 
   obj <- ca$parse()
   exp <- list(alpha = 1L, beta = 2L)
@@ -33,8 +33,8 @@ test_that("command_args() handles defaults", {
 test_that("command_args() handles dots", {
   x <- c("-a", "1", "2", "3")
   ca <- command_args(x)
-  ca$add_argument("-a", "--alpha", type = "integer")
-  ca$add_argument("...", "values", type = "integer")
+  ca$add_argument("-a", "--alpha")
+  ca$add_argument("...", "values")
   obj <- ca$parse()
   exp <- list(alpha = 1L, values = 2:3)
   expect_identical(obj, exp)
@@ -42,7 +42,7 @@ test_that("command_args() handles dots", {
 
 test_that("bad arguments don't create NULLs", {
   ca <- command_args()
-  expect_error(ca$add_argument("-a", type = "integer", default = "1"))
+  expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
   expect_identical(ca$nArgs, 0L)
   expect_identical(ca$argList, list())
 })
