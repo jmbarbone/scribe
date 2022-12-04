@@ -50,3 +50,7 @@ test_that("is_bool_like(), as_bool()", {
 
   expect_true(as_bool(TRUE))
 })
+
+test_that("default_convert(character()) [#5]", {
+  expect_identical(default_convert(character()), character())
+})
