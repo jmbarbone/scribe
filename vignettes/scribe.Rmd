@@ -36,7 +36,7 @@ main <- function(n, method = c("letters", "numbers")) {
 
 ca <- scribe::command_args()
 ca$add_argument("-n", type = "integer", default = 1L)
-ca$add_argument("-m", "--method", type = "character", default = "letters")
+ca$add_argument("-m", "--method", default = "letters")
 # debugonce(arg_get_name)
 params <- ca$parse()
 
@@ -63,8 +63,8 @@ main <- function(n, method = c("letters", "numbers")) {
 }
 
 ca <- scribe::command_args(c("-n", "5", "--method", "numbers"))
-ca$add_argument("-n", type = "integer", default = 1L)
-ca$add_argument("-m", "--method", type = "character", default = "letters")
+ca$add_argument("-n", default = 1L)
+ca$add_argument("-m", "--method", default = "letters")
 # debugonce(arg_get_name)
 params <- ca$parse()
 
