@@ -11,10 +11,10 @@
 #'   to enter their own specifications instead.  Secondly, a `function` (with a
 #'   single argument) can be passed which will then be applied directly to `x`.
 #'   Third, a _prototype_ value can be passed.  This might be risky for special
-#'   types.  Here, the values of [typeof()], [attributes()], and [class()] are
-#'   captured and reassigned from `to` to `x`.  A special check is implemented
-#'   for `factor`s to more safely convert.  Lastly, `NULL` will do nothing and
-#'   will simply return `x`.
+#'   types.  Here, the values of [mode()], [storage.mode()], [attributes()], and
+#'   [class()] are captured and reassigned from `to` to `x`.  A special check is
+#'   implemented for `factor`s to more safely convert.  Lastly, `NULL` will do
+#'   nothing and will simply return `x`.
 #'
 #' @export
 #' @returns A parsed value from `x`
@@ -33,8 +33,9 @@ value_convert <- function(x, to = default_convert) {
     return(to(x))
   }
 
-  typeof(x) <- typeof(to)
-  attribute(x) <- attributes(to)
+  mode(x) <- mode(to)
+  storage.mode(x) <- storage.mode(to)
+  attributes(x) <- attributes(to)
   class(x) <- class(to)
   x
 }
