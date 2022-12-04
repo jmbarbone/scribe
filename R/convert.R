@@ -16,8 +16,9 @@
 #'   for `factor`s to more safely convert.  Lastly, `NULL` will do nothing and
 #'   will simply return `x`.
 #'
-#' @noRd
-convert <- function(x, to = default) {
+#' @export
+#' @returns A parsed value from `x`
+value_convert <- function(x, to = default_convert) {
   if (!is.character(x) || is.null(to)) {
     return(x)
   }
@@ -38,7 +39,7 @@ convert <- function(x, to = default) {
   x
 }
 
-default <- function(x) {
+default_convert <- function(x) {
   out <- utils::type.convert(x, as.is = TRUE)
 
   # only handles defaults
