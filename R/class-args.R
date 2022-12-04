@@ -248,7 +248,10 @@ arg_get_aliases <- function(self) {
 arg_get_name <- function(self) {
   aliases <- self$get_aliases()
 
-  if (self$action == "dots") {
+  if (self$get_action() == "dots") {
+    if (length(aliases) == 1L) {
+      return("...")
+    }
     ind <- seq_along(aliases)[-1L]
   } else {
     ind <- grep("^--?", aliases)
