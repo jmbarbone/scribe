@@ -40,8 +40,7 @@ CommandArgs$methods(
   },
 
   version = function() {
-    version <- utils::packageVersion("scribe")
-    print_line("{scribe} package version: ", format(version))
+    print_line("{scribe} package version: ", format(ca_version()))
   },
 
   help = function() {
@@ -151,6 +150,10 @@ ca_show <- function(self, ...) {
   invisible(self)
 }
 
+ca_version <- function() {
+  utils::packageVersion("scribe")
+}
+
 ca_help <- function(self) {
   lines <- sapply(self$get_args(), arg_help)
   lines <- apply(lines, 2, format) # get consistent width
@@ -165,7 +168,7 @@ ca_resolve <- function(self) {
   # TODO reserve [-h --help] and [--version]
 
   if ("--version" %in% self$get_options()) {
-    return(packageVersion("scribe"))
+    return(self$version())
   }
 
   if (any(c("-h", "--help") %in% self$get_options())) {
@@ -241,8 +244,8 @@ ca_add_argument <- function(
     default = NULL,
     help = NULL
 ) {
-  new <- new_arg(
-    self$nArgs,
+  arg <- new_arg(
+    id = self$nArgs,
     aliases = list(...),
     action = action,
     options = options,
@@ -252,7 +255,7 @@ ca_add_argument <- function(
     n = NA_integer_
   )
   self$nArgs <- self$nArgs + 1L
-  self$argList[[self$nArgs]] <- new
+  self$argList[[self$nArgs]] <- arg
   self$resolved <- FALSE
   invisible(self)
 }

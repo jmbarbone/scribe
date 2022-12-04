@@ -58,7 +58,7 @@ system2("Rscript", c("--vanilla", file, "-a 0 -b 10"))
 ## Other packages
 
 This isn’t the first package. Most contain other dependencies, some even
-in different langauges (e.g., `python`).
+in different languages (e.g., `python`).
 
 - [`{argparse}`](https://github.com/trevorld/r-argparse)
 - [`{optparse}`](https://github.com/trevorld/r-optparse)
