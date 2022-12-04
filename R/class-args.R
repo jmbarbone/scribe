@@ -24,7 +24,7 @@ new_arg <- function(
     help = NULL,
     n = 0L
 ) {
-  Arg$new(
+  Arg(
     aliases = aliases,
     id      = id,
     action  = action,
@@ -38,7 +38,7 @@ new_arg <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
-Arg <- methods::setRefClass(
+Arg <- methods::setRefClass( # nolint: object_name_linter
   "scribeArg",
   fields = list(
     id = "integer",
@@ -229,29 +229,7 @@ arg_show <- function(self) {
 
 arg_help <- function(self) {
   print_lines(
-    sprintf("[%s]", to_string(attr(x, "aliases")))
-  )
-}
-
-arg_do_action <- function(self, ca, value) {
-  # Pass the scribeCommandArg so we can update/remove
-  stopifnot(is_command_args(ca))
-
-  switch(
-    match.arg(arg$get_action()),
-    ## none ----
-    none = value %||% arg$get_default(),
-
-    ## flag ----
-    # if present, identify as yes/no.
-    # TODO account for --no-option
-    flag = {
-      found <- match(arg$get_aliases(), "")
-    },
-
-    command = {
-      match.arg(value, arg$get_options(), several.ok = FALSE)
-    }
+    sprintf("[%s]", to_string(self$get_aliases()))
   )
 }
 
@@ -260,7 +238,7 @@ scribe_actions <- function() {
 }
 
 action_validate <- function(action = NULL) {
-  mach.arg(action %||% "none", scribe_actions())
+  match.arg(action %||% "none", scribe_actions())
 }
 
 arg_get_aliases <- function(self) {
@@ -349,10 +327,10 @@ arg_match_cmd <- function(self, commands, n = 1L) {
 # helpers -----------------------------------------------------------------
 
 is_arg <- function(x) {
-  identical(class9x)
+  methods::is(x, Arg)
 }
 
-ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"
+ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter
 
 is_command <- function(x) {
   stopifnot(is.list(x))
