@@ -1,7 +1,7 @@
 
 # slightly different here
 
-`%||%` <- function(x, y) { if (is_empty(x)) y else x }
+`%||%` <- function(x, y) { if (is_empty(x)) y else x } # nolint: brace_linter
 
 is_empty <- function(x) {
   if (is.function(x)) {
@@ -41,8 +41,10 @@ first <- function(x) {
   if (length(x)) x[1L] else x[0L]
 }
 
+# nolint start: object_name_linter
 wapply <- function(x, FUN, ...) {
   FUN <- match.fun(FUN)
+  # nolint end: object_name_linter
   fun <- function(x, ...) isTRUE(FUN(x, ...))
   which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
