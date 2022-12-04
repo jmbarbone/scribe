@@ -41,6 +41,10 @@ value_convert <- function(x, to = default_convert) {
 }
 
 default_convert <- function(x) {
+  if (!length(x)) {
+    return(x)
+  }
+
   out <- utils::type.convert(x, as.is = TRUE)
 
   # only handles defaults
