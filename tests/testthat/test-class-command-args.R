@@ -46,3 +46,9 @@ test_that("bad arguments don't create NULLs", {
   expect_identical(ca$nArgs, 0L)
   expect_identical(ca$argList, list())
 })
+
+test_that("$add_argument('...', default = character()) [#3]", {
+  obj <- command_args("foo")$add_argument("...")$parse()
+  exp <- list(... = "foo")
+  expect_identical(obj, exp)
+})
