@@ -8,12 +8,16 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  CommandArgs$new(input = x)
+  CommandArgs(input = x)
 }
 
 # ReferenceClass ----------------------------------------------------------
 
-CommandArgs <- methods::setRefClass(
+# nolint start: line_length_linter
+# Lorem ipsum dolor sit amet, ornare ex et himenaeos aenean commodo auctor accumsan gravida.
+# nolint end: line_length_linter
+
+CommandArgs <- methods::setRefClass( # nolint: object_name_linter
   "scribeCommandArgs",
   fields = list(
     input = "character",
@@ -36,7 +40,7 @@ CommandArgs$methods(
   },
 
   version = function() {
-    print_line("{scribe} package version: ", format(packageVersion("scribe")))
+    print_line("{scribe} package version: ", format(ca_version()))
   },
 
   help = function() {
@@ -138,14 +142,16 @@ ca_initialize <- function(self, input = NULL) {
 ca_show <- function(self, ...) {
   print_line("Initial call: ", to_string(self$get_input()))
 
-  # if (self$resolved) {
-  #   print_line("Resolved arguments: ", to_string(self$get_values()))
-  # } else {
-  #   print_line("w Arguments are unresolved")
-  # }
+  if (!self$resolved) {
+    print_line("w Call $resolve() or $parse() to resolve arguments")
+  }
 
   lapply(self$get_args(), print)
   invisible(self)
+}
+
+ca_version <- function() {
+  utils::packageVersion("scribe")
 }
 
 ca_help <- function(self) {
@@ -162,7 +168,7 @@ ca_resolve <- function(self) {
   # TODO reserve [-h --help] and [--version]
 
   if ("--version" %in% self$get_options()) {
-    return(scribe_version())
+    return(self$version())
   }
 
   if (any(c("-h", "--help") %in% self$get_options())) {
@@ -173,7 +179,6 @@ ca_resolve <- function(self) {
     return(self)
   }
 
-  # browser()
   # reset if not unsuccessful
   on.exit(
     expr =  if (!self$resolved) {
@@ -239,8 +244,8 @@ ca_add_argument <- function(
     default = NULL,
     help = NULL
 ) {
-  new <- new_arg(
-    self$nArgs,
+  arg <- new_arg(
+    id = self$nArgs,
     aliases = list(...),
     action = action,
     options = options,
@@ -250,7 +255,7 @@ ca_add_argument <- function(
     n = NA_integer_
   )
   self$nArgs <- self$nArgs + 1L
-  self$argList[[self$nArgs]] <- new
+  self$argList[[self$nArgs]] <- arg
   self$resolved <- FALSE
   invisible(self)
 }
@@ -301,7 +306,7 @@ ca_set_input <- function(self, i = NULL, value) {
   self
 }
 
-ca_get_options = function(self, i = TRUE) {
+ca_get_options <- function(self, i = TRUE) {
   self$options[i]
 }
 
@@ -314,7 +319,7 @@ ca_set_options <- function(self, i = NULL, value) {
   self
 }
 
-ca_get_values = function(self, i = TRUE) {
+ca_get_values <- function(self, i = TRUE) {
   if (isTRUE(i)) {
     self$values
   } else {

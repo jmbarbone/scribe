@@ -1,5 +1,5 @@
 Package: scribe
-Title: Argument Sarsing for Rscript
+Title: Command Argument Parsing for R
 Version: 0.0.0.9000
 Authors@R: 
     person(
@@ -18,10 +18,13 @@ RoxygenNote: 7.2.2
 Requires:
     R (>= 3.6)
 Imports:
-    methods
+    methods,
+    utils
 Suggests: 
+    covr,
     knitr,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr

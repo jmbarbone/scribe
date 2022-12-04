@@ -4,7 +4,7 @@
 \name{scribe-package}
 \alias{scribe}
 \alias{scribe-package}
-\title{scribe: Argument Sarsing for Rscript}
+\title{scribe: Command Argument Parsing for R}
 \description{
 A base R solution with basic argument parsing for use with Rscript.
 }
