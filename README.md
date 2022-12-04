@@ -4,6 +4,8 @@
 # scribe
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/jmbarbone/scribe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jmbarbone/scribe/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of scribe is to provide a detailed argument parser for
@@ -19,12 +21,7 @@ Workflows with intention to support:
 ``` r
 ca <- command_args(c("-a", "1", "-b", "2"))
 ca$add_argument("-a", type = "integer")
-#> Initial call:  -a 1 -b 2
-#> Argument [-a] : <null>
 ca$add_argument("-b", type = "integer")
-#> Initial call:  -a 1 -b 2
-#> Argument [-a] : <null>
-#> Argument [-b] : <null>
 args <- ca$parse()
 
 str(args$a + args$b)
