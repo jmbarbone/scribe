@@ -8,7 +8,7 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  CommandArgs(input = x)
+  scribeCommandArgs(input = x)
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -17,7 +17,7 @@ command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
 # Lorem ipsum dolor sit amet, ornare ex et himenaeos aenean commodo auctor accumsan gravida.
 # nolint end: line_length_linter
 
-CommandArgs <- methods::setRefClass( # nolint: object_name_linter
+scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter
   "scribeCommandArgs",
   fields = list(
     input = "character",
@@ -29,7 +29,7 @@ CommandArgs <- methods::setRefClass( # nolint: object_name_linter
     resolved = "logical"
   ))
 
-CommandArgs$methods(
+scribeCommandArgs$methods(
   # creates the object
   initialize = function(input = "") {
     ca_initialize(.self, input = input)
@@ -59,7 +59,7 @@ CommandArgs$methods(
     ...,
     action = arg_actions(),
     options = NULL,
-    type = arg_types(),
+    convert = default_convert,
     default = NULL,
     n = NA_integer_,
     nargs = 1,
@@ -70,7 +70,7 @@ CommandArgs$methods(
       ...,
       action = action,
       options = options,
-      type = type,
+      convert = convert,
       default = default,
       n = n,
       nargs = nargs,
@@ -238,7 +238,7 @@ ca_add_argument <- function(
     ...,
     n = NA_integer_,
     action = NULL,
-    type = NULL,
+    convert = default_convert,
     options = NULL,
     nargs = 1,
     default = NULL,
@@ -249,7 +249,7 @@ ca_add_argument <- function(
     aliases = list(...),
     action = action,
     options = options,
-    type = type,
+    convert = convert,
     default = default,
     help = help,
     n = NA_integer_

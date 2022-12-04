@@ -7,10 +7,8 @@
 #' @param aliases A list of aliases for the arg
 #' @param action An action to perform
 #' @param options If not `NULL`,  a `list` of set possible values
-#' @param type The type of the value.  Accepts either single characters passed
-#'   to `as.vector(mode = type)` or a function to convert values.  When `NULL`:
-#'   if `default` is not `NULL`, uses the value of `typeof(default)`, otherwise
-#'   uses `"any"`
+#' @param convert A conversion specifications, passed to the `to` param in
+#'   [value_convert()].
 #' @param default Default value
 #' @param help Help text for this argument
 #' @param n The number of values
@@ -20,18 +18,18 @@ new_arg <- function(
     aliases = NULL,
     id = NA_integer_,
     action = arg_actions(),
-    type = arg_types(),
+    convert = default_convert,
     options = NULL,
     default = NULL,
     help = NULL,
     n = 0L
 ) {
-  Arg(
+  scribeArg(
     aliases = aliases,
     id      = id,
     action  = action,
     options = options,
-    type    = type,
+    convert = convert,
     default = default,
     help    = help,
     n       = n
@@ -40,14 +38,14 @@ new_arg <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
-Arg <- methods::setRefClass( # nolint: object_name_linter
+scribeArg <- methods::setRefClass( # nolint: object_name_linter
   "scribeArg",
   fields = list(
     id = "integer",
     aliases = "character",
     action = "character",
     options = "character",
-    type = "ANY",
+    convert = "ANY",
     default = "ANY",
     help = "character",
     choices = "list",
@@ -56,13 +54,13 @@ Arg <- methods::setRefClass( # nolint: object_name_linter
   )
 )
 
-Arg$methods(
+scribeArg$methods(
   initialize = function(
-    id = NULL,
     aliases = NULL,
+    id = NULL,
     action = NULL,
     options = NULL,
-    type = NULL,
+    convert = NULL,
     default = NULL,
     help = NULL,
     n = NULL
@@ -74,7 +72,7 @@ Arg$methods(
       aliases = aliases,
       action  = action,
       options = options,
-      type    = type,
+      convert = convert,
       default = default,
       help    = help,
       n       = n
@@ -126,7 +124,7 @@ arg_initialize <- function(
     id = NA_integer_,
     aliases,
     action = arg_actions(),
-    type = arg_types(),
+    convert = default_convert,
     default = NULL,
     # acceptable values
     options = NULL,
@@ -138,34 +136,6 @@ arg_initialize <- function(
   help    <- help    %||% ""
   n       <- n       %||% 1L
 
-  if (is.character(type)) {
-    type <- match.arg(tolower(type), arg_types())
-  } else if (!is.function(type)) {
-    stop("type must be a character or a function")
-  }
-
-  if (!is.null(default)) {
-    default_type <- c(class(default), "default")
-    default_type <- match.arg(
-      arg = tolower(default_type),
-      choices = arg_types(),
-      # multiple matches but use the first found
-      several.ok = TRUE
-    )[1]
-
-    if (!is.function(type)) {
-      # if it's a function, then whatever
-      if (identical(type, "default")) {
-        # if it's "default" we'll update this
-        type <- default_type
-      } else if (!identical(default_type, type)) {
-        # if they don't match, then error
-        msg <- "type and default supplied don't appear to be compatable"
-        stop(msg, call. = FALSE)
-      }
-    }
-  }
-
   if (action == "default") {
     # TODO need to determine when actions can be anything other than list
     action <- "list"
@@ -174,8 +144,8 @@ arg_initialize <- function(
   switch(
     action,
     flag = {
-      type <- "logical"
-      default <- as.logical(default)
+      convert <- NULL
+      default <- as_bool(default)
 
       if (is.na(n)) {
         n <- 0L
@@ -195,6 +165,12 @@ arg_initialize <- function(
       }
     }
   )
+
+  if (!is.null(default)) {
+    if (!identical(value_convert(default, to = convert), default)) {
+      stop("default value doesn't convert to itself", call. = FALSE)
+    }
+  }
 
   stopifnot(
     is_intish(id),
@@ -221,7 +197,7 @@ arg_initialize <- function(
   self$id      <- as.integer(id)
   self$aliases <- aliases
   self$action  <- action
-  self$type    <- type %||% typeof(default) %||% "any"
+  self$convert <- convert
   self$options <- options
   self$help    <- help
   self$n       <- n
@@ -327,22 +303,7 @@ arg_parse_value <- function(self, ca) {
     ca$remove_working(m)
   }
 
-  if (is.character(self$type)) {
-    value <- switch(
-      self$type,
-      any = value,
-      character = as.character(value),
-      logical = as.logical(value),
-      integer = as.integer(value),
-      numeric = as.numeric(value),
-      complex = as.complex(value),
-      raw = charToRaw(value),
-      stop("something has gone wrong")
-    )
-  } else if (is.function(self$type)) {
-    value <- (self$type)(value)
-  }
-
+  value <- value_convert(value, to = self$convert)
   value
 }
 
@@ -374,11 +335,6 @@ ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_
 is_command <- function(x) {
   stopifnot(is.list(x))
   vapply(x, function(i) i$get_action(), NA_character_) == "command"
-}
-
-arg_types <- function() {
-  c("default", "any", "logical", "integer",
-    "numeric", "double", "complex", "character", "raw")
 }
 
 arg_actions <- function() {

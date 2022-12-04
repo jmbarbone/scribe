@@ -34,8 +34,8 @@ Workflows with intention to support:
 
 ```{r}
 ca <- command_args(c("-a", "1", "-b", "2"))
-ca$add_argument("-a", type = "integer")
-ca$add_argument("-b", type = "integer")
+ca$add_argument("-a")
+ca$add_argument("-b")
 args <- ca$parse()
 
 str(args$a + args$b)
