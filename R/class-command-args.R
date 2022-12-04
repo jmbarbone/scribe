@@ -8,7 +8,7 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  CommandArgs$new(input = x)
+  CommandArgs(input = x)
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -40,7 +40,8 @@ CommandArgs$methods(
   },
 
   version = function() {
-    print_line("{scribe} package version: ", format(packageVersion("scribe")))
+    version <- utils::packageVersion("scribe")
+    print_line("{scribe} package version: ", format(version))
   },
 
   help = function() {

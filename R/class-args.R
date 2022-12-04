@@ -26,7 +26,7 @@ new_arg <- function(
     help = NULL,
     n = 0L
 ) {
-  Arg$new(
+  Arg(
     aliases = aliases,
     id      = id,
     action  = action,
@@ -256,30 +256,6 @@ arg_help <- function(self) {
     sprintf("[%s]", to_string(self$get_aliases()))
   )
 }
-
-# nolint start
-arg_do_action <- function(self, ca, value) {
-  # Pass the scribeCommandArg so we can update/remove
-  stopifnot(is_command_args(ca))
-
-  switch(
-    match.arg(arg$get_action()),
-    ## none ----
-    none = value %||% arg$get_default(),
-
-    ## flag ----
-    # if present, identify as yes/no.
-    # TODO account for --no-option
-    flag = {
-      found <- match(arg$get_aliases(), "")
-    },
-
-    command = {
-      match.arg(value, arg$get_options(), several.ok = FALSE)
-    }
-  )
-}
-# nolint end
 
 scribe_actions <- function() {
   c("character", "numeric", "bool", "flag")
