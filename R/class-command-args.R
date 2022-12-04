@@ -8,7 +8,7 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  CommandArgs(input = x)
+  scribeCommandArgs(input = x)
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -17,7 +17,7 @@ command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
 # Lorem ipsum dolor sit amet, ornare ex et himenaeos aenean commodo auctor accumsan gravida.
 # nolint end: line_length_linter
 
-CommandArgs <- methods::setRefClass( # nolint: object_name_linter
+scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter
   "scribeCommandArgs",
   fields = list(
     input = "character",
@@ -29,7 +29,7 @@ CommandArgs <- methods::setRefClass( # nolint: object_name_linter
     resolved = "logical"
   ))
 
-CommandArgs$methods(
+scribeCommandArgs$methods(
   # creates the object
   initialize = function(input = "") {
     ca_initialize(.self, input = input)

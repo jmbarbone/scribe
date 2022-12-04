@@ -24,7 +24,7 @@ new_arg <- function(
     help = NULL,
     n = 0L
 ) {
-  Arg(
+  scribeArg(
     aliases = aliases,
     id      = id,
     action  = action,
@@ -38,7 +38,7 @@ new_arg <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
-Arg <- methods::setRefClass( # nolint: object_name_linter
+scribeArg <- methods::setRefClass( # nolint: object_name_linter
   "scribeArg",
   fields = list(
     id = "integer",
@@ -54,10 +54,10 @@ Arg <- methods::setRefClass( # nolint: object_name_linter
   )
 )
 
-Arg$methods(
+scribeArg$methods(
   initialize = function(
-    id = NULL,
     aliases = NULL,
+    id = NULL,
     action = NULL,
     options = NULL,
     convert = NULL,
