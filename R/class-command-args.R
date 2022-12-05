@@ -13,11 +13,7 @@ command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
 
 # ReferenceClass ----------------------------------------------------------
 
-# nolint start: line_length_linter
-# Lorem ipsum dolor sit amet, ornare ex et himenaeos aenean commodo auctor accumsan gravida.
-# nolint end: line_length_linter
-
-scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter
+scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
   fields = list(
     input = "character",

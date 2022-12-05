@@ -38,7 +38,7 @@ new_arg <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
-scribeArg <- methods::setRefClass( # nolint: object_name_linter
+scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",
   fields = list(
     id = "integer",
@@ -333,7 +333,7 @@ is_arg <- function(x) {
   methods::is(x, Arg)
 }
 
-ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter
+ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
 
 is_command <- function(x) {
   stopifnot(is.list(x))
