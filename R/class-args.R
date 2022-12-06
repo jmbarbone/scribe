@@ -96,8 +96,8 @@ scribeArg$methods(
     arg_get_aliases(.self)
   },
 
-  get_name = function() {
-    arg_get_name(.self)
+  get_name = function(clean = TRUE) {
+    arg_get_name(.self, clean = clean)
   },
 
   get_action = function() {
@@ -245,20 +245,22 @@ arg_get_aliases <- function(self) {
   self$aliases
 }
 
-arg_get_name <- function(self) {
+arg_get_name <- function(self, clean = TRUE) {
   aliases <- self$get_aliases()
+  n <- length(aliases)
 
-  if (self$get_action() == "dots") {
-    if (length(aliases) == 1L) {
+  if (self$get_action() == "dots" && n == 1L) {
       return("...")
-    }
-    ind <- seq_along(aliases)[-1L]
-  } else {
-    ind <- grep("^--?", aliases)
   }
 
   # always choose the last one
-  aliases[ind[length(ind)]]
+  nm <- aliases[n]
+
+  if (clean) {
+    nm <- sub("^--?", "", nm)
+  }
+
+  nm
 }
 
 arg_get_action  <- function(self) {
