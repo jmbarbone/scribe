@@ -144,7 +144,10 @@ arg_initialize <- function(
     action,
     flag = {
       convert <- NULL
-      default <- as_bool(default)
+      if (!(isFALSE(default) | is.null(default))) {
+        warning("flag must be NULL or TRUE when action=\"flag\"", call. = FALSE)
+      }
+      default <- FALSE
 
       if (is.na(n)) {
         n <- 0L
@@ -287,7 +290,11 @@ arg_parse_value <- function(self, ca) {
     m <- 1L
     off <- 0L
   } else {
-    off <- 1L
+    off <- switch(
+      self$action,
+      flag = 0L,
+      list = 1L
+    )
     m <- match(alias, ca$get_working(), 0L)
     ok <- which(m > 0L)
     m <- m[ok]
@@ -306,20 +313,26 @@ arg_parse_value <- function(self, ca) {
     m <- m[1L]
   }
 
-  if (self$action == "dots") {
-    value <- ca$get_working()
-    ca$remove_working(seq_along(value))
+  switch(
+    self$action,
+    dots = {
+      value <- ca$get_working()
+      ca$remove_working(seq_along(value))
 
-    if (!length(value)) {
-      value <- self$get_default()
+      if (!length(value)) {
+        value <- self$get_default()
+      }
+    },
+    list = {
+      m <- m + seq.int(0L, self$n)
+      value <- ca$get_working(m[-off])
+      ca$remove_working(m)
+    },
+    flag = {
+      value <- TRUE
+      ca$remove_working(m)
     }
-
-  } else {
-    # TODO consider if multiple n values should be used?
-    m <- m + seq.int(0L, self$n)
-    value <- ca$get_working(m[-off])
-    ca$remove_working(m)
-  }
+  )
 
   value <- value_convert(value, to = self$convert)
   value
