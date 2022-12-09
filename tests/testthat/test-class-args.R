@@ -16,3 +16,10 @@ test_that("$get_names() [#10]", {
   x <- new_arg("...", n = NA_integer_)
   expect_identical(x$get_name(), "...")
 })
+
+test_that("new_arg() defaults [#9]", {
+  expect_error(new_arg(), NA)
+  expect_error(new_arg("..."), NA)
+  expect_error(new_arg(action = "dots"), NA)
+  expect_error(new_arg(action = "flag"), NA)
+})

@@ -3,7 +3,6 @@
 
 #' New Arg
 #'
-#' @param id Integer
 #' @param aliases A list of aliases for the arg
 #' @param action An action to perform
 #' @param options If not `NULL`,  a `list` of set possible values
@@ -12,27 +11,28 @@
 #' @param default Default value
 #' @param help Help text for this argument
 #' @param n The number of values
+#' @param id Integer
 #' @returns A `scribeArg` object
 #' @noRd
 new_arg <- function(
-    aliases = NULL,
-    id = NA_integer_,
-    action = arg_actions(),
+    aliases = "",
+    action  = arg_actions(),
     convert = default_convert,
     options = NULL,
     default = NULL,
-    help = NULL,
-    n = 0L
+    help    = NULL,
+    n       = NA_integer_,
+    id      = NA_integer_
 ) {
-  scribeArg(
+  scribeArg$new(
     aliases = aliases,
-    id      = id,
     action  = action,
     options = options,
     convert = convert,
     default = default,
     help    = help,
-    n       = n
+    n       = n,
+    id      = id
   )
 }
 
@@ -41,29 +41,29 @@ new_arg <- function(
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",
   fields = list(
-    id = "integer",
     aliases = "character",
-    action = "character",
+    action  = "character",
     options = "character",
     convert = "ANY",
     default = "ANY",
-    help = "character",
+    help    = "character",
     choices = "list",
-    n = "integer",
-    values = "list"
+    n       = "integer",
+    values  = "list",
+    id      = "integer"
   )
 )
 
 scribeArg$methods(
   initialize = function(
-    aliases = NULL,
-    id = NULL,
-    action = NULL,
-    options = NULL,
-    convert = NULL,
-    default = NULL,
-    help = NULL,
-    n = NULL
+    aliases  = NULL,
+    id       = NULL,
+    action   = NULL,
+    options  = NULL,
+    convert  = NULL,
+    default  = NULL,
+    help     = NULL,
+    n        = NULL
   ) {
     # TODO include validation
     arg_initialize(
@@ -134,7 +134,6 @@ arg_initialize <- function(
   action  <- match.arg(action, arg_actions())
   options <- options %||% ""
   help    <- help    %||% ""
-  n       <- n       %||% 1L
 
   if (action == "default") {
     # TODO need to determine when actions can be anything other than list
@@ -162,6 +161,15 @@ arg_initialize <- function(
 
       if (n == 0L) {
         stop("n cannot be 0L when action=\"list\"", call. = FALSE)
+      }
+    },
+    dots = {
+      if (identical(alias, "")) {
+        alias <- "..."
+      }
+
+      if (is.na(n)) {
+        n <- 0L
       }
     }
   )
