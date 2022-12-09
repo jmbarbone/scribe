@@ -301,6 +301,11 @@ arg_parse_value <- function(self, ca) {
   if (self$action == "dots") {
     value <- ca$get_working()
     ca$remove_working(seq_along(value))
+
+    if (!length(value)) {
+      value <- self$get_default()
+    }
+
   } else {
     # TODO consider if multiple n values should be used?
     m <- m + seq.int(0L, self$n)
