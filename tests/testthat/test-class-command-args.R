@@ -52,3 +52,13 @@ test_that("$add_argument('...', default = character()) [#3]", {
   exp <- list(... = "foo")
   expect_identical(obj, exp)
 })
+
+test_that("$add_argument('...', default = 'bar') [#11]", {
+  obj <- command_args("")$add_argument("...", default = "bar")$parse()
+  exp <- list(... = "bar")
+  expect_identical(obj, exp)
+
+  obj <- command_args("")$add_argument("...", default = 1:3)$parse()
+  exp <- list(... = 1:3)
+  expect_identical(obj, exp)
+})
