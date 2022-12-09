@@ -62,3 +62,21 @@ test_that("$add_argument('...', default = 'bar') [#11]", {
   exp <- list(... = 1:3)
   expect_identical(obj, exp)
 })
+
+test_that("$add_argument(action = 'flag') [#17]", {
+  obj <- command_args()$add_argument("-f", "--foo", action = "flag")$parse()
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+
+  obj <- command_args("-f")$add_argument("-f", "--foo", action = "flag")$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  obj <- command_args("--foo")$add_argument("-f", "--foo", action = "flag")$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  expect_warning(command_args()$add_argument("f", action = "flag", default = TRUE))
+  expect_warning(command_args()$add_argument("f", action = "flag", default = "1"))
+  expect_warning(command_args()$add_argument("f", action = "flag", default = "1"))
+})
