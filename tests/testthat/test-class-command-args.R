@@ -82,3 +82,37 @@ test_that("$add_argument(action = 'flag') [#17]", {
   expect_warning(command_args()$add_argument("f", action = "flag", default = "1"))
   # nolint end: line_length_linter.
 })
+
+test_that("adding args is fine", {
+  # should be fine during creation
+  ca <- command_args(c("foo", "bar"))
+  ca$add_argument("foo", action = "flag")
+  ca$add_argument("bar", action = "flag")
+
+  obj <- ca$get_input()
+  exp <- c("foo", "bar")
+  expect_identical(obj, exp)
+
+  obj <- ca$parse()
+  exp <- list(foo = TRUE, bar = TRUE)
+  expect_identical(obj, exp)
+})
+
+test_that("adding args is fine after initialization [#19]", {
+  # should be okay after ca is created
+  ca <- command_args()
+  obj <- ca$get_input()
+  exp <- character()
+  expect_identical(obj, exp)
+
+  ca$set_input(c("foo", "bar"))
+  obj <- ca$get_input()
+  exp <- c("foo", "bar")
+  expect_identical(obj, exp)
+
+  ca$add_argument("foo", action = "flag")
+  ca$add_argument("bar", action = "flag")
+  obj <- ca$parse()
+  exp <- list(foo = TRUE, bar = TRUE)
+  expect_identical(obj, exp)
+})

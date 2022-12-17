@@ -106,12 +106,12 @@ scribeCommandArgs$methods(
     ca_set_values(.self, i = i, value = value)
   },
 
-  get_input = function(i = TRUE) {
-    ca_get_input(.self, i = i)
+  get_input = function() {
+    ca_get_input(.self)
   },
 
-  set_input = function(i = NULL, value) {
-    ca_set_input(.self, i = i, value = value)
+  set_input = function(value) {
+    ca_set_input(.self, value = value)
   },
 
   get_options = function(i = TRUE) {
@@ -289,16 +289,13 @@ ca_get_args <- function(self, i = TRUE) {
   }
 }
 
-ca_get_input <- function(self, i = TRUE) {
-  self$input[i]
+ca_get_input <- function(self) {
+  self$input
 }
 
-ca_set_input <- function(self, i = NULL, value) {
-  if (is.null(i)) {
-    i <- length(self$get_options()) + 1L
-  }
-
-  self$input[i] <- value
+ca_set_input <- function(self, value) {
+  self$input <- as.character(value)
+  self$working <- self$input
   self
 }
 
