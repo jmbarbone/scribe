@@ -204,7 +204,7 @@ ca_resolve <- function(self) {
   self$values <- vector("list", length(arg_order))
   names(self$values) <- arg_names[arg_order]
 
-  for (arg in args[order(arg_order)]) {
+  for (arg in args[arg_order]) {
     self$set_values(arg$get_name(), arg$parse_value(self))
   }
 
@@ -216,6 +216,7 @@ ca_resolve <- function(self) {
     )
   }
 
+  self$values <- self$values[order(arg_order)]
   self$resolved <- TRUE
   self
 }
