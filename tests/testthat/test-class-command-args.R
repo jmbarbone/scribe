@@ -116,3 +116,14 @@ test_that("adding args is fine after initialization [#19]", {
   exp <- list(foo = TRUE, bar = TRUE)
   expect_identical(obj, exp)
 })
+
+test_that("args are returned in original order [#25]", {
+  ca <- command_args(c("-b", "one", "-c", "two", "-a", "three", "foo", "bar"))
+  ca$add_argument("...")
+  ca$add_argument("-a", default = "zero")
+  ca$add_argument("-c", default = "zero")
+  ca$add_argument("-b", default = "zero")
+  obj <- ca$parse()
+  exp <- list(... = c("foo", "bar"), a = "three", c = "two", b = "one")
+  expect_identical(obj, exp)
+})
