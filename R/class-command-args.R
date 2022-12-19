@@ -275,7 +275,7 @@ ca_get_working <- function(self, i = TRUE) {
 
 ca_remove_working <- function(self, i) {
   if (is.character(i)) {
-    i <- match(names(self$working))
+    i <- match(i, names(self$working))
   }
 
   self$working <- self$working[-i]
