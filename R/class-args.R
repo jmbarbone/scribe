@@ -40,17 +40,18 @@ new_arg <- function(
 
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",
-  fields = list(
-    aliases = "character",
-    action  = "character",
-    options = "character",
-    convert = "ANY",
-    default = "ANY",
-    help    = "character",
-    choices = "list",
-    n       = "integer",
-    values  = "list",
-    id      = "integer"
+  fields       = list(
+    aliases    = "character",
+    action     = "character",
+    options    = "character",
+    convert    = "ANY",
+    default    = "ANY",
+    help       = "character",
+    choices    = "list",
+    n          = "integer",
+    values     = "list",
+    positional = "logical",
+    id         = "integer"
   )
 )
 
@@ -199,21 +200,30 @@ arg_initialize <- function(
   if ("..." %in% aliases) {
     action <- "dots"
     n <- NA_integer_
-  } else if (!xor(all(dashes), all(!dashes))) {
-    stop("aliases must have all dashes or none")
+    positional <- NA
+  } else {
+    dash_args <- all(dashes)
+    pos_args <- all(!dashes)
+
+    if (!xor(dash_args, pos_args)) {
+      stop("aliases must have all dashes or none (positional)")
+    }
+
+    positional <- !dash_args
   }
 
   action <- match.arg(action, arg_actions())
 
-  self$id      <- as.integer(id)
-  self$aliases <- aliases
-  self$action  <- action
-  self$convert <- convert
-  self$options <- options
-  self$help    <- help
-  self$n       <- n
-  self$values  <- list()
-  self$default <- default
+  self$id         <- as.integer(id)
+  self$aliases    <- aliases
+  self$action     <- action
+  self$convert    <- convert
+  self$options    <- options
+  self$help       <- help
+  self$n          <- n
+  self$values     <- list()
+  self$positional <- positional
+  self$default    <- default
   self
 }
 
@@ -289,6 +299,9 @@ arg_parse_value <- function(self, ca) {
   if (self$action == "dots") {
     m <- 1L
     off <- 0L
+  } else if (self$positional) {
+    m <- 0L
+    off <- 1L
   } else {
     off <- switch(
       self$action,

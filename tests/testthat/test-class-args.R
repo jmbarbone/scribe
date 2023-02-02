@@ -23,3 +23,8 @@ test_that("new_arg() defaults [#9]", {
   expect_error(new_arg(action = "dots"), NA)
   expect_error(new_arg(action = "flag"), NA)
 })
+
+test_that("positional() [#22]", {
+  expect_true(new_arg("foo")$positional)
+  expect_false(new_arg("--foo")$positional)
+})

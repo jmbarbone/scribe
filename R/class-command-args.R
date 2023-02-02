@@ -197,6 +197,7 @@ ca_resolve <- function(self) {
     wapply(args, function(i) i$action == "list"),
     seq_along(args),
     # dots must always be parsed last
+    wapply(args, function(i) i$positional),
     wapply(args, function(i) i$action == "dots")
   ))
 

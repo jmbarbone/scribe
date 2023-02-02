@@ -143,3 +143,13 @@ test_that("default values", {
   )
   expect_identical(obj, exp)
 })
+
+test_that("positional values [#22]", {
+  ca <- command_args(1:2)
+  ca$add_argument("foo", default = 0)
+  ca$add_argument("bar", default = 0)
+  obj <- ca$parse()
+  exp <- list(foo = 1, bar = 2)
+  expect_identical(obj, exp)
+  ca <- command_args(1:2)
+})
