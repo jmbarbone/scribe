@@ -127,3 +127,19 @@ test_that("args are returned in original order [#25]", {
   exp <- list(... = c("foo", "bar"), a = "three", c = "two", b = "one")
   expect_identical(obj, exp)
 })
+
+test_that("default values", {
+  ca <- command_args(c("1", "2.0", "3", "4.0"))
+  ca$add_argument("one",   default = 0L)
+  ca$add_argument("two",   default = 0)
+  ca$add_argument("three", default = 0)
+  ca$add_argument("four",  default = 0L)
+  obj <- ca$parse()
+  exp <- list(
+    one   = 1L,
+    two   = 2,
+    three = 3,
+    four  = 4L
+  )
+  expect_identical(obj, exp)
+})

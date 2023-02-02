@@ -8,7 +8,7 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  scribeCommandArgs(input = x)
+  scribeCommandArgs(input = as.character(x))
 }
 
 # ReferenceClass ----------------------------------------------------------

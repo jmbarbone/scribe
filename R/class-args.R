@@ -334,7 +334,7 @@ arg_parse_value <- function(self, ca) {
     }
   )
 
-  value <- value_convert(value, to = self$convert)
+  value <- value_convert(value, to = self$default %||% self$convert)
   value
 }
 
