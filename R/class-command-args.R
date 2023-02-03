@@ -8,7 +8,7 @@
 #' @export
 #' @family scribe
 command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  scribeCommandArgs(input = x)
+  scribeCommandArgs(input = as.character(x))
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -191,14 +191,17 @@ ca_resolve <- function(self) {
   # least a limit to the number of values that can be found.
   args <- self$get_args()
 
-  arg_order <- unique(c(
-    wapply(args, function(i) i$action == "flag"),
-    wapply(args, function(i) i$action == "list"),
-    wapply(args, function(i) i$action == "list"),
-    seq_along(args),
-    # dots must always be parsed last
-    wapply(args, function(i) i$action == "dots")
-  ))
+  arg_order <- unique(
+    c(
+      wapply(args, function(i) i$action == "flag"),
+      wapply(args, function(i) i$action == "list"),
+      seq_along(args),
+      # dots must always be parsed last
+      wapply(args, function(i) i$positional),
+      wapply(args, function(i) i$action == "dots")
+    ),
+    fromLast = TRUE
+  )
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
   self$values <- vector("list", length(arg_order))
