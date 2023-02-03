@@ -120,6 +120,18 @@ scribeCommandArgs$methods(
 
   set_options = function(i = NULL, value) {
     ca_set_options(.self, i = i, value = value)
+  },
+
+  arg_counter = function() {
+    ca_arg_counter(.self)
+  },
+
+  append_arg = function(arg) {
+    ca_append_arg(.self, arg)
+  },
+
+  get_n_args = function() {
+    ca_get_n_args(.self)
   }
 )
 
@@ -240,22 +252,26 @@ ca_add_argument <- function(
     action = NULL,
     convert = default_convert,
     options = NULL,
-    nargs = 1,
+    nargs = 1L,
     default = NULL,
     help = NULL
 ) {
+  # id starts at 0 because we want to wait for new_arg() to not fail before
+  # adding to the counter
   arg <- new_arg(
-    id = self$nArgs,
+    id = self$get_n_args(),
     aliases = list(...),
     action = action,
     options = options,
     convert = convert,
     default = default,
     help = help,
-    n = NA_integer_
+    n = as.integer(n)
   )
-  self$nArgs <- self$nArgs + 1L
-  self$argList[[self$nArgs]] <- arg
+
+  # update arg counter now
+  self$arg_counter()
+  self$append_arg(arg)
   self$resolved <- FALSE
   invisible(self)
 }
@@ -334,6 +350,20 @@ ca_set_values <- function(self, i = NULL, value) {
   }
 
   self$values[[i]] <- value
+  self
+}
+
+ca_arg_counter <- function(self) {
+  self$nArgs <- self$get_n_args() + 1L
+  self
+}
+
+ca_get_n_args <- function(self) {
+  self$nArgs
+}
+
+ca_append_arg <- function(self, arg) {
+  self$argList[[self$get_n_args()]] <- arg
   self
 }
 
