@@ -181,3 +181,14 @@ test_that("n args [#20]", {
   exp <- list(values = 1:3, `...` = 4:5)
   expect_identical(obj, exp)
 })
+
+test_that("string input [#24]", {
+  ca <- command_args(string = "one two 'three four'")
+  obj <- ca$input
+  exp <- c("one", "two", "three four")
+  expect_identical(obj, exp)
+
+  ca <- command_args(string = 'one two "three four"')
+  obj <- ca$input
+  expect_identical(obj, exp)
+})
