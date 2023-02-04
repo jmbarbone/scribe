@@ -43,7 +43,7 @@ test_that("command_args() handles dots", {
 test_that("bad arguments don't create NULLs", {
   ca <- command_args()
   expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
-  expect_identical(ca$nArgs, 0L)
+  expect_identical(ca$get_n_args(), 0L)
   expect_identical(ca$argList, list())
 })
 
@@ -164,5 +164,20 @@ test_that("positional values [#22]", {
   ca$add_argument("--bar", default = 0)
   obj <- ca$parse()
   exp <- list(foo = 1, bar = 2)
+  expect_identical(obj, exp)
+})
+
+test_that("n args [#20]", {
+  ca <- command_args(c("--values", "1", "2"))
+  ca$add_argument("--values", n = 2)
+  obj <- ca$parse()
+  exp <- list(values = 1:2)
+  expect_identical(obj, exp)
+
+  ca <- command_args(c("--values", 1:5))
+  ca$add_argument("--values", n = 3)
+  ca$add_argument("...")
+  obj <- ca$parse()
+  exp <- list(values = 1:3, `...` = 4:5)
   expect_identical(obj, exp)
 })
