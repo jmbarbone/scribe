@@ -3,12 +3,30 @@
 
 #' Command args
 #'
-#' @param x Command args; see [base::commandArgs()] for default
+#' @param x,string Command args; see [base::commandArgs()] for default.  At
+#'   least one has to be `NULL`.  When `string` is `NULL`, `x` is used, which
+#'   defaults to `commandArgs(trailingOnly = TRUE)`.  Otherwise the value is
+#'   converted to a `character`.  If `string` is not `NULL`, [scan()] will be
+#'   used to split the value into
 #' @returns A `scribeCommandArgs` Reference object
 #' @export
 #' @family scribe
-command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  scribeCommandArgs(input = as.character(x))
+command_args <- function(x = NULL, string = NULL) {
+  if (is.null(string)) {
+    if (is.null(x)) {
+      x <- commandArgs(trailingOnly = TRUE)
+    }
+    x <- as.character(x)
+  } else {
+    if (!is.null(x)) {
+      stop("'string' and 'x' cannot both be set", call. = FALSE)
+    }
+
+    string <- as.character(string)
+    x <- scan(text = string, what = "character", quiet = TRUE)
+  }
+
+  scribeCommandArgs(input = x)
 }
 
 # ReferenceClass ----------------------------------------------------------
