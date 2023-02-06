@@ -5,14 +5,20 @@
 \title{Command args}
 \usage{
 command_args(
-  x = commandArgs(trailingOnly = TRUE),
-  include = c("help", "version")
+  x = NULL,
+  include = c("help", "version", NA_character_),
+  string = NULL
 )
 }
 \arguments{
-\item{x}{Command args; see \code{\link[base:commandArgs]{base::commandArgs()}} for default}
+\item{x, string}{Command args; see \code{\link[base:commandArgs]{base::commandArgs()}} for default.  At
+least one has to be \code{NULL}.  When \code{string} is \code{NULL}, \code{x} is used, which
+defaults to \code{commandArgs(trailingOnly = TRUE)}.  Otherwise the value is
+converted to a \code{character}.  If \code{string} is not \code{NULL}, \code{\link[=scan]{scan()}} will be
+used to split the value into}
 
-\item{include}{Special default arguments to included}
+\item{include}{Special default arguments to
+included}
 }
 \value{
 A \code{scribeCommandArgs} Reference object
