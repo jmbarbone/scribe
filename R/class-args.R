@@ -132,13 +132,13 @@ arg_initialize <- function(
     convert = default_convert,
     default = NULL,
     # acceptable values
-    options = NULL,
+    options = NA_character_,
     n = NA_integer_,
-    help = ""
+    help = "NA_character_"
 ) {
   action  <- match.arg(action, arg_actions())
-  options <- options %||% ""
-  help    <- help    %||% ""
+  options <- options %||% NA_character_
+  help    <- help    %||% NA_character_
 
   if (action == "default") {
     # TODO need to determine when actions can be anything other than list
@@ -222,11 +222,11 @@ arg_initialize <- function(
   self$aliases    <- aliases
   self$action     <- action
   self$convert    <- convert
-  self$options    <- options
-  self$info       <- help
-  self$n          <- n
+  self$options    <- as.character(options)
+  self$info       <- as.character(help)
+  self$n          <- as.integer(n)
   self$values     <- list()
-  self$positional <- positional
+  self$positional <- as.logical(positional)
   self$default    <- default
   self
 }
@@ -258,7 +258,45 @@ arg_help <- function(self) {
 }
 
 arg_get_help <- function(self) {
-  c(to_string(self$get_aliases(), sep = ", "), self$info)
+  switch(
+    self$get_action(),
+    dots = {
+      left <- "..."
+
+      right <- paste0(
+        to_string(self$get_aliases()[-1L], sep = ", "),
+        if (length(self$get_aliases()) > 1) ": ",
+        self$info
+      )
+    },
+    flag = {
+      left <- to_string(self$get_aliases(), sep = ", ")
+      right <- self$info
+    },
+    list = {
+      left <- paste(
+        to_string(self$get_aliases(), sep = ", "),
+        sprintf("[%s]", if (self$n == 1) "ARG" else  sprintf("..%i", self$n))
+      )
+
+      right <- self$info
+
+      if (isTRUE(is.na(right))) {
+        right <- ""
+      }
+
+      if (!isTRUE(is.na(self$options))) {
+        right <- paste(
+          right,
+          sprintf("(%s)", to_string(self$options, sep = ", "))
+        )
+      }
+    }
+  )
+
+  out <- trimws(c(left, right))
+  out[is.na(out)] <- ""
+  out
 }
 
 scribe_actions <- function() {
