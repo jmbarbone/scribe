@@ -3,30 +3,12 @@
 
 #' Command args
 #'
-#' @param x,string Command args; see [base::commandArgs()] for default.  At
-#'   least one has to be `NULL`.  When `string` is `NULL`, `x` is used, which
-#'   defaults to `commandArgs(trailingOnly = TRUE)`.  Otherwise the value is
-#'   converted to a `character`.  If `string` is not `NULL`, [scan()] will be
-#'   used to split the value into
+#' @param x Command args; see [base::commandArgs()] for default
 #' @returns A `scribeCommandArgs` Reference object
 #' @export
 #' @family scribe
-command_args <- function(x = NULL, string = NULL) {
-  if (is.null(string)) {
-    if (is.null(x)) {
-      x <- commandArgs(trailingOnly = TRUE)
-    }
-    x <- as.character(x)
-  } else {
-    if (!is.null(x)) {
-      stop("'string' and 'x' cannot both be set", call. = FALSE)
-    }
-
-    string <- as.character(string)
-    x <- scan(text = string, what = "character", quiet = TRUE)
-  }
-
-  scribeCommandArgs(input = x)
+command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
+  scribeCommandArgs(input = as.character(x))
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -40,13 +22,16 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     values = "list",
     argList = "list",
     nArgs = "integer",
-    resolved = "logical"
-  ))
+    resolved = "logical",
+    description = "character",
+    included = "character"
+  )
+)
 
 scribeCommandArgs$methods(
   # creates the object
-  initialize = function(input = "") {
-    ca_initialize(.self, input = input)
+  initialize = function(input = "", include = c("help", "version")) {
+    ca_initialize(.self, input = input, include = include)
   },
 
   show = function(...) {
@@ -54,7 +39,7 @@ scribeCommandArgs$methods(
   },
 
   version = function() {
-    print_line("{scribe} package version: ", format(ca_version()))
+    print_scribe_version()
   },
 
   help = function() {
@@ -150,18 +135,51 @@ scribeCommandArgs$methods(
 
   get_n_args = function() {
     ca_get_n_args(.self)
+  },
+
+  write_usage = function() {
+    ca_write_usage(.self)
+  },
+
+  add_description = function(x) {
+    ca_add_description(.self, x)
+  },
+
+  get_description = function() {
+    ca_get_description(.self)
   }
 )
 
 # wrappers ----------------------------------------------------------------
 
-ca_initialize <- function(self, input = NULL) {
+ca_initialize <- function(self, input = NULL, include = c("help", "version")) {
   self$input <- input %||% character()
   self$working <- self$input
   self$argList <- list()
   self$nArgs <- 0L
   self$values <- list()
   self$resolved <- FALSE
+  self$description <- NA_character_
+  self$included <- include
+
+  if ("help" %in% include) {
+    self$add_argument(
+      "--help",
+      action = "flag",
+      default = FALSE,
+      help = "prints this and quietly exits"
+    )
+  }
+
+  if ("version" %in% include) {
+    self$add_argument(
+      "--version",
+      action = "flag",
+      default = FALSE,
+      help = "prints the version of {scribe} and quietly exits"
+    )
+  }
+
   self
 }
 
@@ -176,31 +194,52 @@ ca_show <- function(self, ...) {
   invisible(self)
 }
 
-ca_version <- function() {
-  utils::packageVersion("scribe")
+ca_help <- function(self) {
+  pwd <- Sys.getenv("PWD")
+  lines <- sapply(
+    self$get_args(),
+    function(arg) arg$get_help(),
+    simplify = "array"
+  )
+  # lines[1, ] <- sprintf("[%s]", lines[1, ])
+  lines <- apply(lines, 1L, format) # get consistent width
+  lines <- apply(lines, 1L, paste, collapse = " : ") # middle colon
+
+  print_lines(
+    "{scribe} command_args",
+    "",
+    sprintf("file : %s", pwd),
+    "",
+    if (!is.na(self$get_description())) {
+      c("DESCRIPTION", paste0("  ", self$get_description()), "")
+    },
+    "USAGE",
+    sprintf("  %s [--help | --version]", basename(pwd)),
+    sprintf("  %s %s ", basename(pwd), self$write_usage()),
+    "",
+    "ARGUMENTS",
+    paste0("  ", lines),
+    NULL
+  )
 }
 
-ca_help <- function(self) {
-  lines <- sapply(self$get_args(), arg_help)
-  lines <- apply(lines, 2, format) # get consistent width
-  lines <- apply(lines, paste, collapse = " : ") # middle colon
-  print_lines(lines)
+ca_add_description <- function(self, x) {
+  self$description <- x
+  self
+}
+
+ca_get_description <- function(self) {
+  self$description
+}
+
+ca_write_usage <- function(self) {
+  x <- vapply(self$get_args(), function(arg) arg$get_help()[1], NA_character_)
+  paste(sprintf("[%s]", x), collapse = " ")
 }
 
 ca_resolve <- function(self) {
   # loop through the possibly arg in argList.  When found in args, extract and
   # determine what the param should be.  Take into account the action: none
-
-  # TODO reserve [-h --help] and [--version]
-
-  if ("--version" %in% self$get_options()) {
-    return(self$version())
-  }
-
-  if (any(c("-h", "--help") %in% self$get_options())) {
-    return(self$help())
-  }
-
   if (self$resolved) {
     return(self)
   }
@@ -251,6 +290,27 @@ ca_resolve <- function(self) {
 
   self$values <- self$values[order(arg_order)]
   self$resolved <- TRUE
+
+  if ("help" %in% self$included) {
+    m <- match("help", names(self$values), 0L)
+    if (self$values$help) {
+      self$help()
+      quiet_stop()
+      return(self)
+    }
+    self$values <- self$values[-m]
+  }
+
+  if ("version" %in% self$included) {
+    m <- match("version", names(self$values), 0L)
+    if (self$values$version) {
+      self$version()
+      quiet_stop()
+      return(self)
+    }
+    self$values <- self$values[-m]
+  }
+
   self
 }
 
