@@ -259,7 +259,7 @@ ca_help <- function(self) {
 
 ca_add_description <- function(self, x) {
   self$description <- x
-  self
+  invisible(self)
 }
 
 ca_get_description <- function(self) {
@@ -275,7 +275,7 @@ ca_resolve <- function(self) {
   # loop through the possibly arg in argList.  When found in args, extract and
   # determine what the param should be.  Take into account the action: none
   if (self$resolved) {
-    return(self)
+    return(invisible(self))
   }
 
   # reset if not unsuccessful
@@ -330,7 +330,7 @@ ca_resolve <- function(self) {
     if (self$values$help) {
       self$help()
       quiet_stop()
-      return(self)
+      return(invisible(self))
     }
     self$values <- self$values[-m]
   }
@@ -340,7 +340,7 @@ ca_resolve <- function(self) {
     if (self$values$version) {
       self$version()
       quiet_stop()
-      return(self)
+      return(invisible(self))
     }
     self$values <- self$values[-m]
   }
