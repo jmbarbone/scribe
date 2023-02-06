@@ -48,3 +48,20 @@ wapply <- function(x, FUN, ...) {
   fun <- function(x, ...) isTRUE(FUN(x, ...))
   which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
+
+quiet_stop <- function(force = !interactive()) {
+  if (force) {
+    op <- options(show.error.messages = FALSE)
+    on.exit(op)
+    stop()
+  }
+
+  invisible()
+}
+
+print_scribe_version <- function() {
+  print_line(
+    "{scribe} package version:",
+    format(utils::packageVersion("scribe"))
+  )
+}
