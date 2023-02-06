@@ -46,7 +46,7 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     options    = "character",
     convert    = "ANY",
     default    = "ANY",
-    help       = "character",
+    info       = "character",
     choices    = "list",
     n          = "integer",
     values     = "list",
@@ -87,6 +87,10 @@ scribeArg$methods(
   help = function() {
     # should return a matrix
     arg_help(.self)
+  },
+
+  get_help = function() {
+    arg_get_help(.self)
   },
 
   get_value = function(ca, value = NULL) {
@@ -219,7 +223,7 @@ arg_initialize <- function(
   self$action     <- action
   self$convert    <- convert
   self$options    <- options
-  self$help       <- help
+  self$info       <- help
   self$n          <- n
   self$values     <- list()
   self$positional <- positional
@@ -249,9 +253,12 @@ arg_show <- function(self) {
 }
 
 arg_help <- function(self) {
-  print_lines(
-    sprintf("[%s]", to_string(self$get_aliases()))
-  )
+  h <- self$get_help()
+  print_lines(sprintf("[%s] %s", h[1], h[2]))
+}
+
+arg_get_help <- function(self) {
+  c(to_string(self$get_aliases(), sep = ", "), self$info)
 }
 
 scribe_actions <- function() {
