@@ -236,7 +236,6 @@ ca_help <- function(self) {
     function(arg) arg$get_help(),
     simplify = "array"
   )
-  # lines[1, ] <- sprintf("[%s]", lines[1, ])
   lines <- apply(lines, 1L, format) # get consistent width
   lines <- apply(lines, 1L, paste, collapse = " : ") # middle colon
 
