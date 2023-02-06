@@ -4,11 +4,12 @@
 #' Command args
 #'
 #' @param x Command args; see [base::commandArgs()] for default
+#' @param include Special default arguments to included
 #' @returns A `scribeCommandArgs` Reference object
 #' @export
 #' @family scribe
-command_args <- function(x = commandArgs(trailingOnly = TRUE)) {
-  scribeCommandArgs(input = as.character(x))
+command_args <- function(x = commandArgs(trailingOnly = TRUE), include = c("help", "version")) {
+  scribeCommandArgs(input = as.character(x), include = include)
 }
 
 # ReferenceClass ----------------------------------------------------------
@@ -153,6 +154,7 @@ scribeCommandArgs$methods(
 # wrappers ----------------------------------------------------------------
 
 ca_initialize <- function(self, input = NULL, include = c("help", "version")) {
+  include <- match.arg(include)
   self$input <- input %||% character()
   self$working <- self$input
   self$argList <- list()

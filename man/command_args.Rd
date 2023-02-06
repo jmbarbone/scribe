@@ -4,10 +4,15 @@
 \alias{command_args}
 \title{Command args}
 \usage{
-command_args(x = commandArgs(trailingOnly = TRUE))
+command_args(
+  x = commandArgs(trailingOnly = TRUE),
+  include = c("help", "version")
+)
 }
 \arguments{
 \item{x}{Command args; see \code{\link[base:commandArgs]{base::commandArgs()}} for default}
+
+\item{include}{Special default arguments to included}
 }
 \value{
 A \code{scribeCommandArgs} Reference object
