@@ -28,3 +28,36 @@ test_that("positional() [#22]", {
   expect_true(new_arg("foo")$positional)
   expect_false(new_arg("--foo")$positional)
 })
+
+test_that("help() [#16]", {
+  obj <- new_arg("...", help = "help text")$get_help()
+  exp <- c("...", "help text")
+  expect_identical(obj, exp)
+
+  obj <- new_arg(
+    c("...", "dots"),
+    help = "more help here"
+  )$get_help()
+  exp <- c("...", "dots: more help here")
+  expect_identical(obj, exp)
+
+  obj <- new_arg("-f", action = "flag", help = "help me")$get_help()
+  exp <- c("-f", "help me")
+  expect_identical(obj, exp)
+
+  obj <- new_arg(c("-f", "--force"), action = "flag", help = "ugh")$get_help()
+  exp <- c("-f, --force", "ugh")
+  expect_identical(obj, exp)
+
+  obj <- new_arg("--values", action = "list")$get_help()
+  exp <- c("--values [ARG]", "")
+  expect_identical(obj, exp)
+
+  obj <- new_arg(
+    c("-v", "--values"),
+    action = "list",
+    options = c("one", "two", "three")
+  )$get_help()
+  exp <- c("-v, --values [ARG]", "(one, two, three)")
+  expect_identical(obj, exp)
+})
