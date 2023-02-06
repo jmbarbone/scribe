@@ -8,6 +8,13 @@
 \description{
 A base R solution with basic argument parsing for use with Rscript.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://jmbarbone.github.io/scribe/}
+}
+
+}
 \author{
 \strong{Maintainer}: Jordan Mark Barbone \email{jmbarbone@gmail.com} (\href{https://orcid.org/0000-0001-9788-3628}{ORCID}) [copyright holder]
 
