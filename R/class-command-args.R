@@ -237,7 +237,15 @@ ca_show <- function(self, ...) {
 }
 
 ca_help <- function(self) {
-  pwd <- Sys.getenv("PWD")
+  file <- grep("^--file=", commandArgs(), value = TRUE)
+  if (length(file)) {
+    path <- substr(file, 8, nchar(file))
+    bn <- basename(path)
+  } else {
+    path <- "{path}"
+    bn <- "{command}"
+  }
+
   lines <- sapply(
     self$get_args(),
     function(arg) arg$get_help(),
@@ -249,14 +257,14 @@ ca_help <- function(self) {
   print_lines(
     "{scribe} command_args",
     "",
-    sprintf("file : %s", pwd),
+    sprintf("file : %s", path),
     "",
     if (!is.na(self$get_description())) {
       c("DESCRIPTION", paste0("  ", self$get_description()), "")
     },
     "USAGE",
-    sprintf("  %s [--help | --version]", basename(pwd)),
-    sprintf("  %s %s ", basename(pwd), self$write_usage()),
+    sprintf("  %s [--help | --version]", bn),
+    sprintf("  %s %s ", bn, self$write_usage()),
     "",
     "ARGUMENTS",
     paste0("  ", lines),
