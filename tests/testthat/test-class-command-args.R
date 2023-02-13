@@ -192,3 +192,14 @@ test_that("string input [#24]", {
   obj <- ca$input
   expect_identical(obj, exp)
 })
+
+test_that("--help has early stop", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args("--help")
+  ca$add_argument("-v")
+  ca$add_argument("-f")
+  exp <- list(help = TRUE, version = FALSE, v = NULL, f = NULL)
+  expect_output(obj <- try(ca$parse()))
+  expect_identical(obj, exp)
+  options(op)
+})
