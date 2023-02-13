@@ -329,7 +329,7 @@ ca_resolve <- function(self) {
     m <- match("help", names(self$values), 0L)
     if (self$values$help) {
       self$help()
-      quiet_stop()
+      exit()
       return(invisible(self))
     }
     self$values <- self$values[-m]
@@ -339,7 +339,7 @@ ca_resolve <- function(self) {
     m <- match("version", names(self$values), 0L)
     if (self$values$version) {
       self$version()
-      quiet_stop()
+      exit()
       return(invisible(self))
     }
     self$values <- self$values[-m]

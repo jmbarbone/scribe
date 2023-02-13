@@ -49,12 +49,17 @@ wapply <- function(x, FUN, ...) {
   which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
 
-quiet_stop <- function(force = !interactive()) {
+exit <- function(
+    # allow for manual checking
+    force = !getOption("scribe.interactive", interactive())
+  ) {
+
+  # nocov start
   if (force) {
-    op <- options(show.error.messages = FALSE)
-    on.exit(op)
-    stop()
+    # testing in tests/testthat/scripts/help.R
+    quit()
   }
+  # nocov end
 
   invisible()
 }
