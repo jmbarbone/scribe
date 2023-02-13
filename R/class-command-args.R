@@ -186,8 +186,15 @@ ca_initialize <- function(
 ) {
   include <- match.arg(
     as.character(include),
-    c("help", "version", NA_character_)
+    c("help", "version", NA_character_),
+    several.ok = TRUE
   )
+
+  include <- include[!is.na(include)]
+  if (!length(include)) {
+    include <- NA_character_
+  }
+
   self$input <- input %||% character()
   self$working <- self$input
   self$argList <- list()
