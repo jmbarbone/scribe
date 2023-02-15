@@ -48,3 +48,25 @@ wapply <- function(x, FUN, ...) {
   fun <- function(x, ...) isTRUE(FUN(x, ...))
   which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
+
+exit <- function(
+    # allow for manual checking
+    force = !getOption("scribe.interactive", interactive())
+  ) {
+
+  # nocov start
+  if (force) {
+    # testing in tests/testthat/scripts/help.R
+    quit()
+  }
+  # nocov end
+
+  invisible()
+}
+
+print_scribe_version <- function() {
+  print_line(
+    "{scribe} package version:",
+    format(utils::packageVersion("scribe"))
+  )
+}

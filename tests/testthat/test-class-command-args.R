@@ -41,7 +41,7 @@ test_that("command_args() handles dots", {
 })
 
 test_that("bad arguments don't create NULLs", {
-  ca <- command_args()
+  ca <- command_args(include = NA)
   expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
   expect_identical(ca$get_n_args(), 0L)
   expect_identical(ca$argList, list())
@@ -191,4 +191,15 @@ test_that("string input [#24]", {
   ca <- command_args(string = 'one two "three four"')
   obj <- ca$input
   expect_identical(obj, exp)
+})
+
+test_that("--help has early stop", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args("--help")
+  ca$add_argument("-v")
+  ca$add_argument("-f")
+  exp <- list(help = TRUE, version = FALSE, v = NULL, f = NULL)
+  expect_output(obj <- try(ca$parse()))
+  expect_identical(obj, exp)
+  options(op)
 })

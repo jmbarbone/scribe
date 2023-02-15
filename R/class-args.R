@@ -46,7 +46,7 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     options    = "character",
     convert    = "ANY",
     default    = "ANY",
-    help       = "character",
+    info       = "character",
     choices    = "list",
     n          = "integer",
     values     = "list",
@@ -89,6 +89,10 @@ scribeArg$methods(
     arg_help(.self)
   },
 
+  get_help = function() {
+    arg_get_help(.self)
+  },
+
   get_value = function(ca, value = NULL) {
     arg_get_value(.self, ca = ca, value = value)
   },
@@ -128,13 +132,13 @@ arg_initialize <- function(
     convert = default_convert,
     default = NULL,
     # acceptable values
-    options = NULL,
+    options = NA_character_,
     n = NA_integer_,
-    help = ""
+    help = "NA_character_"
 ) {
   action  <- match.arg(action, arg_actions())
-  options <- options %||% ""
-  help    <- help    %||% ""
+  options <- options %||% NA_character_
+  help    <- help    %||% NA_character_
 
   if (action == "default") {
     # TODO need to determine when actions can be anything other than list
@@ -218,11 +222,11 @@ arg_initialize <- function(
   self$aliases    <- aliases
   self$action     <- action
   self$convert    <- convert
-  self$options    <- options
-  self$help       <- help
-  self$n          <- n
+  self$options    <- as.character(options)
+  self$info       <- as.character(help)
+  self$n          <- as.integer(n)
   self$values     <- list()
-  self$positional <- positional
+  self$positional <- as.logical(positional)
   self$default    <- default
   self
 }
@@ -249,9 +253,50 @@ arg_show <- function(self) {
 }
 
 arg_help <- function(self) {
-  print_lines(
-    sprintf("[%s]", to_string(self$get_aliases()))
+  h <- self$get_help()
+  print_lines(sprintf("[%s] %s", h[1], h[2]))
+}
+
+arg_get_help <- function(self) {
+  switch(
+    self$get_action(),
+    dots = {
+      left <- "..."
+
+      right <- paste0(
+        to_string(self$get_aliases()[-1L], sep = ", "),
+        if (length(self$get_aliases()) > 1) ": ",
+        self$info
+      )
+    },
+    flag = {
+      left <- to_string(self$get_aliases(), sep = ", ")
+      right <- self$info
+    },
+    list = {
+      left <- paste(
+        to_string(self$get_aliases(), sep = ", "),
+        sprintf("[%s]", if (self$n == 1) "ARG" else  sprintf("..%i", self$n))
+      )
+
+      right <- self$info
+
+      if (isTRUE(is.na(right))) {
+        right <- ""
+      }
+
+      if (!isTRUE(is.na(self$options))) {
+        right <- paste(
+          right,
+          sprintf("(%s)", to_string(self$options, sep = ", "))
+        )
+      }
+    }
   )
+
+  out <- trimws(c(left, right))
+  out[is.na(out)] <- ""
+  out
 }
 
 scribe_actions <- function() {
