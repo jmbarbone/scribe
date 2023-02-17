@@ -213,7 +213,6 @@ test_that("- parsed as _ [#33]", {
 })
 
 test_that("--no-flag parses [#34]", {
-  # debug(ca_resolve)
   ca <- command_args("--no-foo")
   ca$add_argument("-f", "--foo", action = "flag")
   obj <- ca$parse()

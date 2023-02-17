@@ -130,7 +130,7 @@ scribeArg$methods(
 
 # wrappers ----------------------------------------------------------------
 
-arg_initialize <- function(
+arg_initialize <- function( # nolint: cyclocomp_linter.
     self,
     id = NA_integer_,
     aliases,
@@ -232,9 +232,9 @@ arg_initialize <- function(
     positional <- !dash_args
 
     if (action == "flag" && isTRUE(options$no)) {
-      dash_dash <- grep("^--", aliases)
-      if (dash_args && length(dash_dash)) {
-        aliases <- c(aliases, paste0("--no-", sub("^--", "", aliases[dash_dash])))
+      dash2 <- grep("^--", aliases)
+      if (dash2 && length(dash2)) {
+        aliases <- c(aliases, paste0("--no-", sub("^--", "", aliases[dash2])))
       } else if (positional) {
         aliases <- c(aliases, paste0("no-", aliases))
       }
@@ -394,8 +394,6 @@ arg_parse_value <- function(self, ca) {
   if (length(m) == 0L) {
     return(self$get_default())
   }
-
-  # browser()
 
   if (length(m) > 1L) {
     warning(
