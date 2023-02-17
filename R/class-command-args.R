@@ -42,7 +42,6 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   fields = list(
     input = "character",
     working = "character",
-    options = "character",
     values = "list",
     argList = "list",
     nArgs = "integer",
@@ -57,7 +56,7 @@ scribeCommandArgs$methods(
   initialize = function(
     input = "",
     include = c("help", "version", NA_character_)
-) {
+  ) {
     ca_initialize(.self, input = input, include = include)
   },
 
@@ -144,14 +143,6 @@ scribeCommandArgs$methods(
     ca_set_input(.self, value = value)
   },
 
-  get_options = function(i = TRUE) {
-    ca_get_options(.self, i = i)
-  },
-
-  set_options = function(i = NULL, value) {
-    ca_set_options(.self, i = i, value = value)
-  },
-
   arg_counter = function() {
     ca_arg_counter(.self)
   },
@@ -199,7 +190,6 @@ ca_initialize <- function(
   self$working <- self$input
   self$argList <- list()
   self$nArgs <- 0L
-  self$values <- list()
   self$resolved <- FALSE
   self$description <- NA_character_
   self$included <- include
@@ -209,7 +199,8 @@ ca_initialize <- function(
       "--help",
       action = "flag",
       default = FALSE,
-      help = "prints this and quietly exits"
+      help = "prints this and quietly exits",
+      options = list(no = FALSE)
     )
   }
 
@@ -218,7 +209,8 @@ ca_initialize <- function(
       "--version",
       action = "flag",
       default = FALSE,
-      help = "prints the version of {scribe} and quietly exits"
+      help = "prints the version of {scribe} and quietly exits",
+      options = list(no = FALSE)
     )
   }
 
@@ -296,8 +288,6 @@ ca_resolve <- function(self) {
   # reset if not unsuccessful
   on.exit(
     expr =  if (!self$resolved) {
-      self$options <- character()
-      self$values <- list()
       self$working <- self$get_input()
     },
     add = TRUE
@@ -443,19 +433,6 @@ ca_get_input <- function(self) {
 ca_set_input <- function(self, value) {
   self$input <- as.character(value)
   self$working <- self$input
-  self
-}
-
-ca_get_options <- function(self, i = TRUE) {
-  self$options[i]
-}
-
-ca_set_options <- function(self, i = NULL, value) {
-  if (is.null(i)) {
-    i <- length(self$get_options()) + 1L
-  }
-
-  self$options[i] <- value
   self
 }
 

@@ -46,7 +46,7 @@ test_that("help() [#16]", {
   expect_identical(obj, exp)
 
   obj <- new_arg(c("-f", "--force"), action = "flag", help = "ugh")$get_help()
-  exp <- c("-f, --force", "ugh")
+  exp <- c("-f, --force, --no-force", "ugh")
   expect_identical(obj, exp)
 
   obj <- new_arg("--values", action = "list")$get_help()
@@ -56,7 +56,7 @@ test_that("help() [#16]", {
   obj <- new_arg(
     c("-v", "--values"),
     action = "list",
-    options = c("one", "two", "three")
+    options = list(choices = c("one", "two", "three"))
   )$get_help()
   exp <- c("-v, --values [ARG]", "(one, two, three)")
   expect_identical(obj, exp)

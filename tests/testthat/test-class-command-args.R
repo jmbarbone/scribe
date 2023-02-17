@@ -211,3 +211,11 @@ test_that("- parsed as _ [#33]", {
   exp <- list(foo_bar = NA)
   expect_identical(obj, exp)
 })
+
+test_that("--no-flag parses [#34]", {
+  ca <- command_args("--no-foo")
+  ca$add_argument("-f", "--foo", action = "flag")
+  obj <- ca$parse()
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+})

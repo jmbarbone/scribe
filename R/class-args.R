@@ -3,9 +3,17 @@
 
 #' New Arg
 #'
+#' @description
+#' Possible options for each action
+#'
+#' \describe{
+#'   \item{`list`}{`choices` Specifies choices}
+#'   \item{`flag`}{`no` Includes `--no-foo` as possible flag value}
+#' }
+#'
 #' @param aliases A list of aliases for the arg
 #' @param action An action to perform
-#' @param options If not `NULL`,  a `list` of set possible values
+#' @param options A list of named options for actions
 #' @param convert A conversion specifications, passed to the `to` param in
 #'   [value_convert()].
 #' @param default Default value
@@ -18,7 +26,7 @@ new_arg <- function(
     aliases = "",
     action  = arg_actions(),
     convert = default_convert,
-    options = NULL,
+    options = list(),
     default = NULL,
     help    = NULL,
     n       = NA_integer_,
@@ -43,13 +51,11 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   fields       = list(
     aliases    = "character",
     action     = "character",
-    options    = "character",
+    options    = "list",
     convert    = "ANY",
     default    = "ANY",
     info       = "character",
-    choices    = "list",
     n          = "integer",
-    values     = "list",
     positional = "logical",
     id         = "integer"
   )
@@ -124,7 +130,7 @@ scribeArg$methods(
 
 # wrappers ----------------------------------------------------------------
 
-arg_initialize <- function(
+arg_initialize <- function( # nolint: cyclocomp_linter.
     self,
     id = NA_integer_,
     aliases,
@@ -132,13 +138,23 @@ arg_initialize <- function(
     convert = default_convert,
     default = NULL,
     # acceptable values
-    options = NA_character_,
+    options = list(),
     n = NA_integer_,
-    help = "NA_character_"
+    help = NA_character_
 ) {
   action  <- match.arg(action, arg_actions())
-  options <- options %||% NA_character_
   help    <- help    %||% NA_character_
+  options <- options %||% list()
+
+  switch(
+    action,
+    flag = {
+      options$no <- options$no %||% TRUE
+    },
+    list = {
+      options$choices <- options$choices %||% list()
+    }
+  )
 
   if (action == "default") {
     # TODO need to determine when actions can be anything other than list
@@ -214,6 +230,15 @@ arg_initialize <- function(
     }
 
     positional <- !dash_args
+
+    if (action == "flag" && isTRUE(options$no)) {
+      dash2 <- grep("^--", aliases)
+      if (dash2 && length(dash2)) {
+        aliases <- c(aliases, paste0("--no-", sub("^--", "", aliases[dash2])))
+      } else if (positional) {
+        aliases <- c(aliases, paste0("no-", aliases))
+      }
+    }
   }
 
   action <- match.arg(action, arg_actions())
@@ -222,10 +247,9 @@ arg_initialize <- function(
   self$aliases    <- aliases
   self$action     <- action
   self$convert    <- convert
-  self$options    <- as.character(options)
+  self$options    <- options
   self$info       <- as.character(help)
   self$n          <- as.integer(n)
-  self$values     <- list()
   self$positional <- as.logical(positional)
   self$default    <- default
   self
@@ -285,10 +309,10 @@ arg_get_help <- function(self) {
         right <- ""
       }
 
-      if (!isTRUE(is.na(self$options))) {
+      if (!is_empty(self$options$choices)) {
         right <- paste(
           right,
-          sprintf("(%s)", to_string(self$options, sep = ", "))
+          sprintf("(%s)", to_string(self$options$choices, sep = ", "))
         )
       }
     }
@@ -313,6 +337,15 @@ arg_get_aliases <- function(self) {
 
 arg_get_name <- function(self, clean = TRUE) {
   aliases <- self$get_aliases()
+
+  if (self$action == "flag" && isTRUE(self$options$no)) {
+    if (self$positional) {
+      aliases <- grep("^no-", aliases, invert = TRUE, value = TRUE)
+    } else {
+      aliases <- grep("^--no-", aliases, invert = TRUE, value = TRUE)
+    }
+  }
+
   n <- length(aliases)
 
   if (self$get_action() == "dots" && n == 1L) {
@@ -387,7 +420,7 @@ arg_parse_value <- function(self, ca) {
       ca$remove_working(m)
     },
     flag = {
-      value <- TRUE
+      value <- !grepl("^--?no-", ca$get_working()[m + off])
       ca$remove_working(m)
     }
   )
