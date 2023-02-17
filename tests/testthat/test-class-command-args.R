@@ -203,3 +203,11 @@ test_that("--help has early stop", {
   expect_identical(obj, exp)
   options(op)
 })
+
+test_that("- parsed as _ [#33]", {
+  ca <- command_args("--foo-bar")
+  ca$add_argument("--foo-bar")
+  obj <- ca$parse()
+  exp <- list(foo_bar = NA)
+  expect_identical(obj, exp)
+})

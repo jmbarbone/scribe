@@ -368,7 +368,7 @@ ca_parse <- function(self) {
   values <- self$get_values()
   # clean up names
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("_", names(values))) <- "_"
+  regmatches(names(values), gregexpr("-", names(values))) <- "_"
   values
 }
 
