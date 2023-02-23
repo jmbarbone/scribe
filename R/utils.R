@@ -37,9 +37,6 @@ maybe_quit <- function(force = !interactive()) {
   if (force) quit(save = "no", status = 0L) else invisible()
 }
 
-first <- function(x) {
-  if (length(x)) x[1L] else x[0L]
-}
 
 # nolint start: object_name_linter.
 wapply <- function(x, FUN, ...) {
