@@ -1,6 +1,4 @@
 
-# TODO Arg as ReferenceClass, too
-
 #' New Arg
 #'
 #' @description
