@@ -61,3 +61,9 @@ test_that("help() [#16]", {
   exp <- c("-v, --values [ARG]", "(one, two, three)")
   expect_identical(obj, exp)
 })
+
+test_that("snapshots", {
+  arg <- new_arg("...", help = "help text")
+  expect_snapshot(arg$show())
+  expect_snapshot(arg$help())
+})
