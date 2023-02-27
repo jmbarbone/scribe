@@ -34,7 +34,7 @@ is_intish <- function(x) {
 }
 
 maybe_quit <- function(force = !interactive()) {
-  if (force) quit(save = "no", status = 0L) else invisible()
+  if (force) quit(save = "no", status = 0L) else invisible() # nocov
 }
 
 
