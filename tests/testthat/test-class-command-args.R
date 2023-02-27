@@ -219,3 +219,25 @@ test_that("--no-flag parses [#34]", {
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
 })
+
+test_that("versions", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args(string = "--version")
+  ca$add_argument("--foo")
+  ca$add_argument("--bar")
+  ca$add_description("This does things")
+  expect_output((obj <- ca$parse()))
+  exp <- list(version = TRUE, foo = NULL, bar = NULL)
+  expect_identical(obj, exp)
+  # expect_output(ca$version())
+  options(op)
+})
+
+test_that("snapshots", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args(string = "foo bar --fizz")
+  ca$add_description("this does a thing")
+  expect_snapshot(ca$help())
+  expect_snapshot(ca$show())
+  options(op)
+})
