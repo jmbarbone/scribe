@@ -62,8 +62,7 @@ exit <- function(
 }
 
 print_scribe_version <- function() {
-  print_line(
-    "{scribe} package version:",
-    format(utils::packageVersion("scribe"))
-  )
+  version <- utils::packageVersion("scribe")
+  print_line("{scribe} package version:", format(version))
+  invisible(version)
 }
