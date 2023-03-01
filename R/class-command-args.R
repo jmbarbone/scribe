@@ -219,8 +219,10 @@ ca_show <- function(self, ...) {
 ca_help <- function(self) {
   file <- grep("^--file=", commandArgs(), value = TRUE)
   if (length(file)) {
+    # nocov start
     path <- substr(file, 8, nchar(file))
     bn <- basename(path)
+    # nocov end
   } else {
     path <- "{path}"
     bn <- "{command}"
