@@ -103,8 +103,8 @@ scribeCommandArgs$methods(
     )
   },
 
-  get_args = function(i = TRUE) {
-    ca_get_args(.self, i = i)
+  get_args = function() {
+    ca_get_args(.self)
   },
 
   get_working = function(i = TRUE) {
@@ -384,10 +384,6 @@ ca_add_argument <- function(
 }
 
 ca_get_working <- function(self, i = TRUE) {
-  if (is.null(i)) {
-    i <- length(self$get_options()) + 1L
-  }
-
   if (length(self$working)) {
     self$working[i]
   } else {
@@ -396,20 +392,12 @@ ca_get_working <- function(self, i = TRUE) {
 }
 
 ca_remove_working <- function(self, i) {
-  if (is.character(i)) {
-    i <- match(i, names(self$working))
-  }
-
   self$working <- self$working[-i]
   self
 }
 
-ca_get_args <- function(self, i = TRUE) {
-  if (isTRUE(i)) {
-    self$argList
-  } else {
-    self$argList[[i]]
-  }
+ca_get_args <- function(self) {
+  self$argList
 }
 
 ca_get_input <- function(self) {
@@ -422,21 +410,15 @@ ca_set_input <- function(self, value) {
   self
 }
 
-ca_get_values <- function(self, i = TRUE) {
-  if (isTRUE(i)) {
-    self$values
-  } else {
-    self$values[[i]]
-  }
+ca_get_values <- function(self) {
+  self$values
 }
 
 ca_set_values <- function(self, i = NULL, value) {
+  stopifnot(length(i) == 1)
+
   if (is.null(value)) {
     return(NULL)
-  }
-
-  if (is.null(i)) {
-    i <- length(self$get_values()) + 1L
   }
 
   self$values[[i]] <- value
