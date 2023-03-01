@@ -7,6 +7,13 @@ test_that("command_args() works", {
   obj <- ca$parse()
   exp <- list(alpha = 1L, beta = 2L)
   expect_identical(obj, exp)
+
+  expect_error(
+    command_args("-i", string = "-i"),
+    "cannot both be set"
+  )
+
+  expect_true(is_command_args(ca))
 })
 
 test_that("command_args() handles defaults", {
@@ -45,6 +52,25 @@ test_that("bad arguments don't create NULLs", {
   expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
   expect_identical(ca$get_n_args(), 0L)
   expect_identical(ca$argList, list())
+})
+
+test_that("resolving", {
+  ca <- command_args(string = "--foo a")
+  ca$add_argument("--foo", default = 0)
+  expect_warning(ca$resolve())
+
+  ca <- command_args(string = "--foo a")
+  ca$add_argument("--fizz")
+  expect_warning(ca$resolve(), "Not all values parsed")
+  expect_true(ca$resolved)
+  expect_identical(ca, ca$resolve())
+
+  ca <- command_args("1")
+  ca$add_argument("foo", convert = function(x) stop("my error"))
+  w <- ca$get_working()
+  expect_error(ca$resolve(), "my error")
+  expect_false(ca$resolved)
+  expect_identical(w, ca$get_working())
 })
 
 test_that("$add_argument('...', default = character()) [#3]", {
@@ -218,4 +244,30 @@ test_that("--no-flag parses [#34]", {
   obj <- ca$parse()
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
+})
+
+test_that("versions", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args(string = "--version")
+  ca$add_argument("--foo")
+  ca$add_argument("--bar")
+  ca$add_description("This does things")
+  expect_output((obj <- ca$parse()))
+  exp <- list(version = TRUE, foo = NULL, bar = NULL)
+  expect_identical(obj, exp)
+  expect_output(ca$version())
+  options(op)
+})
+
+test_that("snapshots", {
+  op <- options(scribe.interactive = TRUE)
+  ca <- command_args(string = "foo bar --fizz")
+  ca$add_description("this does a thing")
+  # TODO potentially some issue with the "{scribe}" in the output confusing
+  # {glue} when reviewing the snapshots?
+  expect_output(ca$show())
+  expect_output(ca$help())
+  expect_snapshot(ca$help())
+  expect_snapshot(ca$show())
+  options(op)
 })

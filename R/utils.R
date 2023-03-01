@@ -34,12 +34,9 @@ is_intish <- function(x) {
 }
 
 maybe_quit <- function(force = !interactive()) {
-  if (force) quit(save = "no", status = 0L) else invisible()
+  if (force) quit(save = "no", status = 0L) else invisible() # nocov
 }
 
-first <- function(x) {
-  if (length(x)) x[1L] else x[0L]
-}
 
 # nolint start: object_name_linter.
 wapply <- function(x, FUN, ...) {
@@ -65,8 +62,7 @@ exit <- function(
 }
 
 print_scribe_version <- function() {
-  print_line(
-    "{scribe} package version:",
-    format(utils::packageVersion("scribe"))
-  )
+  version <- utils::packageVersion("scribe")
+  print_line("{scribe} package version:", format(version))
+  invisible(version)
 }

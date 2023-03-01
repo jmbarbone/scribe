@@ -1,6 +1,4 @@
 
-# TODO Arg as ReferenceClass, too
-
 #' New Arg
 #'
 #' @description
@@ -99,10 +97,6 @@ scribeArg$methods(
     arg_get_help(.self)
   },
 
-  get_value = function(ca, value = NULL) {
-    arg_get_value(.self, ca = ca, value = value)
-  },
-
   get_aliases = function() {
     arg_get_aliases(.self)
   },
@@ -121,10 +115,6 @@ scribeArg$methods(
 
   get_default = function() {
     arg_get_default(.self)
-  },
-
-  match_cmd = function(commands) {
-    arg_match_cmd(.self, commands)
   }
 )
 
@@ -188,8 +178,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       }
     },
     dots = {
-      if (identical(alias, "")) {
-        alias <- "..."
+      if (identical(aliases, "")) {
+        aliases <- "..."
       }
 
       if (is.na(n)) {
@@ -266,11 +256,7 @@ arg_show <- function(self) {
     }
 
   aliases <- self$get_aliases()
-  if (is.null(aliases)) {
-    aliases <- "..."
-  } else {
-    aliases <- to_string(aliases)
-  }
+  aliases <- to_string(aliases)
 
   print_line(sprintf("Argument [%s] : %s", aliases, value))
   invisible(self)
@@ -321,14 +307,6 @@ arg_get_help <- function(self) {
   out <- trimws(c(left, right))
   out[is.na(out)] <- ""
   out
-}
-
-scribe_actions <- function() {
-  c("character", "numeric", "bool", "flag")
-}
-
-action_validate <- function(action = NULL) {
-  match.arg(action %||% "none", scribe_actions())
 }
 
 arg_get_aliases <- function(self) {
@@ -386,7 +364,7 @@ arg_parse_value <- function(self, ca) {
       flag = 0L,
       list = 1L
     )
-    m <- match(alias, ca$get_working(), 0L)
+    m <- which(match(ca$get_working(), alias, 0L) > 0L)
     ok <- which(m > 0L)
     m <- m[ok]
   }
@@ -398,10 +376,8 @@ arg_parse_value <- function(self, ca) {
   if (length(m) > 1L) {
     warning(
       sprintf("w Multiple command args matched for [%s]", to_string(alias)),
-      "i Using first found",
       call = FALSE
     )
-    m <- m[1L]
   }
 
   switch(
@@ -429,35 +405,13 @@ arg_parse_value <- function(self, ca) {
   value
 }
 
-arg_match_cmd <- function(self, commands, n = 1L) {
-  m <- match(self$get_aliases(), commands, 0L)
-  m <- m[m > 0L]
-
-  if (!isTRUE(n) && length(m) > n) {
-    msg <- sprintf(
-      "%s matches %i times but should only match %i time(s)",
-      self$get_names(),
-      length(m),
-      n
-    )
-    stop(msg, call. = FALSE)
-  }
-
-  m
-}
-
 # helpers -----------------------------------------------------------------
 
 is_arg <- function(x) {
-  methods::is(x, Arg)
+  methods::is(x, scribeArg)
 }
 
 ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
-
-is_command <- function(x) {
-  stopifnot(is.list(x))
-  vapply(x, function(i) i$get_action(), NA_character_) == "command"
-}
 
 arg_actions <- function() {
   c("default", "list", "flag", "dots")

@@ -1,3 +1,22 @@
+test_that("scribeArgs", {
+  x <- new_arg()
+  expect_true(is_arg(x))
+
+  obj <- new_arg(action = "dots")$get_aliases()
+  exp <- "..."
+  expect_identical(obj, exp)
+})
+
+test_that("errors", {
+  expect_error(new_arg(action = "list", n = 0))
+  expect_error(new_arg(action = "flag", n = 1))
+  expect_error(new_arg(c("foo", "--bar")))
+
+  ca <- command_args(string = "-a 2 -a 1", include = NA)
+  ca$add_argument("-a")
+  expect_warning(expect_warning(ca$parse()))
+})
+
 test_that("$get_names() [#10]", {
   x <- new_arg("-f", n = 1L)
   expect_identical(x$get_name(), "f")
@@ -30,6 +49,7 @@ test_that("positional() [#22]", {
 })
 
 test_that("help() [#16]", {
+  op <- options(scribe.interactive = TRUE)
   obj <- new_arg("...", help = "help text")$get_help()
   exp <- c("...", "help text")
   expect_identical(obj, exp)
@@ -60,4 +80,16 @@ test_that("help() [#16]", {
   )$get_help()
   exp <- c("-v, --values [ARG]", "(one, two, three)")
   expect_identical(obj, exp)
+  options(op)
+})
+
+
+test_that("snapshots", {
+  op <- options(scribe.interactive = TRUE)
+  arg <- new_arg("...", help = "help text")
+  expect_output(arg$show())
+  expect_output(arg$help())
+  expect_snapshot(arg$show())
+  expect_snapshot(arg$help())
+  options(op)
 })
