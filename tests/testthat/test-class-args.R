@@ -30,6 +30,7 @@ test_that("positional() [#22]", {
 })
 
 test_that("help() [#16]", {
+  op <- options(scribe.interactive = TRUE)
   obj <- new_arg("...", help = "help text")$get_help()
   exp <- c("...", "help text")
   expect_identical(obj, exp)
@@ -60,10 +61,13 @@ test_that("help() [#16]", {
   )$get_help()
   exp <- c("-v, --values [ARG]", "(one, two, three)")
   expect_identical(obj, exp)
+  options(op)
 })
 
 test_that("snapshots", {
+  op <- options(scribe.interactive = TRUE)
   arg <- new_arg("...", help = "help text")
   expect_snapshot(arg$show())
   expect_snapshot(arg$help())
+  options(op)
 })
