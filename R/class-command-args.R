@@ -103,18 +103,6 @@ scribeCommandArgs$methods(
     )
   },
 
-  add_command = function(
-    command,
-    options = NULL,
-    help = NULL
-  ) {
-    ca_add_command(
-      self = .self,
-      options = options,
-      help = help
-    )
-  },
-
   get_args = function(i = TRUE) {
     ca_get_args(.self, i = i)
   },
@@ -391,10 +379,6 @@ ca_add_argument <- function(
   self$append_arg(arg)
   self$resolved <- FALSE
   invisible(self)
-}
-
-ca_add_command <- function(self, options = NULL, help = NULL) {
-  stop("commandArgs$add_command() is not currently in use")
 }
 
 ca_get_working <- function(self, i = TRUE) {
