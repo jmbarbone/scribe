@@ -255,7 +255,7 @@ test_that("versions", {
   expect_output((obj <- ca$parse()))
   exp <- list(version = TRUE, foo = NULL, bar = NULL)
   expect_identical(obj, exp)
-  # expect_output(ca$version())
+  expect_output(ca$version())
   options(op)
 })
 
@@ -271,4 +271,3 @@ test_that("snapshots", {
   expect_snapshot(ca$show())
   options(op)
 })
-
