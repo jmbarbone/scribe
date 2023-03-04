@@ -172,6 +172,20 @@ test_that("default values", {
   expect_identical(obj, exp)
 })
 
+test_that("$get_args(included)", {
+  ca <- command_args()
+  ca$add_argument("foo")
+  ca$add_argument("biz")
+
+  obj <- sapply(ca$get_args(included = TRUE), function(arg) arg$get_name())
+  exp <- c("help", "version", "foo", "biz")
+  expect_identical(obj, exp)
+
+  obj <- sapply(ca$get_args(included = FALSE), function(arg) arg$get_name())
+  exp <- c("foo", "biz")
+  expect_identical(obj, exp)
+})
+
 test_that("positional values [#22]", {
   ca <- command_args(1:2)
   ca$add_argument("foo", default = 0)

@@ -14,7 +14,7 @@ test_that("help works", {
     "",
     "USAGE",
     "  help.R [--help | --version]",
-    "  help.R [--help] [--version] [-f, --foo [ARG]] [-b, --bar [ARG]] ",
+    "  help.R [-f, --foo [ARG]] [-b, --bar [ARG]] ",
     "",
     "ARGUMENTS",
     "  --help          : prints this and quietly exits                   ",
