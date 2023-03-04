@@ -1,3 +1,5 @@
+withr::local_options(list(scribe.interactive = TRUE))
+
 test_that("command_args() works", {
   x <- c("-a", "1", "-b", "2")
   ca <- command_args(x)
@@ -220,7 +222,6 @@ test_that("string input [#24]", {
 })
 
 test_that("--help has early stop", {
-  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
@@ -258,7 +259,6 @@ test_that("descriptions", {
 })
 
 test_that("descriptions snaps", {
-  skip_on_cran()
   ca <- command_args()
   ca$add_description("First part here.", "  Followed by a second sentences.")
   expect_snapshot(ca$help())
@@ -283,7 +283,6 @@ test_that("examples [#38]", {
 })
 
 test_that("examples snaps", {
-  skip_on_cran()
   ca <- command_args()
   ca$add_example("foo --flag")
   ca$add_example(NULL)
@@ -296,7 +295,6 @@ test_that("examples snaps", {
 })
 
 test_that("versions", {
-  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args(string = "--version")
   ca$add_argument("--foo")
   ca$add_argument("--bar")
@@ -309,14 +307,12 @@ test_that("versions", {
 
 
 test_that("snapshots", {
-  skip_on_cran()
-  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")
   # TODO potentially some issue with the "{scribe}" in the output confusing
   # {glue} when reviewing the snapshots?
   expect_output(ca$show())
   expect_output(ca$help())
-  expect_snapshot(ca$help())
   expect_snapshot(ca$show())
+  expect_snapshot(ca$help())
 })
