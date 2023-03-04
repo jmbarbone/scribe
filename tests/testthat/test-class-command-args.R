@@ -261,6 +261,7 @@ test_that("descriptions", {
 test_that("examples [#38]", {
   ca <- command_args()
   ca$add_example("foo --flag")
+  ca$add_example(NULL)
   ca$add_example("foo --other-flag")
   expect_output(ca$help())
   ca$set_example()
