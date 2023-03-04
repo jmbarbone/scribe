@@ -208,7 +208,7 @@ ca_initialize <- function(
   self$argList <- list()
   self$nArgs <- 0L
   self$resolved <- FALSE
-  self$description <- character() # TODO check that `description` can be character()
+  self$description <- character()
   self$examples <- character()
   self$comments <- character()
   self$included <- include
