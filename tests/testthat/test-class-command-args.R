@@ -246,6 +246,30 @@ test_that("--no-flag parses [#34]", {
   expect_identical(obj, exp)
 })
 
+test_that("descriptions", {
+  ca <- command_args()
+  ca$add_description("First part here.", "  Followed by a second sentences.")
+  expect_output(ca$help())
+  ca$add_description("A new line should be appended.")
+  expect_output(ca$help())
+  ca$set_description("description")
+  expect_output(ca$help())
+  ca$set_description()
+  expect_output(ca$help())
+})
+
+test_that("examples [#38]", {
+  ca <- command_args()
+  ca$add_example("foo --flag")
+  ca$add_example(NULL)
+  ca$add_example("foo --other-flag")
+  expect_output(ca$help())
+  ca$set_example()
+  expect_output(ca$help())
+  ca$set_example("foo command value")
+  expect_output(ca$help())
+})
+
 test_that("versions", {
   op <- options(scribe.interactive = TRUE)
   ca <- command_args(string = "--version")

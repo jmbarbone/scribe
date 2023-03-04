@@ -47,7 +47,9 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     nArgs = "integer",
     resolved = "logical",
     description = "character",
-    included = "character"
+    included = "character",
+    examples = "character",
+    comments = "character"
   )
 )
 
@@ -147,12 +149,38 @@ scribeCommandArgs$methods(
     ca_write_usage(.self)
   },
 
-  add_description = function(x) {
-    ca_add_description(.self, x)
+  set_description = function(..., sep = "") {
+    ca_set_description(.self, ..., sep = sep)
+  },
+
+  add_description = function(..., sep = "") {
+    ca_add_description(.self, ..., sep = sep)
   },
 
   get_description = function() {
     ca_get_description(.self)
+  },
+
+  set_example = function(x = character(), comment = "", prefix = "$ ") {
+    ca_set_example(
+      self = .self,
+      x = x,
+      comment = comment,
+      prefix = prefix
+    )
+  },
+
+  add_example = function(x, comment = "", prefix = "$ ") {
+    ca_add_example(
+      self = .self,
+      x = x,
+      comment = comment,
+      prefix = prefix
+    )
+  },
+
+  get_examples = function() {
+    ca_get_examples(.self)
   }
 )
 
@@ -171,6 +199,7 @@ ca_initialize <- function(
 
   include <- include[!is.na(include)]
   if (!length(include)) {
+    # TODO just set `include` to character()?
     include <- NA_character_
   }
 
@@ -179,7 +208,9 @@ ca_initialize <- function(
   self$argList <- list()
   self$nArgs <- 0L
   self$resolved <- FALSE
-  self$description <- NA_character_
+  self$description <- character()
+  self$examples <- character()
+  self$comments <- character()
   self$included <- include
 
   if ("help" %in% include) {
@@ -241,8 +272,12 @@ ca_help <- function(self) {
     "",
     sprintf("file : %s", path),
     "",
-    if (!is.na(self$get_description())) {
-      c("DESCRIPTION", paste0("  ", self$get_description()), "")
+    if (length(self$get_description())) {
+      c(
+        "DESCRIPTION",
+        paste0("  ", self$get_description(), collapse = "\n\n"),
+        ""
+      )
     },
     "USAGE",
     sprintf("  %s [--help | --version]", bn),
@@ -250,17 +285,62 @@ ca_help <- function(self) {
     "",
     "ARGUMENTS",
     paste0("  ", lines),
+    if (length(self$get_examples())) {
+      # TODO pad examples based on comments
+      examples <- self$get_examples()
+      comments <- self$comments
+      ok <- comments != ""
+      comments[ok] <- paste(" #", comments[ok])
+      examples <- as.character(examples)
+      c("", "EXAMPLES", paste0("  ", format(examples), comments))
+    },
     NULL
   )
 }
 
-ca_add_description <- function(self, x) {
-  self$description <- x
+ca_set_description <- function(self, ..., sep = "") {
+  x <- c(...)
+  if (is.null(x)) {
+    self$description <- NA_character_
+    return(invisible(self))
+  }
+  self$description <- paste0(x, collapse = sep)
+  invisible(self)
+}
+
+ca_add_description <- function(self, ..., sep = "") {
+  x <- paste0(c(...), collapse = sep)
+
+  if (nzchar(x)) {
+    self$description <- c(self$description, x)
+  }
+
   invisible(self)
 }
 
 ca_get_description <- function(self) {
   self$description
+}
+
+ca_set_example <- function(self, x = character(), comment = "", prefix = "$ ") {
+  self$examples <- x
+  self$comments <- ""
+  invisible(self)
+}
+
+ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
+  if (is.null(x)) {
+    return(invisible(self))
+  }
+
+  x <- paste0(prefix, x)
+  self$examples <- c(self$examples, x)
+  self$comments <- c(self$comments, comment)
+  invisible(self)
+}
+
+ca_get_examples <- function(self) {
+  self$examples
 }
 
 ca_write_usage <- function(self) {
