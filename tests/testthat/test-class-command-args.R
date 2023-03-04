@@ -224,7 +224,7 @@ test_that("--help has early stop", {
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
-  exp <- list(help = TRUE, version = FALSE, v = NULL, f = NULL)
+  exp <- list(info = TRUE, version = FALSE, v = NULL, f = NULL)
   expect_output(obj <- try(ca$parse()))
   expect_identical(obj, exp)
   options(op)
