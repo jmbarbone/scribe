@@ -9,24 +9,24 @@
 #'   \item{`flag`}{`no` Includes `--no-foo` as possible flag value}
 #' }
 #'
-#' @param aliases A list of aliases for the arg
-#' @param action An action to perform
-#' @param options A list of named options for actions
-#' @param convert A conversion specifications, passed to the `to` param in
-#'   [value_convert()].
-#' @param default Default value
-#' @param help Help text for this argument
-#' @param n The number of values
-#' @param id Integer
-#' @returns A `scribeArg` object
-#' @noRd
+#' @param aliases A character vector to denote the argument's name
+#' @param action An action for resolving the argument
+#' @param options A named list of options (see details)
+#' @param convert Passed to the `to` argument in [value_convert()]
+#' @param default A default value
+#' @param info Additional information about the argument when printed
+#' @param n The length of the values
+#' @param id An integer id (used when stored within [scribeCommandArgs])
+#'
+#' @returns A [scribeArg] object
+#' @export
 new_arg <- function(
     aliases = "",
     action  = arg_actions(),
     convert = default_convert,
     options = list(),
     default = NULL,
-    help    = NULL,
+    info    = character(),
     n       = NA_integer_,
     id      = NA_integer_
 ) {
@@ -36,14 +36,52 @@ new_arg <- function(
     options = options,
     convert = convert,
     default = default,
-    help    = help,
-    n       = n,
-    id      = id
+    info    = as.character(info),
+    n       = as.integer(n),
+    id      = as.integer(id)
   )
 }
 
 # ReferenceClass ----------------------------------------------------------
 
+#' {scribe} argument
+#'
+#' ReferenceClass object for managing arguments
+#'
+#' @section Options:
+#' Available options include:
+#' \describe{
+#'   \item{`action="list"`}{
+#'     \describe{
+#'       \item{`choices`}{
+#'         An explicit set of values that argument must be.  If the value parsed
+#'         is not one of these, an error will occur.
+#'      }
+#'     }
+#'   }
+#'  \item{`action="flag"`}{
+#'    \describe{
+#'      \item{`no`}{
+#'        When `TRUE` included appends `--no` to aliases to invert results\cr
+#'        **Example:**\cr
+#'        With the arg `new_arg("--test", options = list(no = TRUE))`, passing
+#'        command args `--test` would set this to `TRUE` and `--no-test`
+#'        explicitly set to `FALSE`.
+#'      }
+#'    }
+#'  }
+#' }
+#'
+#' @field aliases A character vector to denote the argument's name
+#' @field action An action for resolving the argument
+#' @field options A named list of options (see details)
+#' @field convert Passed to the `to` argument in [value_convert()]
+#' @field default A default value
+#' @field info Additional information about the argument when printed
+#' @field n The length of the values
+#' @field id An integer id (used when stored within [scribeCommandArgs])
+#'
+#' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",
   fields       = list(
@@ -67,10 +105,14 @@ scribeArg$methods(
     options  = NULL,
     convert  = NULL,
     default  = NULL,
-    help     = NULL,
+    info     = NULL,
     n        = NULL
   ) {
-    # TODO include validation
+    "
+    Initialize the \\code{scribeArg} object
+
+    See \\strong{fields} for parameter information.
+    "
     arg_initialize(
       .self,
       id      = id,
@@ -79,41 +121,60 @@ scribeArg$methods(
       options = options,
       convert = convert,
       default = default,
-      help    = help,
+      info    = info,
       n       = n
     )
   },
 
   show = function() {
+    "Print the scribeArg object"
     arg_show(.self)
   },
 
   help = function() {
+    "Print out formatted help information"
     # should return a matrix
     arg_help(.self)
   },
 
   get_help = function() {
+    "Retrieve help information as a character vector"
     arg_get_help(.self)
   },
 
   get_aliases = function() {
+    "Retrieve aliases"
     arg_get_aliases(.self)
   },
 
   get_name = function(clean = TRUE) {
+    "Retrieve names
+
+    \\describe{
+      \\item{\\code{clean}}{When \\code{TRUE} removes \\code{-}s from text}
+    }"
     arg_get_name(.self, clean = clean)
   },
 
   get_action = function() {
+    "Retrieve action"
     arg_get_action(.self)
   },
 
   parse_value = function(command_arg) {
+    "Parse argument value
+
+    This method will likely not be called directly by the user.  Instead, this
+    method is called within [scribeCommandArg].
+
+    \\describe{
+      \\item{\\code{command_arg}}{A \\code{scribeCommandArg}} object
+    }"
     arg_parse_value(.self, ca = command_arg)
   },
 
   get_default = function() {
+    "Retrieve the default value"
     arg_get_default(.self)
   }
 )
@@ -130,10 +191,10 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     # acceptable values
     options = list(),
     n = NA_integer_,
-    help = NA_character_
+    info = NA_character_
 ) {
   action  <- match.arg(action, arg_actions())
-  help    <- help    %||% NA_character_
+  info    <- info    %||% NA_character_
   options <- options %||% list()
 
   switch(
@@ -238,7 +299,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$action     <- action
   self$convert    <- convert
   self$options    <- options
-  self$info       <- as.character(help)
+  self$info       <- as.character(info)
   self$n          <- as.integer(n)
   self$positional <- as.logical(positional)
   self$default    <- default
@@ -392,7 +453,7 @@ arg_parse_value <- function(self, ca) {
     },
     list = {
       m <- m + seq.int(0L, self$n)
-      value <- ca$get_working(m[-off])
+      value <- ca$get_working()[m[-off]]
       ca$remove_working(m)
     },
     flag = {
