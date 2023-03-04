@@ -149,11 +149,11 @@ scribeCommandArgs$methods(
     ca_write_usage(.self)
   },
 
-  set_description = function(..., sep = "\n") {
+  set_description = function(..., sep = "") {
     ca_set_description(.self, ..., sep = sep)
   },
 
-  add_description = function(..., sep = "\n") {
+  add_description = function(..., sep = "") {
     ca_add_description(.self, ..., sep = sep)
   },
 
@@ -273,7 +273,11 @@ ca_help <- function(self) {
     sprintf("file : %s", path),
     "",
     if (length(self$get_description())) {
-      c("DESCRIPTION", paste0("  ", self$get_description()), "")
+      c(
+        "DESCRIPTION",
+        paste0("  ", self$get_description(), collapse = "\n\n"),
+        ""
+      )
     },
     "USAGE",
     sprintf("  %s [--help | --version]", bn),
@@ -294,7 +298,7 @@ ca_help <- function(self) {
   )
 }
 
-ca_set_description <- function(self, ..., sep = "\n") {
+ca_set_description <- function(self, ..., sep = "") {
   x <- c(...)
   if (is.null(x)) {
     self$description <- NA_character_
@@ -304,7 +308,7 @@ ca_set_description <- function(self, ..., sep = "\n") {
   invisible(self)
 }
 
-ca_add_description <- function(self, ..., sep = "\n") {
+ca_add_description <- function(self, ..., sep = "") {
   x <- paste0(c(...), collapse = sep)
 
   if (nzchar(x)) {
