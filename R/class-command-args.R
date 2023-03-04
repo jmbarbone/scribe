@@ -105,8 +105,8 @@ scribeCommandArgs$methods(
     )
   },
 
-  get_args = function() {
-    ca_get_args(.self)
+  get_args = function(included = TRUE) {
+    ca_get_args(.self, included = included)
   },
 
   get_working = function(i = TRUE) {
@@ -199,8 +199,7 @@ ca_initialize <- function(
 
   include <- include[!is.na(include)]
   if (!length(include)) {
-    # TODO just set `include` to character()?
-    include <- NA_character_
+    include <- character()
   }
 
   self$input <- input %||% character()
@@ -286,7 +285,6 @@ ca_help <- function(self) {
     "ARGUMENTS",
     paste0("  ", lines),
     if (length(self$get_examples())) {
-      # TODO pad examples based on comments
       examples <- self$get_examples()
       comments <- self$comments
       ok <- comments != ""
@@ -344,7 +342,7 @@ ca_get_examples <- function(self) {
 }
 
 ca_write_usage <- function(self) {
-  x <- vapply(self$get_args(), function(arg) arg$get_help()[1], NA_character_)
+  x <- vapply(self$get_args(included = FALSE), function(arg) arg$get_help()[1], NA_character_)
   paste(sprintf("[%s]", x), collapse = " ")
 }
 
@@ -476,8 +474,14 @@ ca_remove_working <- function(self, i) {
   self
 }
 
-ca_get_args <- function(self) {
-  self$argList
+ca_get_args <- function(self, included = TRUE) {
+  if (included) {
+    return(self$argList)
+  }
+
+  nms <- sapply(self$argList, function(arg) arg$get_name())
+  ok <- match(nms, self$included, 0L) == 0L
+  self$argList[ok]
 }
 
 ca_get_input <- function(self) {

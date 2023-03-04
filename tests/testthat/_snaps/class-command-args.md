@@ -12,7 +12,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command} [--help] [--version] 
+        {command}  
       
       ARGUMENTS
         --help    : prints this and quietly exits                   
