@@ -1,3 +1,5 @@
+withr::local_options(list(scribe.interactive = TRUE))
+
 test_that("scribeArgs", {
   x <- new_arg()
   expect_true(is_arg(x))
@@ -83,13 +85,17 @@ test_that("help() [#16]", {
   options(op)
 })
 
+test_that("new_arg(action = 'default')", {
+  expect_identical(new_arg()$action, "list")
+  expect_identical(new_arg(options = list(choices = 1:2))$action, "list")
+  expect_identical(new_arg(n = 0)$action, "flag")
+  expect_identical(new_arg(options = list(no = FALSE))$action, "flag")
+})
 
 test_that("snapshots", {
-  op <- options(scribe.interactive = TRUE)
-  arg <- new_arg("...", info = "help text")
+  arg <- new_arg("...", help = "help text")
   expect_output(arg$show())
   expect_output(arg$help())
   expect_snapshot(arg$show())
   expect_snapshot(arg$help())
-  options(op)
 })
