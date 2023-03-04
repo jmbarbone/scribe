@@ -1,3 +1,143 @@
+# descriptions snaps
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      DESCRIPTION
+        First part here.  Followed by a second sentences.
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+
+---
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      DESCRIPTION
+        First part here.  Followed by a second sentences.
+      
+        A new line should be appended.
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+
+---
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      DESCRIPTION
+        description
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+
+---
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      DESCRIPTION
+        NA
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+
+# exmaples snaps
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+      
+      EXAMPLES
+        $ foo --flag      
+        $ foo --other-flag
+
+---
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+
+---
+
+    Code
+      ca$help()
+    Output
+      {scribe} command_args
+      
+      file : {path}
+      
+      USAGE
+        {command} [--help | --version]
+        {command} [--help] [--version] 
+      
+      ARGUMENTS
+        --help    : prints this and quietly exits                   
+        --version : prints the version of {scribe} and quietly exits
+      
+      EXAMPLES
+        foo command value
+
 # snapshots
 
     Code
