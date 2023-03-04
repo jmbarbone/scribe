@@ -37,6 +37,27 @@ command_args <- function(
 
 # ReferenceClass ----------------------------------------------------------
 
+
+#' {scribe} command args
+#'
+#' Reference class object for managing command line arguments.
+#'
+#' @field input A character vector of command line arguments. See also
+#'   [command_args()]
+#' @field working A copy of `input`.  Note: this is used to track parsing
+#'   progress and is not meant to be accessed directly.
+#' @field values A named `list` of values.  Empty on initialization and
+#'   populated during argument resolving.
+#' @field argList a List of [scribeArg]s
+#' @field nArgs A current counter for the number of [scribeArg]s included
+#' @field resolved A `logical` value indicated if the `resolve()` method has
+#'   been successfully executed.
+#' @field description Additional help information
+#' @field included Default [scribeArg]s to include
+#' @field examples Examples to print with help
+#' @field comments Comments printed with
+#'
+#' @export
 scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
   fields = list(
@@ -59,26 +80,36 @@ scribeCommandArgs$methods(
     input = "",
     include = c("help", "version", NA_character_)
   ) {
+    "
+    Initialize the \\code{commandScribeArgs} object
+
+    See \\strong{fields} for parameter information.
+    "
     ca_initialize(.self, input = input, include = include)
   },
 
   show = function(...) {
+    "Print the \\code{scribeArg} object"
     ca_show(.self, ...)
   },
 
   version = function() {
+    "Print the scribe package version"
     print_scribe_version()
   },
 
   help = function() {
+    "Print the help information"
     ca_help(.self)
   },
 
   resolve = function() {
+    "Resolve the values of each \\code{scribeArg} in \\code{argList}"
     ca_resolve(.self)
   },
 
   parse = function() {
+    "Return the parsed values of from each \\code{argList}"
     ca_parse(.self)
   },
 
@@ -88,10 +119,16 @@ scribeCommandArgs$methods(
     options = NULL,
     convert = default_convert,
     default = NULL,
-    n = NA_integer_,
-    nargs = 1,
-    help = NULL
+    n = 1,
+    info = NULL,
+    id = NULL
   ) {
+    "Add a \\code{scribeArg} to \\code{argList}
+
+    \\describe{
+      \\item{\\code{...}}{Aliases}
+      \\item{(other params)}{See \\code{new_arg()} for details. \\code{...}}
+    }"
     ca_add_argument(
       self = .self,
       ...,
@@ -100,68 +137,116 @@ scribeCommandArgs$methods(
       convert = convert,
       default = default,
       n = n,
-      nargs = nargs,
-      help = help
+      info = info,
+      id = id
     )
   },
 
   get_args = function() {
+    "Retrieve \\code{argList}"
     ca_get_args(.self)
   },
 
-  get_working = function(i = TRUE) {
-    ca_get_working(.self, i = i)
+  get_working = function() {
+    "Retrieve \\code{working}"
+    ca_get_working(.self)
   },
 
   remove_working = function(i) {
+    "Retrieve \\code{working}
+
+    \\describe{
+      \\item{\\code{i}}{Index value of \\code{working} to remove}
+    }"
     ca_remove_working(.self, i = i)
   },
 
   get_values = function() {
+    "Retrieve \\code{values}"
     ca_get_values(.self)
   },
 
   set_values = function(i = TRUE, value) {
+    "Set \\code{values}
+
+    \\describe{
+      \\item{\\code{i}}{Index value of \\code{working} to set}
+      \\item{\\code{value}}{The value to set}
+    }"
     ca_set_values(.self, i = i, value = value)
   },
 
   get_input = function() {
+    "Retrieve \\code{input}"
     ca_get_input(.self)
   },
 
   set_input = function(value) {
+    "Set \\code{input}
+
+    \\describe{
+      \\item{\\code{value}}{Value to se}
+    }"
     ca_set_input(.self, value = value)
   },
 
   arg_counter = function() {
+    "Increase the value of \\code{nArgs} by \\code{1L}"
     ca_arg_counter(.self)
   },
 
   append_arg = function(arg) {
+    "Append a new \\code{scribeArg} value to \\code{argList}
+
+    \\describe{
+      \\item{\\code{arg}}{The \\code{scribeArg} to include}
+    }"
     ca_append_arg(.self, arg)
   },
 
   get_n_args = function() {
+    "Retrieve the current number of \\code{scribeArg}s"
     ca_get_n_args(.self)
   },
 
   write_usage = function() {
+    "Write usage information to a \\code{character} vector"
     ca_write_usage(.self)
   },
 
   set_description = function(..., sep = "") {
+    "Set the value of \\code{description}
+
+    \\describe{
+      \\item{\\code{...}}{Information to paste into the description}
+      \\item{\\code{sep}}{\\code{character} separate for \\code{...}}
+    }"
     ca_set_description(.self, ..., sep = sep)
   },
 
   add_description = function(..., sep = "") {
+    "Add a value to \\code{description}
+
+    \\describe{
+      \\item{\\code{...}}{Information to paste into the description}
+      \\item{\\code{sep}}{\\code{character} separate for \\code{...}}
+    }"
     ca_add_description(.self, ..., sep = sep)
   },
 
   get_description = function() {
+    "Retrieve \\code{description}"
     ca_get_description(.self)
   },
 
   set_example = function(x = character(), comment = "", prefix = "$ ") {
+    "Set the value of \\code{examples}
+
+    \\describe{
+      \\item{\\code{x}}{A code example as a \\code{character}}
+      \\item{\\code{comment}}{An optional comment to append}
+      \\item{\\code{prefix}}{An optional prefix for the example}
+    }"
     ca_set_example(
       self = .self,
       x = x,
@@ -171,6 +256,13 @@ scribeCommandArgs$methods(
   },
 
   add_example = function(x, comment = "", prefix = "$ ") {
+    "Add a value to \\code{examples}
+
+    \\describe{
+      \\item{\\code{x}}{A code example as a \\code{character}}
+      \\item{\\code{comment}}{An optional comment to append}
+      \\item{\\code{prefix}}{An optional prefix for the example}
+    }"
     ca_add_example(
       self = .self,
       x = x,
@@ -180,6 +272,7 @@ scribeCommandArgs$methods(
   },
 
   get_examples = function() {
+    "Retrieve \\code{examples}"
     ca_get_examples(.self)
   }
 )
@@ -218,7 +311,8 @@ ca_initialize <- function(
       "--help",
       action = "flag",
       default = FALSE,
-      help = "prints this and quietly exits",
+      n = 0,
+      info = "prints this and quietly exits",
       options = list(no = FALSE)
     )
   }
@@ -228,7 +322,8 @@ ca_initialize <- function(
       "--version",
       action = "flag",
       default = FALSE,
-      help = "prints the version of {scribe} and quietly exits",
+      n = 0,
+      info = "prints the version of {scribe} and quietly exits",
       options = list(no = FALSE)
     )
   }
@@ -439,21 +534,21 @@ ca_add_argument <- function(
     action = NULL,
     convert = default_convert,
     options = NULL,
-    nargs = 1L,
     default = NULL,
-    help = NULL
+    info = NULL,
+    id = NULL
 ) {
   # id starts at 0 because we want to wait for new_arg() to not fail before
   # adding to the counter
   arg <- new_arg(
-    id = self$get_n_args(),
+    id = id %||% self$get_n_args(),
     aliases = list(...),
     action = action,
     options = options,
     convert = convert,
     default = default,
-    help = help,
-    n = as.integer(n)
+    info = info,
+    n = n
   )
 
   # update arg counter now
