@@ -11,29 +11,29 @@ Reference class object for managing command line arguments.
 \section{Fields}{
 
 \describe{
-\item{\code{input}}{A character vector of command line arguments. See also
+\item{\code{input}}{\verb{[character]}\cr A character vector of command line arguments. See also
 \code{\link[=command_args]{command_args()}}}
 
-\item{\code{working}}{A copy of \code{input}.  Note: this is used to track parsing
+\item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to track parsing
 progress and is not meant to be accessed directly.}
 
-\item{\code{values}}{A named \code{list} of values.  Empty on initialization and
+\item{\code{values}}{\verb{[list]}\cr A named \code{list} of values.  Empty on initialization and
 populated during argument resolving.}
 
-\item{\code{argList}}{a List of \link{scribeArg}s}
+\item{\code{argList}}{\verb{[list]}\cr a List of \link{scribeArg}s}
 
-\item{\code{nArgs}}{A current counter for the number of \link{scribeArg}s included}
+\item{\code{nArgs}}{\verb{[interger]}\cr A current counter for the number of \link{scribeArg}s included}
 
-\item{\code{resolved}}{A \code{logical} value indicated if the \code{resolve()} method has
+\item{\code{resolved}}{\verb{[logical]}\cr A \code{logical} value indicated if the \code{resolve()} method has
 been successfully executed.}
 
-\item{\code{description}}{Additional help information}
+\item{\code{description}}{\verb{[character]}\cr Additional help information}
 
-\item{\code{included}}{Default \link{scribeArg}s to include}
+\item{\code{included}}{\verb{[character]}\cr Default \link{scribeArg}s to include}
 
-\item{\code{examples}}{Examples to print with help}
+\item{\code{examples}}{\verb{[character]}\cr Examples to print with help}
 
-\item{\code{comments}}{Comments printed with}
+\item{\code{comments}}{\verb{[character]}\cr Comments printed with}
 }}
 
 \section{Methods}{

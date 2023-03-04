@@ -11,21 +11,24 @@ ReferenceClass object for managing arguments
 \section{Fields}{
 
 \describe{
-\item{\code{aliases}}{A character vector to denote the argument's name}
+\item{\code{aliases}}{\verb{[character]}\cr A vector to denote the argument's name}
 
-\item{\code{action}}{An action for resolving the argument}
+\item{\code{action}}{\verb{[character]}\cr An action for resolving the argument}
 
-\item{\code{options}}{A named list of options (see details)}
+\item{\code{options}}{\verb{[list]}\cr A named list of options (see details)}
 
-\item{\code{convert}}{Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
+\item{\code{convert}}{\verb{[ANY]}\cr Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
 
-\item{\code{default}}{A default value}
+\item{\code{default}}{\verb{[ANY]}\cr A default value}
 
-\item{\code{info}}{Additional information about the argument when printed}
+\item{\code{info}}{\verb{[character]}\cr Additional information about the argument when printed}
 
-\item{\code{n}}{The length of the values}
+\item{\code{n}}{\verb{[integer]}\cr The length of the values}
 
-\item{\code{id}}{An integer id (used when stored within \link{scribeCommandArgs})}
+\item{\code{positional}}{\verb{[logical]}\cr Indicator if the argument is \emph{positional}
+(i.e., not preceded by a \code{-} or \verb{--} command line argument)}
+
+\item{\code{id}}{\verb{[integer]}\cr An id (used when stored within \link{scribeCommandArgs})}
 }}
 
 \section{Methods}{

@@ -72,14 +72,16 @@ new_arg <- function(
 #'  }
 #' }
 #'
-#' @field aliases A character vector to denote the argument's name
-#' @field action An action for resolving the argument
-#' @field options A named list of options (see details)
-#' @field convert Passed to the `to` argument in [value_convert()]
-#' @field default A default value
-#' @field info Additional information about the argument when printed
-#' @field n The length of the values
-#' @field id An integer id (used when stored within [scribeCommandArgs])
+#' @field aliases `[character]`\cr A vector to denote the argument's name
+#' @field action `[character]`\cr An action for resolving the argument
+#' @field options `[list]`\cr A named list of options (see details)
+#' @field convert `[ANY]`\cr Passed to the `to` argument in [value_convert()]
+#' @field default `[ANY]`\cr A default value
+#' @field info `[character]`\cr Additional information about the argument when printed
+#' @field n `[integer]`\cr The length of the values
+#' @field positional `[logical]`\cr Indicator if the argument is _positional_
+#'   (i.e., not preceded by a `-` or `--` command line argument)
+#' @field id `[integer]`\cr An id (used when stored within [scribeCommandArgs])
 #'
 #' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
@@ -472,7 +474,7 @@ arg_parse_value <- function(self, ca) {
 # helpers -----------------------------------------------------------------
 
 is_arg <- function(x) {
-  methods::is(x, scribeArg)
+  methods::is(x, "scribeArg")
 }
 
 ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
