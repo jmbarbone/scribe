@@ -85,11 +85,11 @@ test_that("help() [#16]", {
 
 
 test_that("snapshots", {
-  op <- options(scribe.interactive = TRUE)
+  skip_on_cran()
+  withr::local_options(list(scribe.interactive = TRUE))
   arg <- new_arg("...", help = "help text")
   expect_output(arg$show())
   expect_output(arg$help())
   expect_snapshot(arg$show())
   expect_snapshot(arg$help())
-  options(op)
 })

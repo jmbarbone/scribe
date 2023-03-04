@@ -220,14 +220,13 @@ test_that("string input [#24]", {
 })
 
 test_that("--help has early stop", {
-  op <- options(scribe.interactive = TRUE)
+  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
   exp <- list(help = TRUE, version = FALSE, v = NULL, f = NULL)
   expect_output(obj <- try(ca$parse()))
   expect_identical(obj, exp)
-  options(op)
 })
 
 test_that("- parsed as _ [#33]", {
@@ -258,6 +257,19 @@ test_that("descriptions", {
   expect_output(ca$help())
 })
 
+test_that("descriptions snaps", {
+  skip_on_cran()
+  ca <- command_args()
+  ca$add_description("First part here.", "  Followed by a second sentences.")
+  expect_snapshot(ca$help())
+  ca$add_description("A new line should be appended.")
+  expect_snapshot(ca$help())
+  ca$set_description("description")
+  expect_snapshot(ca$help())
+  ca$set_description()
+  expect_snapshot(ca$help())
+})
+
 test_that("examples [#38]", {
   ca <- command_args()
   ca$add_example("foo --flag")
@@ -270,8 +282,21 @@ test_that("examples [#38]", {
   expect_output(ca$help())
 })
 
+test_that("examples snaps", {
+  skip_on_cran()
+  ca <- command_args()
+  ca$add_example("foo --flag")
+  ca$add_example(NULL)
+  ca$add_example("foo --other-flag")
+  expect_snapshot(ca$help())
+  ca$set_example()
+  expect_snapshot(ca$help())
+  ca$set_example("foo command value")
+  expect_snapshot(ca$help())
+})
+
 test_that("versions", {
-  op <- options(scribe.interactive = TRUE)
+  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args(string = "--version")
   ca$add_argument("--foo")
   ca$add_argument("--bar")
@@ -280,11 +305,12 @@ test_that("versions", {
   exp <- list(version = TRUE, foo = NULL, bar = NULL)
   expect_identical(obj, exp)
   expect_output(ca$version())
-  options(op)
 })
 
+
 test_that("snapshots", {
-  op <- options(scribe.interactive = TRUE)
+  skip_on_cran()
+  withr::local_options(list(scribe.interactive = TRUE))
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")
   # TODO potentially some issue with the "{scribe}" in the output confusing
@@ -293,5 +319,4 @@ test_that("snapshots", {
   expect_output(ca$help())
   expect_snapshot(ca$help())
   expect_snapshot(ca$show())
-  options(op)
 })
