@@ -70,7 +70,6 @@ scribeArg$methods(
     help     = NULL,
     n        = NULL
   ) {
-    # TODO include validation
     arg_initialize(
       .self,
       id      = id,
@@ -136,25 +135,27 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   help    <- help    %||% NA_character_
   options <- options %||% list()
 
-  switch(
-    action,
-    flag = {
-      options$no <- options$no %||% TRUE
-    },
-    list = {
-      options$choices <- options$choices %||% list()
-    }
-  )
-
   if (action == "default") {
-    # TODO need to determine when actions can be anything other than list
-    action <- "list"
+    # consider other sorts of improvements
+    if ("no" %in% names(options) || isTRUE(n == 0L)) {
+      action <- "flag"
+    }
+
+    if ("choices" %in% names(options) || isTRUE(n > 0)) {
+      action <- "list"
+    }
+
+    if (action == "default") {
+      action <- "list"
+    }
   }
 
   switch(
     action,
     flag = {
       convert <- NULL
+      options$no <- options$no %||% TRUE
+
       if (!(isFALSE(default) | is.null(default))) {
         warning("flag must be NULL or TRUE when action=\"flag\"", call. = FALSE)
       }
@@ -169,6 +170,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       }
     },
     list = {
+      options$choices <- options$choices %||% list()
+
       if (is.na(n)) {
         n <- 1L
       }
@@ -246,7 +249,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 }
 
 arg_show <- function(self) {
-  # TODO add print_scribe.arg
   value <- self$get_default()
   value <-
     if (is.null(value)) {
