@@ -340,7 +340,11 @@ ca_get_examples <- function(self) {
 }
 
 ca_write_usage <- function(self) {
-  x <- vapply(self$get_args(included = FALSE), function(arg) arg$get_help()[1], NA_character_)
+  x <- vapply(
+    self$get_args(included = FALSE),
+    function(arg) arg$get_help()[1],
+    NA_character_
+  )
   paste(sprintf("[%s]", x), collapse = " ")
 }
 
