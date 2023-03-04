@@ -287,8 +287,6 @@ test_that("snapshots", {
   op <- options(scribe.interactive = TRUE)
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")
-  # TODO potentially some issue with the "{scribe}" in the output confusing
-  # {glue} when reviewing the snapshots?
   expect_output(ca$show())
   expect_output(ca$help())
   expect_snapshot(ca$help())
