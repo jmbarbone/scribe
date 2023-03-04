@@ -1,6 +1,4 @@
 
-# TODO use `args`, `argsList`, `params` consistently as names
-
 #' Command args
 #'
 #' @param x,string Command args; see [base::commandArgs()] for default.  At
