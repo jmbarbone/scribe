@@ -45,7 +45,7 @@ been successfully executed.}
   options = NULL,
   convert = default_convert,
   default = NULL,
-  n = 1,
+  n = NA_integer_,
   info = NULL,
   id = NULL
 )}}{Add a \code{scribeArg} to \code{argList}
@@ -78,7 +78,7 @@ been successfully executed.}
 
 \item{\code{arg_counter()}}{Increase the value of \code{nArgs} by \code{1L}}
 
-\item{\code{get_args()}}{Retrieve \code{argList}}
+\item{\code{get_args(included = TRUE)}}{Retrieve \code{argList}}
 
 \item{\code{get_description()}}{Retrieve \code{description}}
 

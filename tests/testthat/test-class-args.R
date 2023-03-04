@@ -93,7 +93,7 @@ test_that("new_arg(action = 'default')", {
 })
 
 test_that("snapshots", {
-  arg <- new_arg("...", help = "help text")
+  arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
   expect_output(arg$help())
   expect_snapshot(arg$show())

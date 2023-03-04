@@ -92,7 +92,9 @@ test_that("$add_argument('...', default = 'bar') [#11]", {
 })
 
 test_that("$add_argument(action = 'flag') [#17]", {
-  obj <- command_args()$add_argument("-f", "--foo", action = "flag")$parse()
+  ca <- command_args()
+  ca$add_argument("-f", "--foo", action = "flag")
+  obj <- ca$parse()
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
 
@@ -239,7 +241,7 @@ test_that("--help has early stop", {
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
-  exp <- list(info = TRUE, version = FALSE, v = NULL, f = NULL)
+  exp <- list(help = TRUE, version = FALSE, v = NULL, f = NULL)
   expect_output(obj <- try(ca$parse()))
   expect_identical(obj, exp)
 })

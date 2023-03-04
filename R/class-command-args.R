@@ -117,7 +117,7 @@ scribeCommandArgs$methods(
     options = NULL,
     convert = default_convert,
     default = NULL,
-    n = 1,
+    n = NA_integer_,
     info = NULL,
     id = NULL
   ) {
@@ -140,7 +140,7 @@ scribeCommandArgs$methods(
     )
   },
 
-  get_args = function() {
+  get_args = function(included = TRUE) {
     "Retrieve \\code{argList}"
     ca_get_args(.self, included = included)
   },
