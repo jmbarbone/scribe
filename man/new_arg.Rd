@@ -10,7 +10,7 @@ new_arg(
   convert = default_convert,
   options = list(),
   default = NULL,
-  info = NULL,
+  info = character(),
   n = NA_integer_,
   id = NA_integer_
 )
