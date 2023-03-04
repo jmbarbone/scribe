@@ -80,7 +80,7 @@
         --help    : prints this and quietly exits                   
         --version : prints the version of {scribe} and quietly exits
 
-# exmaples snaps
+# examples snaps
 
     Code
       ca$help()
@@ -141,6 +141,16 @@
 # snapshots
 
     Code
+      ca$show()
+    Output
+      Initial call:  foo bar --fizz
+      w Call $resolve() or $parse() to resolve arguments
+      Argument [--help] : FALSE
+      Argument [--version] : FALSE
+
+---
+
+    Code
       ca$help()
     Output
       {scribe} command_args
@@ -157,14 +167,4 @@
       ARGUMENTS
         --help    : prints this and quietly exits                   
         --version : prints the version of {scribe} and quietly exits
-
----
-
-    Code
-      ca$show()
-    Output
-      Initial call:  foo bar --fizz
-      w Call $resolve() or $parse() to resolve arguments
-      Argument [--help] : FALSE
-      Argument [--version] : FALSE
 
