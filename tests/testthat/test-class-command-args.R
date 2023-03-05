@@ -113,7 +113,7 @@ test_that("$add_argument(action = 'flag') [#17]", {
   # nolint end: line_length_linter.
 })
 
-test_that("adding args is fine", {
+test_that("$add_argument()", {
   # should be fine during creation
   ca <- command_args(c("foo", "bar"))
   ca$add_argument("foo", action = "flag")
@@ -128,7 +128,7 @@ test_that("adding args is fine", {
   expect_identical(obj, exp)
 })
 
-test_that("adding args is fine after initialization [#19]", {
+test_that("$add_argument() after initialization [#19]", {
   # should be okay after ca is created
   ca <- command_args()
   obj <- ca$get_input()
@@ -144,6 +144,15 @@ test_that("adding args is fine after initialization [#19]", {
   ca$add_argument("bar", action = "flag")
   obj <- ca$parse()
   exp <- list(foo = TRUE, bar = TRUE)
+  expect_identical(obj, exp)
+})
+
+test_that("$add_argument(arg) [#45]", {
+  ca <- command_args(include = NA)
+  arg <- new_arg("foo")
+  ca$add_argument(arg)
+  obj <- ca$get_args()
+  exp <- list(arg)
   expect_identical(obj, exp)
 })
 
