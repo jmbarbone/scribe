@@ -3,6 +3,11 @@
 
 `%||%` <- function(x, y) { if (is_empty(x)) y else x } # nolint: brace_linter.
 
+replace2 <- function(x, i, value) {
+  x[[i]] <- value
+  x
+}
+
 is_empty <- function(x) {
   if (is.function(x)) {
     FALSE
@@ -36,7 +41,6 @@ is_intish <- function(x) {
 maybe_quit <- function(force = !interactive()) {
   if (force) quit(save = "no", status = 0L) else invisible() # nocov
 }
-
 
 # nolint start: object_name_linter.
 wapply <- function(x, FUN, ...) {

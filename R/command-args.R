@@ -143,10 +143,10 @@ ca_help <- function(self) {
 ca_set_description <- function(self, ..., sep = "") {
   x <- c(...)
   if (is.null(x)) {
-    self$description <- NA_character_
+    self$field("description", NA_character_)
     return(invisible(self))
   }
-  self$description <- paste0(x, collapse = sep)
+  self$field("description", paste0(x, collapse = sep))
   invisible(self)
 }
 
@@ -154,7 +154,7 @@ ca_add_description <- function(self, ..., sep = "") {
   x <- paste0(c(...), collapse = sep)
 
   if (nzchar(x)) {
-    self$description <- c(self$description, x)
+    self$field("description", c(self$description, x))
   }
 
   invisible(self)
@@ -165,8 +165,8 @@ ca_get_description <- function(self) {
 }
 
 ca_set_example <- function(self, x = character(), comment = "", prefix = "$ ") {
-  self$examples <- x
-  self$comments <- ""
+  self$field("examples", x)
+  self$field("comments", "")
   invisible(self)
 }
 
@@ -176,8 +176,8 @@ ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
   }
 
   x <- paste0(prefix, x)
-  self$examples <- c(self$examples, x)
-  self$comments <- c(self$comments, comment)
+  self$field("examples", c(self$examples, x))
+  self$field("comments", c(self$comments, comment))
   invisible(self)
 }
 
@@ -204,7 +204,7 @@ ca_resolve <- function(self) {
   # reset if not unsuccessful
   on.exit(
     expr =  if (!self$resolved) {
-      self$working <- self$get_input()
+      self$field("working", self$get_input())
     },
     add = TRUE
   )
@@ -228,7 +228,7 @@ ca_resolve <- function(self) {
   )
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$values <- vector("list", length(arg_order))
+  self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
 
   for (arg in args[arg_order]) {
@@ -243,8 +243,8 @@ ca_resolve <- function(self) {
     )
   }
 
-  self$values <- self$values[order(arg_order)]
-  self$resolved <- TRUE
+  self$field("values", self$values[order(arg_order)])
+  self$field("resolved", TRUE)
 
   if ("help" %in% self$included) {
     m <- match("help", names(self$values), 0L)
@@ -253,7 +253,7 @@ ca_resolve <- function(self) {
       exit()
       return(invisible(self))
     }
-    self$values <- self$values[-m]
+    self$field("values", self$values[-m])
   }
 
   if ("version" %in% self$included) {
@@ -263,7 +263,7 @@ ca_resolve <- function(self) {
       exit()
       return(invisible(self))
     }
-    self$values <- self$values[-m]
+    self$field("values", self$values[-m])
   }
 
   self
@@ -307,7 +307,7 @@ ca_add_argument <- function(
   # update arg counter now
   self$arg_counter()
   self$append_arg(arg)
-  self$resolved <- FALSE
+  self$field("resolved", FALSE)
   invisible(self)
 }
 
@@ -320,7 +320,7 @@ ca_get_working <- function(self, i = TRUE) {
 }
 
 ca_remove_working <- function(self, i) {
-  self$working <- self$working[-i]
+  self$field("working", self$working[-i])
   self
 }
 
@@ -339,8 +339,8 @@ ca_get_input <- function(self) {
 }
 
 ca_set_input <- function(self, value) {
-  self$input <- as.character(value)
-  self$working <- self$input
+  self$field("input", as.character(value))
+  self$field("working", self$input)
   self
 }
 
@@ -355,12 +355,12 @@ ca_set_values <- function(self, i = NULL, value) {
     return(NULL)
   }
 
-  self$values[[i]] <- value
+  self$field("values", replace2(self$values, i, value))
   self
 }
 
 ca_arg_counter <- function(self) {
-  self$nArgs <- self$get_n_args() + 1L
+  self$field("nArgs", self$get_n_args() + 1L)
   self
 }
 
@@ -369,7 +369,7 @@ ca_get_n_args <- function(self) {
 }
 
 ca_append_arg <- function(self, arg) {
-  self$argList[[self$get_n_args()]] <- arg
+  self$field("argList", replace2(self$argList, self$get_n_args(), arg))
   self
 }
 
