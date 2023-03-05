@@ -53,7 +53,7 @@
 #' # command_args() is recommended rather than calling the class directly
 #' ca <- scribeCommandArgs$new(c(1, 2, 3, "--verbose"))
 #' ca$add_argument("--verbose", action = "flag")
-#' ca$add_argument("...", "values", info = "values to add together", default = 0.0)
+#' ca$add_argument("...", "values", info = "values to add", default = 0.0)
 #' args <- ca$parse()
 #'
 #' if (args$verbose) {
@@ -62,7 +62,7 @@
 #'
 #' sum(args$values)
 #'
-#' # $parse() returns a named list, which means scribeCommandArgs can funciton
+#' # $parse() returns a named list, which means scribeCommandArgs can function
 #' # as a wrapper for calling R functions inside Rscript
 #'
 #' ca <- scribeCommandArgs$new(c("mean", "--size", 20, "--absolute"))
