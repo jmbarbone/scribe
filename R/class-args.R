@@ -3,15 +3,8 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases A `character` vector to denote the argument's name
-#' @param action An action for resolving the argument
-#' @param options A named list of options (see [scribeArg])
-#' @param convert Passed to the `to` argument in [value_convert()]
-#' @param default A default value
-#' @param info Additional information about the argument when printed
-#' @param n The length of the values
-#' @param id An integer id (used when stored within [scribeCommandArgs])
-#'
+#' @param aliases,action,convert,options,default,info,n,id See `$initialize()`
+#'   in [scribeArg].
 #' @returns A [scribeArg] object
 #' @export
 new_arg <- function(
@@ -97,14 +90,14 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
 
 scribeArg$methods(
   initialize = function(
-    aliases  = NULL,
-    id       = NULL,
-    action   = NULL,
-    options  = NULL,
-    convert  = NULL,
-    default  = NULL,
-    info     = NULL,
-    n        = NULL
+    aliases = NULL,
+    id = NULL,
+    action = NULL,
+    options = NULL,
+    convert = NULL,
+    default = NULL,
+    info = NULL,
+    n = NULL
   ) {
     "
     Initialize the \\link{scribeArg} object

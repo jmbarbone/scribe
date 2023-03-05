@@ -16,21 +16,8 @@ new_arg(
 )
 }
 \arguments{
-\item{aliases}{A \code{character} vector to denote the argument's name}
-
-\item{action}{An action for resolving the argument}
-
-\item{convert}{Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
-
-\item{options}{A named list of options (see \link{scribeArg})}
-
-\item{default}{A default value}
-
-\item{info}{Additional information about the argument when printed}
-
-\item{n}{The length of the values}
-
-\item{id}{An integer id (used when stored within \link{scribeCommandArgs})}
+\item{aliases, action, convert, options, default, info, n, id}{See \verb{$initialize()}
+in \link{scribeArg}.}
 }
 \value{
 A \link{scribeArg} object

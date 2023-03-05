@@ -9,7 +9,8 @@
 #'   Otherwise the value of `x` is converted to a `character`.  If `string` is
 #'   not `NULL`, [scan()] will be used to split the value into a `character`
 #'   vector.
-#' @param include Special default arguments to included
+#' @param include Special default arguments to included.  See `$initialize()`
+#'   in [scribeCommandArgs] for more details.
 #' @returns A [scribeCommandArgs] object
 #' @export
 #' @family scribe
