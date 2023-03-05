@@ -128,6 +128,14 @@ test_that("$add_argument()", {
   expect_identical(obj, exp)
 })
 
+test_that("$add_argument(named list)", {
+  ca <- command_args()
+  expect_warning(
+    ca$add_argument("foo", bad_name = "bar"),
+    "names: bad_name"
+  )
+})
+
 test_that("$add_argument() after initialization [#19]", {
   # should be okay after ca is created
   ca <- command_args()

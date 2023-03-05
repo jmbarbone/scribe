@@ -10,20 +10,20 @@
 new_arg <- function(
     aliases = "",
     action  = arg_actions(),
-    convert = default_convert,
-    options = list(),
     default = NULL,
+    convert = default_convert,
+    n       = NA_integer_,
     info    = NULL,
-    n       = NA_integer_
+    options = list()
 ) {
   scribeArg$new(
     aliases = aliases,
     action  = action,
-    options = options,
-    convert = convert,
     default = default,
-    info    = as.character(info),
-    n       = as.integer(n)
+    convert = convert,
+    n       = n,
+    info    = info,
+    options = options
   )
 }
 
@@ -53,14 +53,13 @@ scribe_version_arg <- function() {
 
 arg_initialize <- function( # nolint: cyclocomp_linter.
   self,
-  aliases,
-  action = arg_actions(),
-  convert = default_convert,
+  aliases = "",
+  action  = arg_actions(),
   default = NULL,
-  # acceptable values
-  options = list(),
-  n = NA_integer_,
-  info = NA_character_
+  convert = default_convert,
+  n       = NA_integer_,
+  info    = NA_character_,
+  options = list()
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -195,6 +194,7 @@ arg_show <- function(self) {
 arg_help <- function(self) {
   h <- self$get_help()
   print_lines(sprintf("[%s] %s", h[1], h[2]))
+  invisible(self)
 }
 
 arg_get_help <- function(self) {

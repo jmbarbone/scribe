@@ -33,7 +33,7 @@ command_args <- function(
     x <- scan(text = string, what = "character", quiet = TRUE)
   }
 
-  scribeCommandArgs(input = as.character(x), include = include)
+  scribeCommandArgs(input = x, include = include)
 }
 
 # wrappers ----------------------------------------------------------------
@@ -71,7 +71,7 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
-  self$field("input", input %||% character())
+  self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
   self
@@ -136,6 +136,8 @@ ca_help <- function(self) {
     },
     NULL
   )
+
+  invisible(self)
 }
 
 ca_set_description <- function(self, ..., sep = "") {
@@ -289,8 +291,21 @@ ca_add_argument <- function(
   if (is_arg(..1)) {
     arg <- ..1
   } else {
+    aliases <- list(...)
+    nms <- names(aliases)
+    bad <- nzchar(nms)
+
+    if (any(bad)) {
+      warning(
+        "Aliases should be passed without names.\n",
+        "Check that you have not passed a bad field name:\n",
+        "  names: ", to_string(nms[bad], sep = ", "),
+        call. = FALSE
+      )
+    }
+
     arg <- new_arg(
-      aliases = list(...),
+      aliases = aliases,
       action = action,
       options = options,
       convert = convert,

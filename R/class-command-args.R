@@ -3,20 +3,83 @@
 #'
 #' Reference class object for managing command line arguments.
 #'
+#' @details This class manages the command line argument inputs when passed via
+#'   the [Rscript] utility.  Take the simple script below which adds two
+#'   numbers, which we will save in an executable file called `add.R`,
+#'
+#'   ```sh
+#'   #!/usr/bin/env Rscript
+#'
+#'   library(scribe)
+#'   ca <- command_args()
+#'   ca$add_argument("--value1", default = 0L)
+#'   ca$add_argument("--value2", default = 0L)
+#'   args <- ca$parse()
+#'   writeLines(args$value1 + args$value2)
+#'   ```
+#'
+#'   When called by a terminal, we can pass arguments and return a function.
+#'
+#'   ```sh
+#'   add.R --value1 10 --value2 1
+#'   11
+#'   ```
+#'
+#'   When testing, you can simulate command line arguments by passing them into
+#'   the `input` field. By default, this will grab values from
+#'   [base::commandArgs()], so use with the [Rscript] utility doesn't require
+#'   any extra steps.
+#'
+#'   Most methods are designed to return `.self`, or the [scribeCommandArgs]
+#'   class. The exceptions to these are the the `$get_*()` methods, which return
+#'   their corresponding values, and `$parse()` which returns a named `list` of
+#'   the parsed input values.
+#'
 #' @field input `[character]`\cr A character vector of command line arguments.
 #'   See also [command_args()]
-#' @field working `[character]`\cr A copy of `input`.  Note: this is used to
-#'   track parsing progress and is not meant to be accessed directly.
 #' @field values `[list]`\cr A named `list` of values.  Empty on initialization
 #'   and populated during argument resolving.
 #' @field args `[list]`\cr a List of [scribeArg]s
-#' @field resolved `[logical]`\cr A `logical` value indicated if the `resolve()`
-#'   method has been successfully executed.
 #' @field description `[character]`\cr Additional help information
 #' @field included `[character]`\cr Default [scribeArg]s to include
 #' @field examples `[character]`\cr Examples to print with help
 #' @field comments `[character]`\cr Comments printed with
+#' @field resolved `[logical]`\cr A `logical` value indicated if the
+#'   `$resolve()` method has been successfully executed.
+#' @field working `[character]`\cr A copy of `input`.  Note: this is used to
+#'   track parsing progress and is not meant to be accessed directly.
 #'
+#' @examples
+#' # command_args() is recommended rather than calling the class directly
+#' ca <- scribeCommandArgs$new(c(1, 2, 3, "--verbose"))
+#' ca$add_argument("--verbose", action = "flag")
+#' ca$add_argument("...", "values", info = "values to add together", default = 0.0)
+#' args <- ca$parse()
+#'
+#' if (args$verbose) {
+#'   message("Adding ", length(args$values), " values")
+#' }
+#'
+#' sum(args$values)
+#'
+#' # $parse() returns a named list, which means scribeCommandArgs can funciton
+#' # as a wrapper for calling R functions inside Rscript
+#'
+#' ca <- scribeCommandArgs$new(c("mean", "--size", 20, "--absolute"))
+#' ca$add_argument("fun", action = "list")
+#' ca$add_argument("--size", default = 5L)
+#' ca$add_argument("--absolute", action = "flag")
+#' args <- ca$parse()
+#'
+#' my_function <- function(fun, size, absolute = FALSE) {
+#'   fun <- match.fun(fun)
+#'   x <- sample(size, size, replace = TRUE)
+#'   res <- fun(x)
+#'   if (absolute) res <- absolute(res)
+#'   res
+#' }
+#'
+#' do.call(my_function, args)
 #' @export
 scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
@@ -24,11 +87,11 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     input = "character",
     values = "list",
     args = "list",
-    resolved = "logical",
     description = "character",
     included = "character",
     examples = "character",
     comments = "character",
+    resolved = "logical",
     working = "character"
   )
 )
@@ -39,11 +102,16 @@ scribeCommandArgs$methods(
     input = "",
     include = c("help", "version", NA_character_)
   ) {
-    "
-    Initialize the \\link{scribeCommandArgs} object
+    "Initialize the \\link{scribeCommandArgs} object.  The wrapper
+    \\link{command_args()} is recommended rather than calling this method
+    directly.
 
-    See \\strong{fields} for parameter information.
-    "
+    \\describe{
+      \\item{\\code{input}}{A \\code{character} vector of command line arguments
+        to parse}
+      \\item{\\code{include}}{A character vector denoting which default
+        \\link{scribeArg}s to include in \\code{args}}
+    }"
     ca_initialize(.self, input = input, include = include)
   },
 
@@ -63,12 +131,14 @@ scribeCommandArgs$methods(
   },
 
   resolve = function() {
-    "Resolve the values of each \\link{scribeArg} in \\code{args}"
+    "Resolve the values of each \\link{scribeArg} in \\code{args}.  This method
+    is called prior to $parse()"
     ca_resolve(.self)
   },
 
   parse = function() {
-    "Return the parsed values of from each \\code{args}"
+    "Return a named \\code{list} of parsed values of from each \\link{scribeArg}
+    in \\code{args}"
     ca_parse(.self)
   },
 

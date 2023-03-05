@@ -3,6 +3,11 @@
 #'
 #' ReferenceClass object for managing arguments
 #'
+#' @details The `scribeArg` class sets specifications and controls for how
+#'   command line arguments are to be parsed.  These are meant to be used in
+#'   conjunction with [scribeCommandArgs] and specifically with the [Rscript]
+#'   utility.  However, a use can define their own `scribeArg` separately.
+#'
 #' @section Options:
 #'
 #'   Several available options
@@ -39,30 +44,44 @@
 #' @field positional `[logical]`\cr Indicator if the argument is _positional_
 #'   (i.e., not preceded by a `-` or `--` command line argument)
 #'
+#'
+#' @examples
+#' # arguments with `--` indicators
+#' scribeArg$new("--verbose", action = "flag")
+#' scribeArg$new(c("-f", "--force"), action = "flag")
+#' scribeArg$new("--values", action = "list")
+#'
+#' # positional
+#' scribeArg$new("verbose", action = "flag")
+#' scribeArg$new("value", action = "list", n = 1)
+#'
+#' # special `...` action which absorbs left-over arguments
+#' scribeArg$new("values", action = "dots", info = "list of values")
+#' scribeArg$new("...", info = "list of values") # defaults when alias is "..."
 #' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",
   fields       = list(
     aliases    = "character",
     action     = "character",
-    options    = "list",
-    convert    = "ANY",
     default    = "ANY",
-    info       = "character",
+    convert    = "ANY",
     n          = "integer",
+    info       = "character",
+    options    = "list",
     positional = "logical"
   )
 )
 
 scribeArg$methods(
   initialize = function(
-    aliases = NULL,
-    action = NULL,
-    options = NULL,
-    convert = NULL,
+    aliases = "",
+    action  = arg_actions(),
     default = NULL,
-    info = NULL,
-    n = NULL
+    convert = default_convert,
+    n       = NA_integer_,
+    info    = NA_character_,
+    options = list()
   ) {
     "
     Initialize the \\link{scribeArg} object
@@ -73,11 +92,11 @@ scribeArg$methods(
       .self,
       aliases = aliases,
       action  = action,
-      options = options,
-      convert = convert,
       default = default,
+      convert = convert,
+      n       = n,
       info    = info,
-      n       = n
+      options = options
     )
   },
 
