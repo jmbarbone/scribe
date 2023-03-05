@@ -45,7 +45,6 @@ ca_initialize <- function(
 ) {
   # default values
   self$initFields(
-    input = input %||% character(),
     argList = list(),
     nArgs = 0L,
     resolved = FALSE,
@@ -65,9 +64,6 @@ ca_initialize <- function(
     include <- character()
   }
 
-  self$field("working", self$input)
-  self$field("included", include)
-
   if ("help" %in% include) {
     self$add_argument(scribe_help_arg())
   }
@@ -76,6 +72,9 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
+  self$field("input", input %||% character())
+  self$field("working", self$input)
+  self$field("included", include)
   self
 }
 
