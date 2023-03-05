@@ -28,7 +28,16 @@
     <loc>https://jmbarbone.github.io/scribe/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://jmbarbone.github.io/scribe/reference/new_arg.html</loc>
+  </url>
+  <url>
     <loc>https://jmbarbone.github.io/scribe/reference/scribe-package.html</loc>
+  </url>
+  <url>
+    <loc>https://jmbarbone.github.io/scribe/reference/scribeArg-class.html</loc>
+  </url>
+  <url>
+    <loc>https://jmbarbone.github.io/scribe/reference/scribeCommandArgs-class.html</loc>
   </url>
   <url>
     <loc>https://jmbarbone.github.io/scribe/reference/value_convert.html</loc>

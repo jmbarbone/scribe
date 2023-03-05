@@ -83,7 +83,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu">scribe</span><span class="fu">::</span><span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, type <span class="op">=</span> <span class="st">"integer"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-m"</span>, <span class="st">"--method"</span>, default <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
 <span><span class="co"># debugonce(arg_get_name)</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
@@ -94,8 +94,8 @@
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">foo.R</span> <span class="at">-n</span> 3 <span class="at">--method</span> letters</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "a" "b" "c"</span></span></code></pre></div>
-<p>You can also pass the command args as a character vector to test how
-they will be resolved.</p>
+<p>You can also pass the command arguments as a character vector to test
+how they will be resolved.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">main</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">method</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"letters"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span></span>
