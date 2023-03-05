@@ -3,7 +3,7 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n,id See `$initialize()`
+#' @param aliases,action,convert,options,default,info,n See `$initialize()`
 #'   in [scribeArg].
 #' @returns A [scribeArg] object
 #' @export
@@ -13,9 +13,8 @@ new_arg <- function(
     convert = default_convert,
     options = list(),
     default = NULL,
-    info    = character(),
-    n       = NA_integer_,
-    id      = NA_integer_
+    info    = NULL,
+    n       = NA_integer_
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -24,8 +23,7 @@ new_arg <- function(
     convert = convert,
     default = default,
     info    = as.character(info),
-    n       = as.integer(n),
-    id      = as.integer(id)
+    n       = as.integer(n)
   )
 }
 
@@ -70,7 +68,6 @@ new_arg <- function(
 #' @field n `[integer]`\cr The length of the values
 #' @field positional `[logical]`\cr Indicator if the argument is _positional_
 #'   (i.e., not preceded by a `-` or `--` command line argument)
-#' @field id `[integer]`\cr An id (used when stored within [scribeCommandArgs])
 #'
 #' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
@@ -83,15 +80,13 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     default    = "ANY",
     info       = "character",
     n          = "integer",
-    positional = "logical",
-    id         = "integer"
+    positional = "logical"
   )
 )
 
 scribeArg$methods(
   initialize = function(
     aliases = NULL,
-    id = NULL,
     action = NULL,
     options = NULL,
     convert = NULL,
@@ -106,7 +101,6 @@ scribeArg$methods(
     "
     arg_initialize(
       .self,
-      id      = id,
       aliases = aliases,
       action  = action,
       options = options,
@@ -174,7 +168,6 @@ scribeArg$methods(
 
 arg_initialize <- function( # nolint: cyclocomp_linter.
     self,
-    id = NA_integer_,
     aliases,
     action = arg_actions(),
     convert = default_convert,
@@ -251,8 +244,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   }
 
   stopifnot(
-    is_intish(id),
-    length(id) == 1L,
     length(aliases) > 0L,
     length(n) == 1L,
     (is_intish(n) & n >= 0L)
@@ -289,7 +280,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 
   action <- match.arg(action, arg_actions())
 
-  self$id         <- as.integer(id)
   self$aliases    <- aliases
   self$action     <- action
   self$convert    <- convert

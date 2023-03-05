@@ -122,14 +122,16 @@ scribeCommandArgs$methods(
     convert = default_convert,
     default = NULL,
     n = NA_integer_,
-    info = NULL,
-    id = NULL
+    info = NULL
   ) {
     "Add a \\link{scribeArg} to \\code{argList}
 
     \\describe{
-      \\item{\\code{...}}{Aliases}
-      \\item{(other)}{See \\code{\\link[=new_arg]{new_arg()}} for details}
+      \\item{\\code{...}}{Either aliases or a \\link{scribeArg}.  If the latter,
+        all other arguments are ignored.  Note that only the first value
+        (\\link{..1}) is used.}
+      \\item{\\code{action}, \\code{options}, \\code{convet}, \\code{default},
+        \\code{n}, \\code{info}}{See \\code{\\link[=new_arg]{new_arg()}}}
     }"
     ca_add_argument(
       self = .self,
@@ -139,8 +141,7 @@ scribeCommandArgs$methods(
       convert = convert,
       default = default,
       n = n,
-      info = info,
-      id = id
+      info = info
     )
   },
 
@@ -539,21 +540,23 @@ ca_add_argument <- function(
     convert = default_convert,
     options = NULL,
     default = NULL,
-    info = NULL,
-    id = NULL
+    info = NULL
 ) {
-  # id starts at 0 because we want to wait for new_arg() to not fail before
-  # adding to the counter
-  arg <- new_arg(
-    id = id %||% self$get_n_args(),
-    aliases = list(...),
-    action = action,
-    options = options,
-    convert = convert,
-    default = default,
-    info = info,
-    n = n
-  )
+  if (is_arg(..1)) {
+    arg <- ..1
+  } else {
+    arg <- new_arg(
+      aliases = list(...),
+      action = action,
+      options = options,
+      convert = convert,
+      default = default,
+      info = info,
+      n = as.integer(n)
+    )
+  }
+
+  stopifnot(is_arg(arg))
 
   # update arg counter now
   self$arg_counter()
