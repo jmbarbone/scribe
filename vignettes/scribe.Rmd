@@ -20,56 +20,124 @@ knitr::opts_chunk$set(
 library(scribe)
 ```
 
-This represents a script:
+The `{scribe}` package provides a means of defining command line argument inputs for use with the [Rscript](https://search.r-project.org/R/refmans/utils/html/Rscript.html) utility.
+Users will primarily use the `command_args()` function to capture the command line arguments and initialize a `scribeCommandArgs` object.
+A `scribeCommandArgs` is a [**Reference Class**](https://search.r-project.org/R/refmans/methods/html/refClass.html) object with methods to configure how to parse these arguments for use within **R**.
 
-```r
-#! /usr/bin/env -S Rscript --vanilla
-# filename: foo.R
+Let's look at to use the `{scribe}` class first.
+Our goal is to wrap a simple function to generate a sequence of integers or letters.
+Here we build out a `scribeCommandArgs` object, add a couple of arguments with the `$add_argument()` method, then parse into a named list with `$parse()`.
 
-main <- function(n, method = c("letters", "numbers")) {
-  switch(
-    match.arg(method),
-    letters = sample(letters, n, TRUE),
-    numbers = sample(n, n, TRUE)
-  )
+```{r}
+ca <- command_args(c("-n", "5", "--method", "numbers"))
+ca$add_argument("-n", default = 1L)
+ca$add_argument("--method", default = "letters")
+args <- ca$parse()
+
+out <- seq_len(args$n)
+
+method <- match.arg(args$method, c("letters", "numbers"))
+if (method == "letters") {
+  out <- letters[out]
 }
 
-ca <- scribe::command_args()
-ca$add_argument("-n", default = 1L)
-ca$add_argument("-m", "--method", default = "letters")
-# debugonce(arg_get_name)
-params <- ca$parse()
-
-main(
-  n = params$n,
-  method = params$method
-)
+out
 ```
 
-```sh
-foo.R -n 3 --method letters
+In the example above we specify what the command line arguments are within `command_args()`.
+The intended utility of this is to capture these arguments when passe within an `Rscript` file.
+Below is the same structure, but as we would expect from within a script intended to be called from a command line.
+`command_args()` will grab whatever command line arguments are passed to the script.
+
+```R
+#!/usr/bin/env Rscript
+# filename: seq_len.R
+
+library(scribe)
+ca <- command_args()
+ca$add_argument("-n", default = 1L)
+ca$add_argument("--method", default = "letters")
+args <- ca$parse()
+
+out <- seq_len(args$n)
+
+method <- match.arg(args$method, c("letters", "numbers"))
+if (method == "letters") {
+  out <- letters[out]
+}
+
+out
+```
+
+```
+seq_len.R -n 3 
 #> [1] "a" "b" "c"
 ```
 
-You can also pass the command arguments as a character vector to test how they will be resolved.
-
-```{r}
-main <- function(n, method = c("letters", "numbers")) {
-  switch(
-    match.arg(method),
-    letters = letters[seq_len(n)],
-    numbers = seq_len(n)
-  )
-}
-
-ca <- scribe::command_args(c("-n", "5", "--method", "numbers"))
-ca$add_argument("-n", default = 1L)
-ca$add_argument("-m", "--method", default = "letters")
-params <- ca$parse()
-
-main(
-  n = params$n,
-  method = params$method
-)
+```
+seq_len.R -n 3 --method numbers
+#> [1] 1 2 3
 ```
 
+One way I like to use `{scribe}` is by passing the values directly to another function via `do.call()`.
+
+Two examples provided that find a specified dataset and then perform something to it.
+Were I to use this personally, I would probably pass a file path and use a read function first, rather than the `get()` function.
+
+```{r}
+my_summary <- function(data, levels = 7, sig_figs = 3, q_type = 7) {
+  data <- get(data, mode = "list")
+  stopifnot(is.data.frame(data))
+  summary(data, maxsum = levels, digits = sig_figs, quantile.type = q_type)
+}
+
+my_model <- function(data, correlation = FALSE) {
+  data <- get(data, mode = "list")
+  stopifnot(is.data.frame(data))
+  form <- stats::DF2formula(data)
+  mod <- stats::lm(form, data)
+  summary(mod, correlation = correlation)
+}
+```
+
+
+```{r}
+ca <- command_args(string = "CO2 --levels 3 --sig-figs 2 --q-type 3")
+ca$add_description("Summarise a dataset")
+ca$add_argument(
+  "data",
+  info = "Name of the dataset to find"
+)
+ca$add_argument(
+  "--levels",
+  default = 7L,
+  info = "Maximum number of levels shown for factors"
+)
+ca$add_argument(
+  "--sig-figs",
+  default = 3L,
+  info = "Number of significant figures"
+)
+ca$add_argument(
+  "--q-type",
+  default = 7L,
+  info = "Quantile type"
+)
+args <- ca$parse()
+do.call(my_summary, args)
+```
+
+```{r}
+ca <- command_args(string = "attitude --correlation")
+ca$add_argument(
+  "data",
+  info = "Name of the dataset to find"
+)
+ca$add_argument(
+  "--correlation",
+  action = "flag",
+  info = "When set, prints the correlation matrix of estimated parameters"
+)
+args <- ca$parse()
+do.call(my_model, args)
+```

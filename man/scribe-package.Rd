@@ -8,6 +8,9 @@
 \description{
 A base R solution with basic argument parsing for use with Rscript.
 }
+\details{
+For a quick overview, see \code{vignette("scribe")}
+}
 \seealso{
 Useful links:
 \itemize{
