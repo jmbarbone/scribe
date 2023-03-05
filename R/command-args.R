@@ -122,7 +122,7 @@ ca_help <- function(self) {
     },
     "USAGE",
     sprintf("  %s [--help | --version]", bn),
-    sprintf("  %s %s ", bn, self$write_usage()),
+    sprintf("  %s %s ", bn, ca_write_usage(self)),
     "",
     "ARGUMENTS",
     paste0("  ", lines),
@@ -137,6 +137,170 @@ ca_help <- function(self) {
     NULL
   )
 
+  invisible(self)
+}
+
+
+ca_resolve <- function(self) {
+  # loop through the possibly arg in args.  When found in args, extract and
+  # determine what the param should be.  Take into account the action: none
+  if (self$resolved) {
+    return(invisible(self))
+  }
+
+  # reset if not unsuccessful
+  on.exit(
+    expr =  if (!self$resolved) {
+      self$field("working", self$get_input())
+    },
+    add = TRUE
+  )
+
+  # Sort smarter.  Flag argument just need to be present and then can be
+  # dropped.  Single value arguments are easier to match, should always have
+  # that value present if arg is present. Non-multiple value arguments have at
+  # least a limit to the number of values that can be found.
+  args <- self$get_args()
+
+  arg_order <- unique(
+    c(
+      wapply(args, function(i) i$action == "flag"),
+      wapply(args, function(i) i$action == "list"),
+      seq_along(args),
+      # dots must always be parsed last
+      wapply(args, function(i) i$positional),
+      wapply(args, function(i) i$action == "dots")
+    ),
+    fromLast = TRUE
+  )
+
+  arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
+  self$field("values", vector("list", length(arg_order)))
+  names(self$values) <- arg_names[arg_order]
+
+  for (arg in args[arg_order]) {
+    self$set_values(arg$get_name(), arg$parse_value(self))
+  }
+
+  if (length(ca_get_working(self))) {
+    warning(
+      "Not all values parsed:\n",
+      to_string(ca_get_working(self)),
+      call. = FALSE
+    )
+  }
+
+  self$field("values", self$values[order(arg_order)])
+  self$field("resolved", TRUE)
+
+  if ("help" %in% self$included) {
+    m <- match("help", names(self$values), 0L)
+    if (self$values$help) {
+      self$help()
+      exit()
+      return(invisible(self))
+    }
+    self$field("values", self$values[-m])
+  }
+
+  if ("version" %in% self$included) {
+    m <- match("version", names(self$values), 0L)
+    if (self$values$version) {
+      self$version()
+      exit()
+      return(invisible(self))
+    }
+    self$field("values", self$values[-m])
+  }
+
+  self
+}
+
+ca_parse <- function(self) {
+  self$resolve()
+  values <- self$get_values()
+  # clean up names
+  regmatches(names(values), regexpr("^-+", names(values))) <- ""
+  regmatches(names(values), gregexpr("-", names(values))) <- "_"
+  values
+}
+
+ca_get_input <- function(self) {
+  self$input
+}
+
+ca_set_input <- function(self, value) {
+  self$field("input", as.character(value))
+  self$field("working", self$input)
+  self
+}
+
+ca_get_values <- function(self) {
+  self$values
+}
+
+ca_set_values <- function(self, i = NULL, value) {
+  stopifnot(length(i) == 1)
+
+  if (is.null(value)) {
+    return(NULL)
+  }
+
+  self$field("values", replace2(self$values, i, value))
+  self
+}
+
+ca_get_args <- function(self, included = TRUE) {
+  if (included) {
+    return(self$args)
+  }
+
+  nms <- sapply(self$args, function(arg) arg$get_name())
+  ok <- match(nms, self$included, 0L) == 0L
+  self$args[ok]
+}
+
+ca_add_argument <- function(
+    self,
+    ...,
+    n = NA_integer_,
+    action = NULL,
+    convert = default_convert,
+    options = NULL,
+    default = NULL,
+    info = NULL
+) {
+  if (is_arg(..1)) {
+    arg <- ..1
+  } else {
+    aliases <- list(...)
+    nms <- names(aliases)
+    bad <- nzchar(nms)
+
+    if (any(bad)) {
+      warning(
+        "Aliases should be passed without names.\n",
+        "Check that you have not passed a bad field name:\n",
+        "  names: ", to_string(nms[bad], sep = ", "),
+        call. = FALSE
+      )
+    }
+
+    arg <- new_arg(
+      aliases = aliases,
+      action = action,
+      options = options,
+      convert = convert,
+      default = default,
+      info = info,
+      n = as.integer(n)
+    )
+  }
+
+  stopifnot(is_arg(arg))
+
+  ca_append_arg(self, arg)
+  self$field("resolved", FALSE)
   invisible(self)
 }
 
@@ -185,142 +349,8 @@ ca_get_examples <- function(self) {
   self$examples
 }
 
-ca_write_usage <- function(self) {
-  x <- vapply(
-    self$get_args(included = FALSE),
-    function(arg) arg$get_help()[1],
-    NA_character_
-  )
-  paste(sprintf("[%s]", x), collapse = " ")
-}
 
-ca_resolve <- function(self) {
-  # loop through the possibly arg in args.  When found in args, extract and
-  # determine what the param should be.  Take into account the action: none
-  if (self$resolved) {
-    return(invisible(self))
-  }
-
-  # reset if not unsuccessful
-  on.exit(
-    expr =  if (!self$resolved) {
-      self$field("working", self$get_input())
-    },
-    add = TRUE
-  )
-
-  # Sort smarter.  Flag argument just need to be present and then can be
-  # dropped.  Single value arguments are easier to match, should always have
-  # that value present if arg is present. Non-multiple value arguments have at
-  # least a limit to the number of values that can be found.
-  args <- self$get_args()
-
-  arg_order <- unique(
-    c(
-      wapply(args, function(i) i$action == "flag"),
-      wapply(args, function(i) i$action == "list"),
-      seq_along(args),
-      # dots must always be parsed last
-      wapply(args, function(i) i$positional),
-      wapply(args, function(i) i$action == "dots")
-    ),
-    fromLast = TRUE
-  )
-
-  arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$field("values", vector("list", length(arg_order)))
-  names(self$values) <- arg_names[arg_order]
-
-  for (arg in args[arg_order]) {
-    self$set_values(arg$get_name(), arg$parse_value(self))
-  }
-
-  if (length(self$get_working())) {
-    warning(
-      "Not all values parsed:\n",
-      to_string(self$get_working()),
-      call. = FALSE
-    )
-  }
-
-  self$field("values", self$values[order(arg_order)])
-  self$field("resolved", TRUE)
-
-  if ("help" %in% self$included) {
-    m <- match("help", names(self$values), 0L)
-    if (self$values$help) {
-      self$help()
-      exit()
-      return(invisible(self))
-    }
-    self$field("values", self$values[-m])
-  }
-
-  if ("version" %in% self$included) {
-    m <- match("version", names(self$values), 0L)
-    if (self$values$version) {
-      self$version()
-      exit()
-      return(invisible(self))
-    }
-    self$field("values", self$values[-m])
-  }
-
-  self
-}
-
-ca_parse <- function(self) {
-  self$resolve()
-  values <- self$get_values()
-  # clean up names
-  regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  values
-}
-
-ca_add_argument <- function(
-    self,
-    ...,
-    n = NA_integer_,
-    action = NULL,
-    convert = default_convert,
-    options = NULL,
-    default = NULL,
-    info = NULL
-) {
-  if (is_arg(..1)) {
-    arg <- ..1
-  } else {
-    aliases <- list(...)
-    nms <- names(aliases)
-    bad <- nzchar(nms)
-
-    if (any(bad)) {
-      warning(
-        "Aliases should be passed without names.\n",
-        "Check that you have not passed a bad field name:\n",
-        "  names: ", to_string(nms[bad], sep = ", "),
-        call. = FALSE
-      )
-    }
-
-    arg <- new_arg(
-      aliases = aliases,
-      action = action,
-      options = options,
-      convert = convert,
-      default = default,
-      info = info,
-      n = as.integer(n)
-    )
-  }
-
-  stopifnot(is_arg(arg))
-
-  self$append_arg(arg)
-  self$field("resolved", FALSE)
-  invisible(self)
-}
+# internal ----------------------------------------------------------------
 
 ca_get_working <- function(self, i = TRUE) {
   if (length(self$working)) {
@@ -335,44 +365,18 @@ ca_remove_working <- function(self, i) {
   self
 }
 
-ca_get_args <- function(self, included = TRUE) {
-  if (included) {
-    return(self$args)
-  }
-
-  nms <- sapply(self$args, function(arg) arg$get_name())
-  ok <- match(nms, self$included, 0L) == 0L
-  self$args[ok]
-}
-
-ca_get_input <- function(self) {
-  self$input
-}
-
-ca_set_input <- function(self, value) {
-  self$field("input", as.character(value))
-  self$field("working", self$input)
-  self
-}
-
-ca_get_values <- function(self) {
-  self$values
-}
-
-ca_set_values <- function(self, i = NULL, value) {
-  stopifnot(length(i) == 1)
-
-  if (is.null(value)) {
-    return(NULL)
-  }
-
-  self$field("values", replace2(self$values, i, value))
-  self
-}
-
 ca_append_arg <- function(self, arg) {
   self$field("args", replace2(self$args, length(self$args) + 1L, arg))
   self
+}
+
+ca_write_usage <- function(self) {
+  x <- vapply(
+    self$get_args(included = FALSE),
+    function(arg) arg$get_help()[1],
+    NA_character_
+  )
+  paste(sprintf("[%s]", x), collapse = " ")
 }
 
 # helpers -----------------------------------------------------------------

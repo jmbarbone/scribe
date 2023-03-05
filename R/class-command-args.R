@@ -142,6 +142,45 @@ scribeCommandArgs$methods(
     ca_parse(.self)
   },
 
+  get_input = function() {
+    "Retrieve \\code{input}"
+    ca_get_input(.self)
+  },
+
+  set_input = function(value) {
+    "Set \\code{input}
+
+    \\describe{
+      \\item{\\code{value}}{Value to set}
+    }"
+    ca_set_input(.self, value = value)
+  },
+
+  get_values = function() {
+    "Retrieve \\code{values}"
+    ca_get_values(.self)
+  },
+
+  set_values = function(i = TRUE, value) {
+    "Set \\code{values}
+
+    \\describe{
+      \\item{\\code{i}}{Index value of \\code{working} to set}
+      \\item{\\code{value}}{The value to set}
+    }"
+    ca_set_values(.self, i = i, value = value)
+  },
+
+  get_args = function(included = TRUE) {
+    "Retrieve \\code{args}
+
+    \\describe{
+      \\item{\\code{included}{If \\code{TRUE} also returns included default
+        \\link{scribeArg}s defined in \\code{$initialize()}}
+    }"
+    ca_get_args(.self, included = included)
+  },
+
   add_argument = function(
     ...,
     action = arg_actions(),
@@ -170,68 +209,6 @@ scribeCommandArgs$methods(
       n = n,
       info = info
     )
-  },
-
-  get_args = function(included = TRUE) {
-    "Retrieve \\code{args}"
-    ca_get_args(.self, included = included)
-  },
-
-  get_working = function() {
-    "Retrieve \\code{working}"
-    ca_get_working(.self)
-  },
-
-  remove_working = function(i) {
-    "Retrieve \\code{working}
-
-    \\describe{
-      \\item{\\code{i}}{Index value of \\code{working} to remove}
-    }"
-    ca_remove_working(.self, i = i)
-  },
-
-  get_values = function() {
-    "Retrieve \\code{values}"
-    ca_get_values(.self)
-  },
-
-  set_values = function(i = TRUE, value) {
-    "Set \\code{values}
-
-    \\describe{
-      \\item{\\code{i}}{Index value of \\code{working} to set}
-      \\item{\\code{value}}{The value to set}
-    }"
-    ca_set_values(.self, i = i, value = value)
-  },
-
-  get_input = function() {
-    "Retrieve \\code{input}"
-    ca_get_input(.self)
-  },
-
-  set_input = function(value) {
-    "Set \\code{input}
-
-    \\describe{
-      \\item{\\code{value}}{Value to set}
-    }"
-    ca_set_input(.self, value = value)
-  },
-
-  append_arg = function(arg) {
-    "Append a new \\link{scribeArg} value to \\code{args}
-
-    \\describe{
-      \\item{\\code{arg}}{The \\link{scribeArg} to include}
-    }"
-    ca_append_arg(.self, arg)
-  },
-
-  write_usage = function() {
-    "Write usage information to a \\code{character} vector"
-    ca_write_usage(.self)
   },
 
   set_description = function(..., sep = "") {

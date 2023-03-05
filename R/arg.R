@@ -294,7 +294,7 @@ arg_parse_value <- function(self, ca) {
       flag = 0L,
       list = 1L
     )
-    m <- which(match(ca$get_working(), alias, 0L) > 0L)
+    m <- which(match(ca_get_working(ca), alias, 0L) > 0L)
     ok <- which(m > 0L)
     m <- m[ok]
   }
@@ -316,8 +316,8 @@ arg_parse_value <- function(self, ca) {
   switch(
     self$action,
     dots = {
-      value <- ca$get_working()
-      ca$remove_working(seq_along(value))
+      value <- ca_get_working(ca)
+      ca_remove_working(ca, seq_along(value))
 
       if (!length(value)) {
         value <- self$get_default()
@@ -325,12 +325,12 @@ arg_parse_value <- function(self, ca) {
     },
     list = {
       m <- m + seq.int(0L, self$n)
-      value <- ca$get_working()[m[-off]]
-      ca$remove_working(m)
+      value <- ca_get_working(ca)[m[-off]]
+      ca_remove_working(ca, m)
     },
     flag = {
-      value <- !grepl("^--?no-", ca$get_working()[m + off])
-      ca$remove_working(m)
+      value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
+      ca_remove_working(ca, m)
     }
   )
 

@@ -69,10 +69,10 @@ test_that("resolving", {
 
   ca <- command_args("1")
   ca$add_argument("foo", convert = function(x) stop("my error"))
-  w <- ca$get_working()
+  w <- ca_get_working(ca)
   expect_error(ca$resolve(), "my error")
   expect_false(ca$resolved)
-  expect_identical(w, ca$get_working())
+  expect_identical(w, ca_get_working(ca))
 })
 
 test_that("$add_argument('...', default = character()) [#3]", {
