@@ -17,7 +17,6 @@
 #' @param default Default value
 #' @param help Help text for this argument
 #' @param n The number of values
-#' @param id Integer
 #' @returns A `scribeArg` object
 #' @noRd
 new_arg <- function(
@@ -27,8 +26,7 @@ new_arg <- function(
     options = list(),
     default = NULL,
     help    = NULL,
-    n       = NA_integer_,
-    id      = NA_integer_
+    n       = NA_integer_
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -37,8 +35,7 @@ new_arg <- function(
     convert = convert,
     default = default,
     help    = help,
-    n       = n,
-    id      = id
+    n       = n
   )
 }
 
@@ -54,15 +51,13 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     default    = "ANY",
     info       = "character",
     n          = "integer",
-    positional = "logical",
-    id         = "integer"
+    positional = "logical"
   )
 )
 
 scribeArg$methods(
   initialize = function(
     aliases  = NULL,
-    id       = NULL,
     action   = NULL,
     options  = NULL,
     convert  = NULL,
@@ -72,7 +67,6 @@ scribeArg$methods(
   ) {
     arg_initialize(
       .self,
-      id      = id,
       aliases = aliases,
       action  = action,
       options = options,
@@ -121,7 +115,6 @@ scribeArg$methods(
 
 arg_initialize <- function( # nolint: cyclocomp_linter.
     self,
-    id = NA_integer_,
     aliases,
     action = arg_actions(),
     convert = default_convert,
@@ -198,8 +191,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   }
 
   stopifnot(
-    is_intish(id),
-    length(id) == 1L,
     length(aliases) > 0L,
     length(n) == 1L,
     (is_intish(n) & n >= 0L)
@@ -236,7 +227,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 
   action <- match.arg(action, arg_actions())
 
-  self$id         <- as.integer(id)
   self$aliases    <- aliases
   self$action     <- action
   self$convert    <- convert
