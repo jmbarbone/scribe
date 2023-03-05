@@ -21,7 +21,8 @@ ReferenceClass object for managing arguments
 
 \item{\code{default}}{\verb{[ANY]}\cr A default value}
 
-\item{\code{info}}{\verb{[character]}\cr Additional information about the argument when printed}
+\item{\code{info}}{\verb{[character]}\cr Additional information about the argument when
+printed}
 
 \item{\code{n}}{\verb{[integer]}\cr The length of the values}
 

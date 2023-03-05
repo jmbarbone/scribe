@@ -11,21 +11,22 @@ Reference class object for managing command line arguments.
 \section{Fields}{
 
 \describe{
-\item{\code{input}}{\verb{[character]}\cr A character vector of command line arguments. See also
-\code{\link[=command_args]{command_args()}}}
+\item{\code{input}}{\verb{[character]}\cr A character vector of command line arguments.
+See also \code{\link[=command_args]{command_args()}}}
 
-\item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to track parsing
-progress and is not meant to be accessed directly.}
+\item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to
+track parsing progress and is not meant to be accessed directly.}
 
-\item{\code{values}}{\verb{[list]}\cr A named \code{list} of values.  Empty on initialization and
-populated during argument resolving.}
+\item{\code{values}}{\verb{[list]}\cr A named \code{list} of values.  Empty on initialization
+and populated during argument resolving.}
 
 \item{\code{argList}}{\verb{[list]}\cr a List of \link{scribeArg}s}
 
-\item{\code{nArgs}}{\verb{[interger]}\cr A current counter for the number of \link{scribeArg}s included}
+\item{\code{nArgs}}{\verb{[interger]}\cr A current counter for the number of \link{scribeArg}s
+included}
 
-\item{\code{resolved}}{\verb{[logical]}\cr A \code{logical} value indicated if the \code{resolve()} method has
-been successfully executed.}
+\item{\code{resolved}}{\verb{[logical]}\cr A \code{logical} value indicated if the \code{resolve()}
+method has been successfully executed.}
 
 \item{\code{description}}{\verb{[character]}\cr Additional help information}
 

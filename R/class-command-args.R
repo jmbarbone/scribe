@@ -42,16 +42,17 @@ command_args <- function(
 #'
 #' Reference class object for managing command line arguments.
 #'
-#' @field input `[character]`\cr A character vector of command line arguments. See also
-#'   [command_args()]
-#' @field working `[character]`\cr A copy of `input`.  Note: this is used to track parsing
-#'   progress and is not meant to be accessed directly.
-#' @field values `[list]`\cr A named `list` of values.  Empty on initialization and
-#'   populated during argument resolving.
+#' @field input `[character]`\cr A character vector of command line arguments.
+#'   See also [command_args()]
+#' @field working `[character]`\cr A copy of `input`.  Note: this is used to
+#'   track parsing progress and is not meant to be accessed directly.
+#' @field values `[list]`\cr A named `list` of values.  Empty on initialization
+#'   and populated during argument resolving.
 #' @field argList `[list]`\cr a List of [scribeArg]s
-#' @field nArgs `[interger]`\cr A current counter for the number of [scribeArg]s included
-#' @field resolved `[logical]`\cr A `logical` value indicated if the `resolve()` method has
-#'   been successfully executed.
+#' @field nArgs `[interger]`\cr A current counter for the number of [scribeArg]s
+#'   included
+#' @field resolved `[logical]`\cr A `logical` value indicated if the `resolve()`
+#'   method has been successfully executed.
 #' @field description `[character]`\cr Additional help information
 #' @field included `[character]`\cr Default [scribeArg]s to include
 #' @field examples `[character]`\cr Examples to print with help

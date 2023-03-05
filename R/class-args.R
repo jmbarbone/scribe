@@ -44,7 +44,7 @@ new_arg <- function(
 #'
 #' @section Options:
 #'
-#' Several available options
+#'   Several available options
 #' \describe{
 #'   \item{`action="list"`}{
 #'     \describe{
@@ -72,7 +72,8 @@ new_arg <- function(
 #' @field options `[list]`\cr A named list of options (see **Options**)
 #' @field convert `[ANY]`\cr Passed to the `to` argument in [value_convert()]
 #' @field default `[ANY]`\cr A default value
-#' @field info `[character]`\cr Additional information about the argument when printed
+#' @field info `[character]`\cr Additional information about the argument when
+#'   printed
 #' @field n `[integer]`\cr The length of the values
 #' @field positional `[logical]`\cr Indicator if the argument is _positional_
 #'   (i.e., not preceded by a `-` or `--` command line argument)
