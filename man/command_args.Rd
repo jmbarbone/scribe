@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-command-args.R
 \name{command_args}
 \alias{command_args}
-\title{Command args}
+\title{Command line arguments}
 \usage{
 command_args(
   x = NULL,
@@ -11,19 +11,20 @@ command_args(
 )
 }
 \arguments{
-\item{x, string}{Command args; see \code{\link[base:commandArgs]{base::commandArgs()}} for default.  At
-least one has to be \code{NULL}.  When \code{string} is \code{NULL}, \code{x} is used, which
-defaults to \code{commandArgs(trailingOnly = TRUE)}.  Otherwise the value is
-converted to a \code{character}.  If \code{string} is not \code{NULL}, \code{\link[=scan]{scan()}} will be
-used to split the value into}
+\item{x, string}{Command line arguments; see \code{\link[base:commandArgs]{base::commandArgs()}} for
+default.  At least one parameter has to be \code{NULL}.  When \code{string} is
+\code{NULL}, \code{x} is used, which defaults to \code{commandArgs(trailingOnly = TRUE)}.
+Otherwise the value of \code{x} is converted to a \code{character}.  If \code{string} is
+not \code{NULL}, \code{\link[=scan]{scan()}} will be used to split the value into a \code{character}
+vector.}
 
-\item{include}{Special default arguments to
-included}
+\item{include}{Special default arguments to included.  See \verb{$initialize()}
+in \link{scribeCommandArgs} for more details.}
 }
 \value{
-A \code{scribeCommandArgs} Reference object
+A \link{scribeCommandArgs} object
 }
 \description{
-Command args
+Make a new \link{scribeCommandArgs} object
 }
 \concept{scribe}
