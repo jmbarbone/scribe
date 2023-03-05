@@ -133,4 +133,3 @@ scribeArg$methods(
     arg_get_default(.self)
   }
 )
-
