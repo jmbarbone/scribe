@@ -21,9 +21,9 @@ used to split the value into}
 included}
 }
 \value{
-A \code{scribeCommandArgs} Reference object
+A \link{scribeCommandArgs} object
 }
 \description{
-Command args
+Make a new \link{scribeCommandArgs} object
 }
 \concept{scribe}

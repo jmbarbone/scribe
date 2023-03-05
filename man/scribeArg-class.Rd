@@ -15,7 +15,7 @@ ReferenceClass object for managing arguments
 
 \item{\code{action}}{\verb{[character]}\cr An action for resolving the argument}
 
-\item{\code{options}}{\verb{[list]}\cr A named list of options (see details)}
+\item{\code{options}}{\verb{[list]}\cr A named list of options (see \strong{Options})}
 
 \item{\code{convert}}{\verb{[ANY]}\cr Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
 
@@ -40,7 +40,7 @@ ReferenceClass object for managing arguments
 
 \item{\code{get_default()}}{Retrieve the default value}
 
-\item{\code{get_help()}}{Retrieve help information as a character vector}
+\item{\code{get_help()}}{Retrieve help information as a \code{character} vector}
 
 \item{\code{get_name(clean = TRUE)}}{Retrieve names
 
@@ -59,7 +59,7 @@ ReferenceClass object for managing arguments
   default = NULL,
   info = NULL,
   n = NULL
-)}}{    Initialize the \code{scribeArg} object
+)}}{    Initialize the \link{scribeArg} object
 
     See \strong{fields} for parameter information.
     }
@@ -67,16 +67,17 @@ ReferenceClass object for managing arguments
 \item{\code{parse_value(command_arg)}}{Parse argument value
 
     This method will likely not be called directly by the user.  Instead, this
-    method is called within [scribeCommandArg].
+    method is called within \link{scribeCommandArgs}.
 
     \describe{
-      \item{\code{command_arg}}{A \code{scribeCommandArg}} object
+      \item{\code{command_arg}}{A \link{scribeCommandArgs}} object
     }}
 }}
 
 \section{Options}{
 
-Available options include:
+
+Several available options
 \describe{
 \item{\code{action="list"}}{
 \describe{

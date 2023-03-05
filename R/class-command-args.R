@@ -1,6 +1,8 @@
 
 #' Command args
 #'
+#' Make a new [scribeCommandArgs] object
+#'
 #' @param x,string Command args; see [base::commandArgs()] for default.  At
 #'   least one has to be `NULL`.  When `string` is `NULL`, `x` is used, which
 #'   defaults to `commandArgs(trailingOnly = TRUE)`.  Otherwise the value is
@@ -8,7 +10,7 @@
 #'   used to split the value into
 #' @param include Special default arguments to
 #'   included
-#' @returns A `scribeCommandArgs` Reference object
+#' @returns A [scribeCommandArgs] object
 #' @export
 #' @family scribe
 command_args <- function(
@@ -79,7 +81,7 @@ scribeCommandArgs$methods(
     include = c("help", "version", NA_character_)
   ) {
     "
-    Initialize the \\code{commandScribeArgs} object
+    Initialize the \\link{scribeCommandArgs} object
 
     See \\strong{fields} for parameter information.
     "
@@ -87,12 +89,12 @@ scribeCommandArgs$methods(
   },
 
   show = function(...) {
-    "Print the \\code{scribeArg} object"
+    "Print the \\link{scribeCommandArgs} object"
     ca_show(.self, ...)
   },
 
   version = function() {
-    "Print the scribe package version"
+    "Print the \\link{scribe-package} version"
     print_scribe_version()
   },
 
@@ -102,7 +104,7 @@ scribeCommandArgs$methods(
   },
 
   resolve = function() {
-    "Resolve the values of each \\code{scribeArg} in \\code{argList}"
+    "Resolve the values of each \\link{scribeArg} in \\code{argList}"
     ca_resolve(.self)
   },
 
@@ -121,11 +123,11 @@ scribeCommandArgs$methods(
     info = NULL,
     id = NULL
   ) {
-    "Add a \\code{scribeArg} to \\code{argList}
+    "Add a \\link{scribeArg} to \\code{argList}
 
     \\describe{
       \\item{\\code{...}}{Aliases}
-      \\item{(other params)}{See \\code{new_arg()} for details. \\code{...}}
+      \\item{(other)}{See \\code{\\link[=new_arg]{new_arg()}} for details}
     }"
     ca_add_argument(
       self = .self,
@@ -194,16 +196,16 @@ scribeCommandArgs$methods(
   },
 
   append_arg = function(arg) {
-    "Append a new \\code{scribeArg} value to \\code{argList}
+    "Append a new \\link{scribeArg} value to \\code{argList}
 
     \\describe{
-      \\item{\\code{arg}}{The \\code{scribeArg} to include}
+      \\item{\\code{arg}}{The \\link{scribeArg} to include}
     }"
     ca_append_arg(.self, arg)
   },
 
   get_n_args = function() {
-    "Retrieve the current number of \\code{scribeArg}s"
+    "Retrieve the current number of \\link{scribeArg}s"
     ca_get_n_args(.self)
   },
 

@@ -16,13 +16,13 @@ new_arg(
 )
 }
 \arguments{
-\item{aliases}{A character vector to denote the argument's name}
+\item{aliases}{A \code{character} vector to denote the argument's name}
 
 \item{action}{An action for resolving the argument}
 
 \item{convert}{Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
 
-\item{options}{A named list of options (see details)}
+\item{options}{A named list of options (see \link{scribeArg})}
 
 \item{default}{A default value}
 
@@ -36,10 +36,5 @@ new_arg(
 A \link{scribeArg} object
 }
 \description{
-Possible options for each action
-
-\describe{
-\item{\code{list}}{\code{choices} Specifies choices}
-\item{\code{flag}}{\code{no} Includes \code{--no-foo} as possible flag value}
-}
+Make a new \link{scribeArg} object
 }

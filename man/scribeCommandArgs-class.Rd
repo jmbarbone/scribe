@@ -48,11 +48,11 @@ been successfully executed.}
   n = NA_integer_,
   info = NULL,
   id = NULL
-)}}{Add a \code{scribeArg} to \code{argList}
+)}}{Add a \link{scribeArg} to \code{argList}
 
     \describe{
       \item{\code{...}}{Aliases}
-      \item{(other params)}{See \code{new_arg()} for details. \code{...}}
+      \item{(other)}{See \code{\link[=new_arg]{new_arg()}} for details}
     }}
 
 \item{\code{add_description(..., sep = "")}}{Add a value to \code{description}
@@ -70,10 +70,10 @@ been successfully executed.}
       \item{\code{prefix}}{An optional prefix for the example}
     }}
 
-\item{\code{append_arg(arg)}}{Append a new \code{scribeArg} value to \code{argList}
+\item{\code{append_arg(arg)}}{Append a new \link{scribeArg} value to \code{argList}
 
     \describe{
-      \item{\code{arg}}{The \code{scribeArg} to include}
+      \item{\code{arg}}{The \link{scribeArg} to include}
     }}
 
 \item{\code{arg_counter()}}{Increase the value of \code{nArgs} by \code{1L}}
@@ -86,7 +86,7 @@ been successfully executed.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_n_args()}}{Retrieve the current number of \code{scribeArg}s}
+\item{\code{get_n_args()}}{Retrieve the current number of \link{scribeArg}s}
 
 \item{\code{get_values()}}{Retrieve \code{values}}
 
@@ -94,7 +94,7 @@ been successfully executed.}
 
 \item{\code{help()}}{Print the help information}
 
-\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{    Initialize the \code{commandScribeArgs} object
+\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{    Initialize the \link{scribeCommandArgs} object
 
     See \strong{fields} for parameter information.
     }
@@ -107,7 +107,7 @@ been successfully executed.}
       \item{\code{i}}{Index value of \code{working} to remove}
     }}
 
-\item{\code{resolve()}}{Resolve the values of each \code{scribeArg} in \code{argList}}
+\item{\code{resolve()}}{Resolve the values of each \link{scribeArg} in \code{argList}}
 
 \item{\code{set_description(..., sep = "")}}{Set the value of \code{description}
 
@@ -137,7 +137,7 @@ been successfully executed.}
       \item{\code{value}}{The value to set}
     }}
 
-\item{\code{version()}}{Print the scribe package version}
+\item{\code{version()}}{Print the \link{scribe-package} version}
 
 \item{\code{write_usage()}}{Write usage information to a \code{character} vector}
 }}

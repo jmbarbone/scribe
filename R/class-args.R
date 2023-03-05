@@ -1,17 +1,11 @@
 
 #' New Arg
 #'
-#' @description
-#' Possible options for each action
+#' Make a new [scribeArg] object
 #'
-#' \describe{
-#'   \item{`list`}{`choices` Specifies choices}
-#'   \item{`flag`}{`no` Includes `--no-foo` as possible flag value}
-#' }
-#'
-#' @param aliases A character vector to denote the argument's name
+#' @param aliases A `character` vector to denote the argument's name
 #' @param action An action for resolving the argument
-#' @param options A named list of options (see details)
+#' @param options A named list of options (see [scribeArg])
 #' @param convert Passed to the `to` argument in [value_convert()]
 #' @param default A default value
 #' @param info Additional information about the argument when printed
@@ -49,7 +43,8 @@ new_arg <- function(
 #' ReferenceClass object for managing arguments
 #'
 #' @section Options:
-#' Available options include:
+#'
+#' Several available options
 #' \describe{
 #'   \item{`action="list"`}{
 #'     \describe{
@@ -74,7 +69,7 @@ new_arg <- function(
 #'
 #' @field aliases `[character]`\cr A vector to denote the argument's name
 #' @field action `[character]`\cr An action for resolving the argument
-#' @field options `[list]`\cr A named list of options (see details)
+#' @field options `[list]`\cr A named list of options (see **Options**)
 #' @field convert `[ANY]`\cr Passed to the `to` argument in [value_convert()]
 #' @field default `[ANY]`\cr A default value
 #' @field info `[character]`\cr Additional information about the argument when printed
@@ -111,7 +106,7 @@ scribeArg$methods(
     n        = NULL
   ) {
     "
-    Initialize the \\code{scribeArg} object
+    Initialize the \\link{scribeArg} object
 
     See \\strong{fields} for parameter information.
     "
@@ -129,7 +124,7 @@ scribeArg$methods(
   },
 
   show = function() {
-    "Print the scribeArg object"
+    "Print the \\link{scribeArg} object"
     arg_show(.self)
   },
 
@@ -140,7 +135,7 @@ scribeArg$methods(
   },
 
   get_help = function() {
-    "Retrieve help information as a character vector"
+    "Retrieve help information as a \\code{character} vector"
     arg_get_help(.self)
   },
 
@@ -167,10 +162,10 @@ scribeArg$methods(
     "Parse argument value
 
     This method will likely not be called directly by the user.  Instead, this
-    method is called within [scribeCommandArg].
+    method is called within \\link{scribeCommandArgs}.
 
     \\describe{
-      \\item{\\code{command_arg}}{A \\code{scribeCommandArg}} object
+      \\item{\\code{command_arg}}{A \\link{scribeCommandArgs}} object
     }"
     arg_parse_value(.self, ca = command_arg)
   },
