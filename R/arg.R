@@ -165,14 +165,14 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 
   action <- match.arg(action, arg_actions())
 
-  self$aliases    <- aliases
-  self$action     <- action
-  self$convert    <- convert
-  self$options    <- options
-  self$info       <- as.character(info)
-  self$n          <- as.integer(n)
-  self$positional <- as.logical(positional)
-  self$default    <- default
+  self$field("aliases", aliases)
+  self$field("action", action)
+  self$field("convert", convert)
+  self$field("options", options)
+  self$field("info", as.character(info))
+  self$field("n", as.integer(n))
+  self$field("positional", as.logical(positional))
+  self$field("default", default)
   self
 }
 
