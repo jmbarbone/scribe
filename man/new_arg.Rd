@@ -7,11 +7,11 @@
 new_arg(
   aliases = "",
   action = arg_actions(),
-  convert = default_convert,
-  options = list(),
   default = NULL,
+  convert = default_convert,
+  n = NA_integer_,
   info = NULL,
-  n = NA_integer_
+  options = list()
 )
 }
 \arguments{

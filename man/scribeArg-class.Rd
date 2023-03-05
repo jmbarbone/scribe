@@ -8,6 +8,12 @@
 \description{
 ReferenceClass object for managing arguments
 }
+\details{
+The \code{scribeArg} class sets specifications and controls for how
+command line arguments are to be parsed.  These are meant to be used in
+conjunction with \link{scribeCommandArgs} and specifically with the \link{Rscript}
+utility.  However, a use can define their own \code{scribeArg} separately.
+}
 \section{Fields}{
 
 \describe{
@@ -15,16 +21,16 @@ ReferenceClass object for managing arguments
 
 \item{\code{action}}{\verb{[character]}\cr An action for resolving the argument}
 
-\item{\code{options}}{\verb{[list]}\cr A named list of options (see \strong{Options})}
+\item{\code{default}}{\verb{[ANY]}\cr A default value}
 
 \item{\code{convert}}{\verb{[ANY]}\cr Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
 
-\item{\code{default}}{\verb{[ANY]}\cr A default value}
+\item{\code{n}}{\verb{[integer]}\cr The length of the values}
 
 \item{\code{info}}{\verb{[character]}\cr Additional information about the argument when
 printed}
 
-\item{\code{n}}{\verb{[integer]}\cr The length of the values}
+\item{\code{options}}{\verb{[list]}\cr A named list of options (see \strong{Options})}
 
 \item{\code{positional}}{\verb{[logical]}\cr Indicator if the argument is \emph{positional}
 (i.e., not preceded by a \code{-} or \verb{--} command line argument)}
@@ -50,13 +56,13 @@ printed}
 \item{\code{help()}}{Print out formatted help information}
 
 \item{\code{initialize(
-  aliases = NULL,
-  action = NULL,
-  options = NULL,
-  convert = NULL,
+  aliases = "",
+  action = arg_actions(),
   default = NULL,
-  info = NULL,
-  n = NULL
+  convert = default_convert,
+  n = NA_integer_,
+  info = NA_character_,
+  options = list()
 )}}{    Initialize the \link{scribeArg} object
 
     See \strong{fields} for parameter information.
@@ -99,3 +105,17 @@ passing command arguments \code{--test} would set this to \code{TRUE} and
 }
 }
 
+\examples{
+# arguments with `--` indicators
+scribeArg$new("--verbose", action = "flag")
+scribeArg$new(c("-f", "--force"), action = "flag")
+scribeArg$new("--values", action = "list")
+
+# positional
+scribeArg$new("verbose", action = "flag")
+scribeArg$new("value", action = "list", n = 1)
+
+# special `...` action which absorbs left-over arguments
+scribeArg$new("values", action = "dots", info = "list of values")
+scribeArg$new("...", info = "list of values") # defaults when alias is "..."
+}
