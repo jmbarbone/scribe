@@ -69,52 +69,158 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmbarbone.github.io/scribe/">scribe</a></span><span class="op">)</span></span></code></pre></div>
-<p>This represents a script:</p>
+<p>The <a href="https://jmbarbone.github.io/scribe/">scribe</a> package provides a means of defining
+command line argument inputs for use with the <a href="https://search.r-project.org/R/refmans/utils/html/Rscript.html" class="external-link">Rscript</a>
+utility. Users will primarily use the <code><a href="../reference/command_args.html">command_args()</a></code>
+function to capture the command line arguments and initialize a
+<code>scribeCommandArgs</code> object. A <code>scribeCommandArgs</code>
+is a <a href="https://search.r-project.org/R/refmans/methods/html/refClass.html" class="external-link"><strong>Reference
+Class</strong></a> object with methods to configure how to parse these
+arguments for use within <strong>R</strong>.</p>
+<p>Let’s look at to use the <a href="https://jmbarbone.github.io/scribe/">scribe</a> class first. Our goal
+is to wrap a simple function to generate a sequence of integers or
+letters. Here we build out a <code>scribeCommandArgs</code> object, add
+a couple of arguments with the <code>$add_argument()</code> method, then
+parse into a named list with <code>$parse()</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#! /usr/bin/env -S Rscript --vanilla</span></span>
-<span><span class="co"># filename: foo.R</span></span>
+<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-n"</span>, <span class="st">"5"</span>, <span class="st">"--method"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"--method"</span>, default <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
+<span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">main</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">method</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"letters"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">method</span><span class="op">)</span>,</span>
-<span>    letters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="va">n</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    numbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">n</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">n</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">method</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">method</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"letters"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"letters"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="va">out</span><span class="op">]</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu">scribe</span><span class="fu">::</span><span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-m"</span>, <span class="st">"--method"</span>, default <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
-<span><span class="co"># debugonce(arg_get_name)</span></span>
-<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">main</span><span class="op">(</span></span>
-<span>  n <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">n</span>,</span>
-<span>  method <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">method</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">foo.R</span> <span class="at">-n</span> 3 <span class="at">--method</span> letters</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "a" "b" "c"</span></span></code></pre></div>
-<p>You can also pass the command arguments as a character vector to test
-how they will be resolved.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">main</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">method</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"letters"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">method</span><span class="op">)</span>,</span>
-<span>    letters <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>    numbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu">scribe</span><span class="fu">::</span><span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-n"</span>, <span class="st">"5"</span>, <span class="st">"--method"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-m"</span>, <span class="st">"--method"</span>, default <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
-<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">main</span><span class="op">(</span></span>
-<span>  n <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">n</span>,</span>
-<span>  method <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">method</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">out</span></span>
 <span><span class="co">#&gt; [1] 1 2 3 4 5</span></span></code></pre></div>
+<p>In the example above we specify what the command line arguments are
+within <code><a href="../reference/command_args.html">command_args()</a></code>. The intended utility of this is to
+capture these arguments when passe within an <code>Rscript</code> file.
+Below is the same structure, but as we would expect from within a script
+intended to be called from a command line. <code><a href="../reference/command_args.html">command_args()</a></code>
+will grab whatever command line arguments are passed to the script.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#!/usr/bin/env Rscript</span></span>
+<span><span class="co"># filename: seq_len.R</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmbarbone.github.io/scribe/">scribe</a></span><span class="op">)</span></span>
+<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-n"</span>, default <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"--method"</span>, default <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
+<span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">n</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">method</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">method</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"letters"</span>, <span class="st">"numbers"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"letters"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="va">out</span><span class="op">]</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">out</span></span></code></pre></div>
+<pre><code>seq_len.R -n 3 
+#&gt; [1] "a" "b" "c"</code></pre>
+<pre><code>seq_len.R -n 3 --method numbers
+#&gt; [1] 1 2 3</code></pre>
+<p>One way I like to use <a href="https://jmbarbone.github.io/scribe/">scribe</a> is by passing the values
+directly to another function via <code><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call()</a></code>.</p>
+<p>Two examples provided that find a specified dataset and then perform
+something to it. Were I to use this personally, I would probably pass a
+file path and use a read function first, rather than the
+<code><a href="https://rdrr.io/r/base/get.html" class="external-link">get()</a></code> function.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_summary</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">levels</span> <span class="op">=</span> <span class="fl">7</span>, <span class="va">sig_figs</span> <span class="op">=</span> <span class="fl">3</span>, <span class="va">q_type</span> <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">data</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">is.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span>, maxsum <span class="op">=</span> <span class="va">levels</span>, digits <span class="op">=</span> <span class="va">sig_figs</span>, quantile.type <span class="op">=</span> <span class="va">q_type</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">correlation</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">data</span>, mode <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">is.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">form</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">DF2formula</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">form</span>, <span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span>, correlation <span class="op">=</span> <span class="va">correlation</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span>string <span class="op">=</span> <span class="st">"CO2 --levels 3 --sig-figs 2 --q-type 3"</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_description</span><span class="op">(</span><span class="st">"Summarise a dataset"</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"data"</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"Name of the dataset to find"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"--levels"</span>,</span>
+<span>  default <span class="op">=</span> <span class="fl">7L</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"Maximum number of levels shown for factors"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"--sig-figs"</span>,</span>
+<span>  default <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"Number of significant figures"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"--q-type"</span>,</span>
+<span>  default <span class="op">=</span> <span class="fl">7L</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"Quantile type"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">my_summary</span>, <span class="va">args</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      Plant             Type         Treatment       conc          uptake    </span></span>
+<span><span class="co">#&gt;  Qn1    : 7   Quebec     :42   nonchilled:42   Min.   :  95   Min.   : 7.7  </span></span>
+<span><span class="co">#&gt;  Qn2    : 7   Mississippi:42   chilled   :42   1st Qu.: 175   1st Qu.:17.9  </span></span>
+<span><span class="co">#&gt;  (Other):70                                    Median : 350   Median :28.1  </span></span>
+<span><span class="co">#&gt;                                                Mean   : 435   Mean   :27.2  </span></span>
+<span><span class="co">#&gt;                                                3rd Qu.: 675   3rd Qu.:37.1  </span></span>
+<span><span class="co">#&gt;                                                Max.   :1000   Max.   :45.5</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span>string <span class="op">=</span> <span class="st">"attitude --correlation"</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"data"</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"Name of the dataset to find"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
+<span>  <span class="st">"--correlation"</span>,</span>
+<span>  action <span class="op">=</span> <span class="st">"flag"</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"When set, prints the correlation matrix of estimated parameters"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">my_model</span>, <span class="va">args</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; stats::lm(formula = form, data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
+<span><span class="co">#&gt; -10.9418  -4.3555   0.3158   5.5425  11.5990 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span><span class="co">#&gt; (Intercept) 10.78708   11.58926   0.931 0.361634    </span></span>
+<span><span class="co">#&gt; complaints   0.61319    0.16098   3.809 0.000903 ***</span></span>
+<span><span class="co">#&gt; privileges  -0.07305    0.13572  -0.538 0.595594    </span></span>
+<span><span class="co">#&gt; learning     0.32033    0.16852   1.901 0.069925 .  </span></span>
+<span><span class="co">#&gt; raises       0.08173    0.22148   0.369 0.715480    </span></span>
+<span><span class="co">#&gt; critical     0.03838    0.14700   0.261 0.796334    </span></span>
+<span><span class="co">#&gt; advance     -0.21706    0.17821  -1.218 0.235577    </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 7.068 on 23 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.7326, Adjusted R-squared:  0.6628 </span></span>
+<span><span class="co">#&gt; F-statistic:  10.5 on 6 and 23 DF,  p-value: 1.24e-05</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Correlation of Coefficients:</span></span>
+<span><span class="co">#&gt;            (Intercept) complaints privileges learning raises critical</span></span>
+<span><span class="co">#&gt; complaints -0.07                                                     </span></span>
+<span><span class="co">#&gt; privileges -0.12       -0.37                                         </span></span>
+<span><span class="co">#&gt; learning   -0.16       -0.30      -0.14                              </span></span>
+<span><span class="co">#&gt; raises     -0.08       -0.52       0.08      -0.21                   </span></span>
+<span><span class="co">#&gt; critical   -0.66        0.00      -0.02       0.20    -0.28          </span></span>
+<span><span class="co">#&gt; advance     0.02        0.40      -0.18      -0.35    -0.43  -0.13</span></span></code></pre></div>
   </main>
 </div>
 

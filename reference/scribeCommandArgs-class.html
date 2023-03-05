@@ -45,6 +45,31 @@
 
 
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This class manages the command line argument inputs when passed via
+the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a> utility.  Take the simple script below which adds two
+numbers, which we will save in an executable file called <code>add.R</code>,</p>
+<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">library</span><span class="er">(</span><span class="ex">scribe</span><span class="kw">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span> <span class="op">&lt;</span>- command_args<span class="er">(</span><span class="kw">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value1"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value2"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">args</span> <span class="op">&lt;</span>- ca<span class="va">$parse</span><span class="er">(</span><span class="kw">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">writeLines</span><span class="er">(</span><span class="ex">args</span><span class="va">$value1</span> + args<span class="va">$value2</span><span class="kw">)</span></span></code></pre><p></p></div>
+<p>When called by a terminal, we can pass arguments and return a function.</p>
+<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">add.R</span> <span class="at">--value1</span> 10 <span class="at">--value2</span> 1</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">11</span></span></code></pre><p></p></div>
+<p>When testing, you can simulate command line arguments by passing them into
+the <code>input</code> field. By default, this will grab values from
+<code><a href="https://rdrr.io/r/base/commandArgs.html" class="external-link">base::commandArgs()</a></code>, so use with the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a> utility doesn't require
+any extra steps.</p>
+<p>Most methods are designed to return <code>.self</code>, or the scribeCommandArgs
+class. The exceptions to these are the the <code>$get_*()</code> methods, which return
+their corresponding values, and <code>$parse()</code> which returns a named <code>list</code> of
+the parsed input values.</p>
+    </div>
+    <div class="section level2">
     <h2 id="fields">Fields<a class="anchor" aria-label="anchor" href="#fields"></a></h2>
     
 
@@ -53,28 +78,13 @@
 See also <code><a href="command_args.html">command_args()</a></code></p></dd>
 
 
-<dt><code>working</code></dt>
-<dd><p><code>[character]</code><br> A copy of <code>input</code>.  Note: this is used to
-track parsing progress and is not meant to be accessed directly.</p></dd>
-
-
 <dt><code>values</code></dt>
 <dd><p><code>[list]</code><br> A named <code>list</code> of values.  Empty on initialization
 and populated during argument resolving.</p></dd>
 
 
-<dt><code>argList</code></dt>
+<dt><code>args</code></dt>
 <dd><p><code>[list]</code><br> a List of <a href="scribeArg-class.html">scribeArg</a>s</p></dd>
-
-
-<dt><code>nArgs</code></dt>
-<dd><p><code>[interger]</code><br> A current counter for the number of <a href="scribeArg-class.html">scribeArg</a>s
-included</p></dd>
-
-
-<dt><code>resolved</code></dt>
-<dd><p><code>[logical]</code><br> A <code>logical</code> value indicated if the <code>resolve()</code>
-method has been successfully executed.</p></dd>
 
 
 <dt><code>description</code></dt>
@@ -93,6 +103,16 @@ method has been successfully executed.</p></dd>
 <dd><p><code>[character]</code><br> Comments printed with</p></dd>
 
 
+<dt><code>resolved</code></dt>
+<dd><p><code>[logical]</code><br> A <code>logical</code> value indicated if the
+<code>$resolve()</code> method has been successfully executed.</p></dd>
+
+
+<dt><code>working</code></dt>
+<dd><p><code>[character]</code><br> A copy of <code>input</code>.  Note: this is used to
+track parsing progress and is not meant to be accessed directly.</p></dd>
+
+
 </dl></div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -107,7 +127,7 @@ method has been successfully executed.</p></dd>
   n = NA_integer_,
   info = NULL
 )</code></dt>
-<dd><p>Add a <a href="scribeArg-class.html">scribeArg</a> to <code>argList</code></p>
+<dd><p>Add a <a href="scribeArg-class.html">scribeArg</a> to <code>args</code></p>
 <p></p><dl><dt><code>...</code></dt>
 <dd><p>Either aliases or a <a href="scribeArg-class.html">scribeArg</a>.  If the latter,
         all other arguments are ignored.  Note that only the first value
@@ -148,21 +168,14 @@ method has been successfully executed.</p></dd>
 </dl></dd>
 
 
-<dt><code>append_arg(arg)</code></dt>
-<dd><p>Append a new <a href="scribeArg-class.html">scribeArg</a> value to <code>argList</code></p>
-<p></p><dl><dt><code>arg</code></dt>
-<dd><p>The <a href="scribeArg-class.html">scribeArg</a> to include</p></dd>
+<dt><code>get_args(included = TRUE)</code></dt>
+<dd><p>Retrieve <code>args</code></p>
+<p></p><dl><dt><code>included</code></dt>
+<dd><p>If <code>TRUE</code> also returns included default
+        <a href="scribeArg-class.html">scribeArg</a>s defined in <code>$initialize()</code></p></dd>
 
     
 </dl></dd>
-
-
-<dt><code>arg_counter()</code></dt>
-<dd><p>Increase the value of <code>nArgs</code> by <code>1L</code></p></dd>
-
-
-<dt><code>get_args(included = TRUE)</code></dt>
-<dd><p>Retrieve <code>argList</code></p></dd>
 
 
 <dt><code>get_description()</code></dt>
@@ -177,16 +190,8 @@ method has been successfully executed.</p></dd>
 <dd><p>Retrieve <code>input</code></p></dd>
 
 
-<dt><code>get_n_args()</code></dt>
-<dd><p>Retrieve the current number of <a href="scribeArg-class.html">scribeArg</a>s</p></dd>
-
-
 <dt><code>get_values()</code></dt>
 <dd><p>Retrieve <code>values</code></p></dd>
-
-
-<dt><code>get_working()</code></dt>
-<dd><p>Retrieve <code>working</code></p></dd>
 
 
 <dt><code><a href="https://rdrr.io/r/utils/help.html" class="external-link">help()</a></code></dt>
@@ -194,25 +199,29 @@ method has been successfully executed.</p></dd>
 
 
 <dt><code>initialize(input = "", include = c("help", "version", NA_character_))</code></dt>
-<dd><p>Initialize the scribeCommandArgs object</p>
-<p>See <strong>fields</strong> for parameter information.</p></dd>
+<dd><p>Initialize the scribeCommandArgs object.  The wrapper
+    <code><a href="command_args.html">command_args()</a></code> is recommended rather than
+    calling this method directly.</p>
+<p></p><dl><dt><code>input</code></dt>
+<dd><p>A <code>character</code> vector of command line arguments
+        to parse</p></dd>
 
-
-<dt><code><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse()</a></code></dt>
-<dd><p>Return the parsed values of from each <code>argList</code></p></dd>
-
-
-<dt><code>remove_working(i)</code></dt>
-<dd><p>Retrieve <code>working</code></p>
-<p></p><dl><dt><code>i</code></dt>
-<dd><p>Index value of <code>working</code> to remove</p></dd>
+      <dt><code>include</code></dt>
+<dd><p>A character vector denoting which default
+        <a href="scribeArg-class.html">scribeArg</a>s to include in <code>args</code></p></dd>
 
     
 </dl></dd>
 
 
+<dt><code><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse()</a></code></dt>
+<dd><p>Return a named <code>list</code> of parsed values of from each <a href="scribeArg-class.html">scribeArg</a>
+in <code>args</code></p></dd>
+
+
 <dt><code>resolve()</code></dt>
-<dd><p>Resolve the values of each <a href="scribeArg-class.html">scribeArg</a> in <code>argList</code></p></dd>
+<dd><p>Resolve the values of each <a href="scribeArg-class.html">scribeArg</a> in <code>args</code>.  This method
+is called prior to $parse()</p></dd>
 
 
 <dt><code>set_description(..., sep = "")</code></dt>
@@ -267,12 +276,53 @@ method has been successfully executed.</p></dd>
 <dd><p>Print the <a href="scribe-package.html">scribe-package</a> version</p></dd>
 
 
-<dt><code>write_usage()</code></dt>
-<dd><p>Write usage information to a <code>character</code> vector</p></dd>
-
-
 </dl></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other scribe: 
+<code><a href="command_args.html">command_args</a>()</code>,
+<code><a href="new_arg.html">new_arg</a>()</code>,
+<code><a href="scribeArg-class.html">scribeArg-class</a></code></p></div>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># command_args() is recommended over direct use of scribeCommandArgs$new()</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="st">"--verbose"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"--verbose"</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"..."</span>, <span class="st">"values"</span>, info <span class="op">=</span> <span class="st">"values to add"</span>, default <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Adding "</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">values</span><span class="op">)</span>, <span class="st">" values"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding 3 values</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">args</span><span class="op">$</span><span class="va">values</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># $parse() returns a named list, which means scribeCommandArgs can function</span></span></span>
+<span class="r-in"><span><span class="co"># as a wrapper for calling R functions inside Rscript</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"--size"</span>, <span class="fl">20</span>, <span class="st">"--absolute"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"fun"</span>, action <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"--size"</span>, default <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"--absolute"</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">args</span> <span class="op">&lt;-</span> <span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">my_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">fun</span>, <span class="va">size</span>, <span class="va">absolute</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">fun</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.fun.html" class="external-link">match.fun</a></span><span class="op">(</span><span class="va">fun</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">size</span>, <span class="va">size</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">fun</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="va">absolute</span><span class="op">)</span> <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">res</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">my_function</span>, <span class="va">args</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 13</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

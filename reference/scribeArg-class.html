@@ -45,6 +45,13 @@
 
 
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The <code>scribeArg</code> class sets specifications and controls for how
+command line arguments are to be parsed.  These are meant to be used in
+conjunction with <a href="scribeCommandArgs-class.html">scribeCommandArgs</a> and specifically with the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a>
+utility.  However, a use can define their own <code>scribeArg</code> separately.</p>
+    </div>
+    <div class="section level2">
     <h2 id="fields">Fields<a class="anchor" aria-label="anchor" href="#fields"></a></h2>
     
 
@@ -56,16 +63,16 @@
 <dd><p><code>[character]</code><br> An action for resolving the argument</p></dd>
 
 
-<dt><code>options</code></dt>
-<dd><p><code>[list]</code><br> A named list of options (see <strong>Options</strong>)</p></dd>
+<dt><code>default</code></dt>
+<dd><p><code>[ANY]</code><br> A default value</p></dd>
 
 
 <dt><code>convert</code></dt>
 <dd><p><code>[ANY]</code><br> Passed to the <code>to</code> argument in <code><a href="value_convert.html">value_convert()</a></code></p></dd>
 
 
-<dt><code>default</code></dt>
-<dd><p><code>[ANY]</code><br> A default value</p></dd>
+<dt><code>n</code></dt>
+<dd><p><code>[integer]</code><br> The length of the values</p></dd>
 
 
 <dt><code>info</code></dt>
@@ -73,8 +80,8 @@
 printed</p></dd>
 
 
-<dt><code>n</code></dt>
-<dd><p><code>[integer]</code><br> The length of the values</p></dd>
+<dt><code>options</code></dt>
+<dd><p><code>[list]</code><br> A named list of options (see <strong>Options</strong>)</p></dd>
 
 
 <dt><code>positional</code></dt>
@@ -117,27 +124,16 @@ printed</p></dd>
 
 
 <dt><code>initialize(
-  aliases = NULL,
-  action = NULL,
-  options = NULL,
-  convert = NULL,
+  aliases = "",
+  action = arg_actions(),
   default = NULL,
-  info = NULL,
-  n = NULL
+  convert = default_convert,
+  n = NA_integer_,
+  info = NA_character_,
+  options = list()
 )</code></dt>
 <dd><p>Initialize the scribeArg object</p>
 <p>See <strong>fields</strong> for parameter information.</p></dd>
-
-
-<dt><code>parse_value(command_arg)</code></dt>
-<dd><p>Parse argument value</p>
-<p>This method will likely not be called directly by the user.  Instead, this
-    method is called within <a href="scribeCommandArgs-class.html">scribeCommandArgs</a>.</p>
-<p></p><dl><dt><code>command_arg</code></dt>
-<dd><p>A <a href="scribeCommandArgs-class.html">scribeCommandArgs</a></p></dd>
- object
-    
-</dl></dd>
 
 
 </dl></div>
@@ -168,7 +164,39 @@ passing command arguments <code>--test</code> would set this to <code>TRUE</code
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other scribe: 
+<code><a href="command_args.html">command_args</a>()</code>,
+<code><a href="new_arg.html">new_arg</a>()</code>,
+<code><a href="scribeCommandArgs-class.html">scribeCommandArgs-class</a></code></p></div>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># new_arg() is recommended over direct use of scribeArg$new()</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># arguments with `--` indicators</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"--verbose"</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [--verbose --no-verbose] : FALSE</span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-f"</span>, <span class="st">"--force"</span><span class="op">)</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [-f --force --no-force] : FALSE</span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"--values"</span>, action <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [--values] : &lt;null&gt;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># positional</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"verbose"</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [verbose no-verbose] : FALSE</span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"value"</span>, action <span class="op">=</span> <span class="st">"list"</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [value] : &lt;null&gt;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># special `...` action which absorbs left-over arguments</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"values"</span>, action <span class="op">=</span> <span class="st">"dots"</span>, info <span class="op">=</span> <span class="st">"list of values"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [values] : &lt;null&gt;</span>
+<span class="r-in"><span><span class="fu"><a href="new_arg.html">new_arg</a></span><span class="op">(</span><span class="st">"..."</span>, info <span class="op">=</span> <span class="st">"list of values"</span><span class="op">)</span> <span class="co"># defaults when alias is "..."</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Argument [...] : &lt;null&gt;</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
