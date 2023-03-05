@@ -105,15 +105,17 @@ method has been successfully executed.</p></dd>
   convert = default_convert,
   default = NULL,
   n = NA_integer_,
-  info = NULL,
-  id = NULL
+  info = NULL
 )</code></dt>
 <dd><p>Add a <a href="scribeArg-class.html">scribeArg</a> to <code>argList</code></p>
 <p></p><dl><dt><code>...</code></dt>
-<dd><p>Aliases</p></dd>
+<dd><p>Either aliases or a <a href="scribeArg-class.html">scribeArg</a>.  If the latter,
+        all other arguments are ignored.  Note that only the first value
+        (<a href="https://rdrr.io/r/base/dots.html" class="external-link">..1</a>) is used.</p></dd>
 
-      <dt>(other)</dt>
-<dd><p>See <code><a href="new_arg.html">new_arg()</a></code> for details</p></dd>
+      <dt><code>action</code>, <code>options</code>, <code>convet</code>, <code>default</code>,
+        <code>n</code>, <code>info</code></dt>
+<dd><p>See <code><a href="new_arg.html">new_arg()</a></code></p></dd>
 
     
 </dl></dd>
