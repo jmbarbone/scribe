@@ -97,16 +97,25 @@ passing command arguments \code{--test} would set this to \code{TRUE} and
 }
 
 \examples{
+# new_arg() is recommended over direct use of scribeArg$new()
+
 # arguments with `--` indicators
-scribeArg$new("--verbose", action = "flag")
-scribeArg$new(c("-f", "--force"), action = "flag")
-scribeArg$new("--values", action = "list")
+new_arg("--verbose", action = "flag")
+new_arg(c("-f", "--force"), action = "flag")
+new_arg("--values", action = "list")
 
 # positional
-scribeArg$new("verbose", action = "flag")
-scribeArg$new("value", action = "list", n = 1)
+new_arg("verbose", action = "flag")
+new_arg("value", action = "list", n = 1)
 
 # special `...` action which absorbs left-over arguments
-scribeArg$new("values", action = "dots", info = "list of values")
-scribeArg$new("...", info = "list of values") # defaults when alias is "..."
+new_arg("values", action = "dots", info = "list of values")
+new_arg("...", info = "list of values") # defaults when alias is "..."
 }
+\seealso{
+Other scribe: 
+\code{\link{command_args}()},
+\code{\link{new_arg}()},
+\code{\link{scribeCommandArgs-class}}
+}
+\concept{scribe}

@@ -27,4 +27,10 @@ A \link{scribeCommandArgs} object
 \description{
 Make a new \link{scribeCommandArgs} object
 }
+\seealso{
+Other scribe: 
+\code{\link{new_arg}()},
+\code{\link{scribeArg-class}},
+\code{\link{scribeCommandArgs-class}}
+}
 \concept{scribe}

@@ -167,10 +167,11 @@ is called prior to $parse()}
 }}
 
 \examples{
-# command_args() is recommended rather than calling the class directly
-ca <- scribeCommandArgs$new(c(1, 2, 3, "--verbose"))
+# command_args() is recommended over direct use of scribeCommandArgs$new()
+
+ca <- command_args(c(1, 2, 3, "--verbose"))
 ca$add_argument("--verbose", action = "flag")
-ca$add_argument("...", "values", info = "values to add together", default = 0.0)
+ca$add_argument("...", "values", info = "values to add", default = 0.0)
 args <- ca$parse()
 
 if (args$verbose) {
@@ -179,10 +180,10 @@ if (args$verbose) {
 
 sum(args$values)
 
-# $parse() returns a named list, which means scribeCommandArgs can funciton
+# $parse() returns a named list, which means scribeCommandArgs can function
 # as a wrapper for calling R functions inside Rscript
 
-ca <- scribeCommandArgs$new(c("mean", "--size", 20, "--absolute"))
+ca <- command_args(c("mean", "--size", 20, "--absolute"))
 ca$add_argument("fun", action = "list")
 ca$add_argument("--size", default = 5L)
 ca$add_argument("--absolute", action = "flag")
@@ -192,9 +193,16 @@ my_function <- function(fun, size, absolute = FALSE) {
   fun <- match.fun(fun)
   x <- sample(size, size, replace = TRUE)
   res <- fun(x)
-  if (absolute) res <- absolute(res)
+  if (absolute) res <- abs(res)
   res
 }
 
 do.call(my_function, args)
 }
+\seealso{
+Other scribe: 
+\code{\link{command_args}()},
+\code{\link{new_arg}()},
+\code{\link{scribeArg-class}}
+}
+\concept{scribe}
