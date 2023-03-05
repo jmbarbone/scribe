@@ -52,8 +52,11 @@ method has been successfully executed.}
 )}}{Add a \link{scribeArg} to \code{argList}
 
     \describe{
-      \item{\code{...}}{Aliases}
-      \item{(other)}{See \code{\link[=new_arg]{new_arg()}} for details}
+      \item{\code{...}}{Either aliases or a \link{scribeArg}.  If the latter,
+        all other arguments are ignored.  Note that only the first value
+        (\link{..1}) is used.}
+      \item{\code{action}, \code{options}, \code{convet}, \code{default},
+        \code{n}, \code{info}}{See \code{\link[=new_arg]{new_arg()}}}
     }}
 
 \item{\code{add_description(..., sep = "")}}{Add a value to \code{description}
