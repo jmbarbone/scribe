@@ -3,7 +3,7 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n,id See `$initialize()`
+#' @param aliases,action,convert,options,default,info,n See `$initialize()`
 #'   in [scribeArg].
 #' @returns A [scribeArg] object
 #' @export
@@ -68,7 +68,6 @@ new_arg <- function(
 #' @field n `[integer]`\cr The length of the values
 #' @field positional `[logical]`\cr Indicator if the argument is _positional_
 #'   (i.e., not preceded by a `-` or `--` command line argument)
-#' @field id `[integer]`\cr An id (used when stored within [scribeCommandArgs])
 #'
 #' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.

@@ -47,8 +47,7 @@ method has been successfully executed.}
   convert = default_convert,
   default = NULL,
   n = NA_integer_,
-  info = NULL,
-  arg = NULL
+  info = NULL
 )}}{Add a \link{scribeArg} to \code{argList}
 
     \describe{

@@ -15,7 +15,7 @@ new_arg(
 )
 }
 \arguments{
-\item{aliases, action, convert, options, default, info, n, id}{See \verb{$initialize()}
+\item{aliases, action, convert, options, default, info, n}{See \verb{$initialize()}
 in \link{scribeArg}.}
 }
 \value{

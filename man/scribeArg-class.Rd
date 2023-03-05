@@ -28,8 +28,6 @@ printed}
 
 \item{\code{positional}}{\verb{[logical]}\cr Indicator if the argument is \emph{positional}
 (i.e., not preceded by a \code{-} or \verb{--} command line argument)}
-
-\item{\code{id}}{\verb{[integer]}\cr An id (used when stored within \link{scribeCommandArgs})}
 }}
 
 \section{Methods}{
