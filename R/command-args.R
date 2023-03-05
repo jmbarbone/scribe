@@ -43,6 +43,17 @@ ca_initialize <- function(
     input = NULL,
     include = c("help", "version", NA_character_)
 ) {
+  # default values
+  self$initFields(
+    input = input %||% character(),
+    argList = list(),
+    nArgs = 0L,
+    resolved = FALSE,
+    description = character(),
+    examples = character(),
+    comments = character()
+  )
+
   include <- match.arg(
     as.character(include),
     c("help", "version", NA_character_),
@@ -54,36 +65,15 @@ ca_initialize <- function(
     include <- character()
   }
 
-  self$input <- input %||% character()
-  self$working <- self$input
-  self$argList <- list()
-  self$nArgs <- 0L
-  self$resolved <- FALSE
-  self$description <- character()
-  self$examples <- character()
-  self$comments <- character()
-  self$included <- include
+  self$field("working", self$input)
+  self$field("included", include)
 
   if ("help" %in% include) {
-    self$add_argument(
-      "--help",
-      action = "flag",
-      default = FALSE,
-      n = 0,
-      info = "prints this and quietly exits",
-      options = list(no = FALSE)
-    )
+    self$add_argument(scribe_help_arg())
   }
 
   if ("version" %in% include) {
-    self$add_argument(
-      "--version",
-      action = "flag",
-      default = FALSE,
-      n = 0,
-      info = "prints the version of {scribe} and quietly exits",
-      options = list(no = FALSE)
-    )
+    self$add_argument(scribe_version_arg())
   }
 
   self
