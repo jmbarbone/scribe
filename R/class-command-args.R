@@ -103,8 +103,8 @@ scribeCommandArgs$methods(
     include = c("help", "version", NA_character_)
   ) {
     "Initialize the \\link{scribeCommandArgs} object.  The wrapper
-    \\link{command_args()} is recommended rather than calling this method
-    directly.
+    \\code{\\link[=command_args]{command_args()}} is recommended rather than
+    calling this method directly.
 
     \\describe{
       \\item{\\code{input}}{A \\code{character} vector of command line arguments
@@ -175,7 +175,7 @@ scribeCommandArgs$methods(
     "Retrieve \\code{args}
 
     \\describe{
-      \\item{\\code{included}{If \\code{TRUE} also returns included default
+      \\item{\\code{included}}{If \\code{TRUE} also returns included default
         \\link{scribeArg}s defined in \\code{$initialize()}}
     }"
     ca_get_args(.self, included = included)

@@ -104,7 +104,7 @@ track parsing progress and is not meant to be accessed directly.}
 \item{\code{get_args(included = TRUE)}}{Retrieve \code{args}
 
     \describe{
-      \item{\code{included}{If \code{TRUE} also returns included default
+      \item{\code{included}}{If \code{TRUE} also returns included default
         \link{scribeArg}s defined in \code{$initialize()}}
     }}
 
@@ -119,8 +119,8 @@ track parsing progress and is not meant to be accessed directly.}
 \item{\code{help()}}{Print the help information}
 
 \item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
-    \link{command_args()} is recommended rather than calling this method
-    directly.
+    \code{\link[=command_args]{command_args()}} is recommended rather than
+    calling this method directly.
 
     \describe{
       \item{\code{input}}{A \code{character} vector of command line arguments
