@@ -138,17 +138,5 @@ scribeArg$methods(
   get_default = function() {
     "Retrieve the default value"
     arg_get_default(.self)
-  },
-
-  parse_value = function(command_arg) {
-    "Parse argument value
-
-    This method will likely not be called directly by the user.  Instead, this
-    method is called within \\link{scribeCommandArgs}.
-
-    \\describe{
-      \\item{\\code{command_arg}}{A \\link{scribeCommandArgs}} object
-    }"
-    arg_parse_value(.self, ca = command_arg)
   }
 )

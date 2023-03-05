@@ -278,6 +278,8 @@ arg_get_default <- function(self) {
   self$default
 }
 
+# internal ----------------------------------------------------------------
+
 arg_parse_value <- function(self, ca) {
   # find alias in working
   alias <- self$get_aliases()

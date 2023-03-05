@@ -179,7 +179,7 @@ ca_resolve <- function(self) {
   names(self$values) <- arg_names[arg_order]
 
   for (arg in args[arg_order]) {
-    self$set_values(arg$get_name(), arg$parse_value(self))
+    self$set_values(arg$get_name(), arg_parse_value(arg, self))
   }
 
   if (length(ca_get_working(self))) {
@@ -348,7 +348,6 @@ ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
 ca_get_examples <- function(self) {
   self$examples
 }
-
 
 # internal ----------------------------------------------------------------
 

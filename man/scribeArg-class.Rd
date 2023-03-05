@@ -67,15 +67,6 @@ printed}
 
     See \strong{fields} for parameter information.
     }
-
-\item{\code{parse_value(command_arg)}}{Parse argument value
-
-    This method will likely not be called directly by the user.  Instead, this
-    method is called within \link{scribeCommandArgs}.
-
-    \describe{
-      \item{\code{command_arg}}{A \link{scribeCommandArgs}} object
-    }}
 }}
 
 \section{Options}{
