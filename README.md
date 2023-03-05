@@ -18,7 +18,7 @@ The goal of scribe is to provide a detailed argument parser for
 library(scribe)
 ```
 
-You can enter command args as a vector to test out the behavior.
+You can enter command arguments as a vector to test out the behavior.
 Arguments can be added to the `scribeCommandArgs` class (here as `ca`).
 Default behavior tries to parse objects but additional control can be
 taken.
@@ -56,7 +56,7 @@ ca$parse()
 #> [1] TRUE
 #> 
 #> $...
-#> [1] 1 1 1
+#> NULL
 
 # use functions for more control
 ca <- command_args(c("verbose", "12-9-2022", "12-10-2022"))
@@ -67,7 +67,7 @@ ca$parse()
 #> [1] TRUE
 #> 
 #> $...
-#> [1] "2022-12-09" "2022-12-10"
+#> NULL
 ```
 
 You’ll probably use `{scribe}` within small scripts that can be called

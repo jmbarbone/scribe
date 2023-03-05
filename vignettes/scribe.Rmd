@@ -35,7 +35,7 @@ main <- function(n, method = c("letters", "numbers")) {
 }
 
 ca <- scribe::command_args()
-ca$add_argument("-n", type = "integer", default = 1L)
+ca$add_argument("-n", default = 1L)
 ca$add_argument("-m", "--method", default = "letters")
 # debugonce(arg_get_name)
 params <- ca$parse()
@@ -51,7 +51,7 @@ foo.R -n 3 --method letters
 #> [1] "a" "b" "c"
 ```
 
-You can also pass the command args as a character vector to test how they will be resolved.
+You can also pass the command arguments as a character vector to test how they will be resolved.
 
 ```{r}
 main <- function(n, method = c("letters", "numbers")) {

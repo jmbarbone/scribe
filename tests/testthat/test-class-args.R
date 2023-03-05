@@ -52,22 +52,22 @@ test_that("positional() [#22]", {
 
 test_that("help() [#16]", {
   op <- options(scribe.interactive = TRUE)
-  obj <- new_arg("...", help = "help text")$get_help()
+  obj <- new_arg("...", info = "help text")$get_help()
   exp <- c("...", "help text")
   expect_identical(obj, exp)
 
   obj <- new_arg(
     c("...", "dots"),
-    help = "more help here"
+    info = "more help here"
   )$get_help()
   exp <- c("...", "dots: more help here")
   expect_identical(obj, exp)
 
-  obj <- new_arg("-f", action = "flag", help = "help me")$get_help()
+  obj <- new_arg("-f", action = "flag", info = "help me")$get_help()
   exp <- c("-f", "help me")
   expect_identical(obj, exp)
 
-  obj <- new_arg(c("-f", "--force"), action = "flag", help = "ugh")$get_help()
+  obj <- new_arg(c("-f", "--force"), action = "flag", info = "ugh")$get_help()
   exp <- c("-f, --force, --no-force", "ugh")
   expect_identical(obj, exp)
 
@@ -93,7 +93,7 @@ test_that("new_arg(action = 'default')", {
 })
 
 test_that("snapshots", {
-  arg <- new_arg("...", help = "help text")
+  arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
   expect_output(arg$help())
   expect_snapshot(arg$show())
