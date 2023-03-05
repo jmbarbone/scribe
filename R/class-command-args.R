@@ -1,15 +1,15 @@
 
-#' Command args
+#' Command line arguments
 #'
 #' Make a new [scribeCommandArgs] object
 #'
-#' @param x,string Command args; see [base::commandArgs()] for default.  At
-#'   least one has to be `NULL`.  When `string` is `NULL`, `x` is used, which
-#'   defaults to `commandArgs(trailingOnly = TRUE)`.  Otherwise the value is
-#'   converted to a `character`.  If `string` is not `NULL`, [scan()] will be
-#'   used to split the value into
-#' @param include Special default arguments to
-#'   included
+#' @param x,string Command line arguments; see [base::commandArgs()] for
+#'   default.  At least one parameter has to be `NULL`.  When `string` is
+#'   `NULL`, `x` is used, which defaults to `commandArgs(trailingOnly = TRUE)`.
+#'   Otherwise the value of `x` is converted to a `character`.  If `string` is
+#'   not `NULL`, [scan()] will be used to split the value into a `character`
+#'   vector.
+#' @param include Special default arguments to included
 #' @returns A [scribeCommandArgs] object
 #' @export
 #' @family scribe
@@ -38,7 +38,7 @@ command_args <- function(
 # ReferenceClass ----------------------------------------------------------
 
 
-#' {scribe} command args
+#' {scribe} command arguments
 #'
 #' Reference class object for managing command line arguments.
 #'
@@ -185,7 +185,7 @@ scribeCommandArgs$methods(
     "Set \\code{input}
 
     \\describe{
-      \\item{\\code{value}}{Value to se}
+      \\item{\\code{value}}{Value to set}
     }"
     ca_set_input(.self, value = value)
   },

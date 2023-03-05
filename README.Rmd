@@ -30,7 +30,7 @@ The core functions utilize `ReferenceClasses` under the hood.
 library(scribe)
 ```
 
-You can enter command args as a vector to test out the behavior.
+You can enter command arguments as a vector to test out the behavior.
 Arguments can be added to the ``r class(command_args())`` class (here as `ca`).
 Default behavior tries to parse objects but additional control can be taken.
 

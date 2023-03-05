@@ -92,9 +92,9 @@ is not one of these, an error will occur.
 \item{\code{no}}{
 When \code{TRUE} included appends \code{--no} to aliases to invert results\cr
 \strong{Example:}\cr
-With the arg \code{new_arg("--test", options = list(no = TRUE))}, passing
-command args \code{--test} would set this to \code{TRUE} and \code{--no-test}
-explicitly set to \code{FALSE}.
+With the argument \code{new_arg("--test", options = list(no = TRUE))},
+passing command arguments \code{--test} would set this to \code{TRUE} and
+\code{--no-test} explicitly set to \code{FALSE}.
 }
 }
 }

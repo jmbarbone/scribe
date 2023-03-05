@@ -4,7 +4,7 @@
 \name{scribeCommandArgs-class}
 \alias{scribeCommandArgs-class}
 \alias{scribeCommandArgs}
-\title{{scribe} command args}
+\title{{scribe} command arguments}
 \description{
 Reference class object for managing command line arguments.
 }
@@ -127,7 +127,7 @@ been successfully executed.}
 \item{\code{set_input(value)}}{Set \code{input}
 
     \describe{
-      \item{\code{value}}{Value to se}
+      \item{\code{value}}{Value to set}
     }}
 
 \item{\code{set_values(i = TRUE, value)}}{Set \code{values}

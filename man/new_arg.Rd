@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-args.R
 \name{new_arg}
 \alias{new_arg}
-\title{New Arg}
+\title{New command argument}
 \usage{
 new_arg(
   aliases = "",

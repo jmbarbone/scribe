@@ -1,5 +1,5 @@
 
-#' New Arg
+#' New command argument
 #'
 #' Make a new [scribeArg] object
 #'
@@ -59,9 +59,9 @@ new_arg <- function(
 #'      \item{`no`}{
 #'        When `TRUE` included appends `--no` to aliases to invert results\cr
 #'        **Example:**\cr
-#'        With the arg `new_arg("--test", options = list(no = TRUE))`, passing
-#'        command args `--test` would set this to `TRUE` and `--no-test`
-#'        explicitly set to `FALSE`.
+#'        With the argument `new_arg("--test", options = list(no = TRUE))`,
+#'        passing command arguments `--test` would set this to `TRUE` and
+#'        `--no-test` explicitly set to `FALSE`.
 #'      }
 #'    }
 #'  }
@@ -436,7 +436,10 @@ arg_parse_value <- function(self, ca) {
 
   if (length(m) > 1L) {
     warning(
-      sprintf("w Multiple command args matched for [%s]", to_string(alias)),
+      sprintf(
+        "w Multiple command arguments matched for [%s]",
+        to_string(alias)
+      ),
       call = FALSE
     )
   }
