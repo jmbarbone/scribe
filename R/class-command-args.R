@@ -1,78 +1,100 @@
 
-#' Command line arguments
-#'
-#' Make a new [scribeCommandArgs] object
-#'
-#' @param x,string Command line arguments; see [base::commandArgs()] for
-#'   default.  At least one parameter has to be `NULL`.  When `string` is
-#'   `NULL`, `x` is used, which defaults to `commandArgs(trailingOnly = TRUE)`.
-#'   Otherwise the value of `x` is converted to a `character`.  If `string` is
-#'   not `NULL`, [scan()] will be used to split the value into a `character`
-#'   vector.
-#' @param include Special default arguments to included.  See `$initialize()`
-#'   in [scribeCommandArgs] for more details.
-#' @returns A [scribeCommandArgs] object
-#' @export
-#' @family scribe
-command_args <- function(
-    x = NULL,
-    include = c("help", "version", NA_character_),
-    string = NULL
-) {
-  if (is.null(string)) {
-    if (is.null(x)) {
-      x <- commandArgs(trailingOnly = TRUE)
-    }
-    x <- as.character(x)
-  } else {
-    if (!is.null(x)) {
-      stop("'string' and 'x' cannot both be set", call. = FALSE)
-    }
-
-    string <- as.character(string)
-    x <- scan(text = string, what = "character", quiet = TRUE)
-  }
-
-  scribeCommandArgs(input = as.character(x), include = include)
-}
-
-# ReferenceClass ----------------------------------------------------------
-
-
 #' {scribe} command arguments
 #'
 #' Reference class object for managing command line arguments.
 #'
+#' @details This class manages the command line argument inputs when passed via
+#'   the [Rscript] utility.  Take the simple script below which adds two
+#'   numbers, which we will save in an executable file called `add.R`,
+#'
+#'   ```sh
+#'   #!/usr/bin/env Rscript
+#'
+#'   library(scribe)
+#'   ca <- command_args()
+#'   ca$add_argument("--value1", default = 0L)
+#'   ca$add_argument("--value2", default = 0L)
+#'   args <- ca$parse()
+#'   writeLines(args$value1 + args$value2)
+#'   ```
+#'
+#'   When called by a terminal, we can pass arguments and return a function.
+#'
+#'   ```sh
+#'   add.R --value1 10 --value2 1
+#'   11
+#'   ```
+#'
+#'   When testing, you can simulate command line arguments by passing them into
+#'   the `input` field. By default, this will grab values from
+#'   [base::commandArgs()], so use with the [Rscript] utility doesn't require
+#'   any extra steps.
+#'
+#'   Most methods are designed to return `.self`, or the [scribeCommandArgs]
+#'   class. The exceptions to these are the the `$get_*()` methods, which return
+#'   their corresponding values, and `$parse()` which returns a named `list` of
+#'   the parsed input values.
+#'
 #' @field input `[character]`\cr A character vector of command line arguments.
 #'   See also [command_args()]
-#' @field working `[character]`\cr A copy of `input`.  Note: this is used to
-#'   track parsing progress and is not meant to be accessed directly.
 #' @field values `[list]`\cr A named `list` of values.  Empty on initialization
 #'   and populated during argument resolving.
-#' @field argList `[list]`\cr a List of [scribeArg]s
-#' @field nArgs `[interger]`\cr A current counter for the number of [scribeArg]s
-#'   included
-#' @field resolved `[logical]`\cr A `logical` value indicated if the `resolve()`
-#'   method has been successfully executed.
+#' @field args `[list]`\cr a List of [scribeArg]s
 #' @field description `[character]`\cr Additional help information
 #' @field included `[character]`\cr Default [scribeArg]s to include
 #' @field examples `[character]`\cr Examples to print with help
 #' @field comments `[character]`\cr Comments printed with
+#' @field resolved `[logical]`\cr A `logical` value indicated if the
+#'   `$resolve()` method has been successfully executed.
+#' @field working `[character]`\cr A copy of `input`.  Note: this is used to
+#'   track parsing progress and is not meant to be accessed directly.
 #'
+#' @examples
+#' # command_args() is recommended over direct use of scribeCommandArgs$new()
+#'
+#' ca <- command_args(c(1, 2, 3, "--verbose"))
+#' ca$add_argument("--verbose", action = "flag")
+#' ca$add_argument("...", "values", info = "values to add", default = 0.0)
+#' args <- ca$parse()
+#'
+#' if (args$verbose) {
+#'   message("Adding ", length(args$values), " values")
+#' }
+#'
+#' sum(args$values)
+#'
+#' # $parse() returns a named list, which means scribeCommandArgs can function
+#' # as a wrapper for calling R functions inside Rscript
+#'
+#' ca <- command_args(c("mean", "--size", 20, "--absolute"))
+#' ca$add_argument("fun", action = "list")
+#' ca$add_argument("--size", default = 5L)
+#' ca$add_argument("--absolute", action = "flag")
+#' args <- ca$parse()
+#'
+#' my_function <- function(fun, size, absolute = FALSE) {
+#'   fun <- match.fun(fun)
+#'   x <- sample(size, size, replace = TRUE)
+#'   res <- fun(x)
+#'   if (absolute) res <- abs(res)
+#'   res
+#' }
+#'
+#' do.call(my_function, args)
+#' @family scribe
 #' @export
 scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
   fields = list(
     input = "character",
-    working = "character",
     values = "list",
-    argList = "list",
-    nArgs = "integer",
-    resolved = "logical",
+    args = "list",
     description = "character",
     included = "character",
     examples = "character",
-    comments = "character"
+    comments = "character",
+    resolved = "logical",
+    working = "character"
   )
 )
 
@@ -82,11 +104,16 @@ scribeCommandArgs$methods(
     input = "",
     include = c("help", "version", NA_character_)
   ) {
-    "
-    Initialize the \\link{scribeCommandArgs} object
+    "Initialize the \\link{scribeCommandArgs} object.  The wrapper
+    \\code{\\link[=command_args]{command_args()}} is recommended rather than
+    calling this method directly.
 
-    See \\strong{fields} for parameter information.
-    "
+    \\describe{
+      \\item{\\code{input}}{A \\code{character} vector of command line arguments
+        to parse}
+      \\item{\\code{include}}{A character vector denoting which default
+        \\link{scribeArg}s to include in \\code{args}}
+    }"
     ca_initialize(.self, input = input, include = include)
   },
 
@@ -106,13 +133,54 @@ scribeCommandArgs$methods(
   },
 
   resolve = function() {
-    "Resolve the values of each \\link{scribeArg} in \\code{argList}"
+    "Resolve the values of each \\link{scribeArg} in \\code{args}.  This method
+    is called prior to $parse()"
     ca_resolve(.self)
   },
 
   parse = function() {
-    "Return the parsed values of from each \\code{argList}"
+    "Return a named \\code{list} of parsed values of from each \\link{scribeArg}
+    in \\code{args}"
     ca_parse(.self)
+  },
+
+  get_input = function() {
+    "Retrieve \\code{input}"
+    ca_get_input(.self)
+  },
+
+  set_input = function(value) {
+    "Set \\code{input}
+
+    \\describe{
+      \\item{\\code{value}}{Value to set}
+    }"
+    ca_set_input(.self, value = value)
+  },
+
+  get_values = function() {
+    "Retrieve \\code{values}"
+    ca_get_values(.self)
+  },
+
+  set_values = function(i = TRUE, value) {
+    "Set \\code{values}
+
+    \\describe{
+      \\item{\\code{i}}{Index value of \\code{working} to set}
+      \\item{\\code{value}}{The value to set}
+    }"
+    ca_set_values(.self, i = i, value = value)
+  },
+
+  get_args = function(included = TRUE) {
+    "Retrieve \\code{args}
+
+    \\describe{
+      \\item{\\code{included}}{If \\code{TRUE} also returns included default
+        \\link{scribeArg}s defined in \\code{$initialize()}}
+    }"
+    ca_get_args(.self, included = included)
   },
 
   add_argument = function(
@@ -124,7 +192,7 @@ scribeCommandArgs$methods(
     n = NA_integer_,
     info = NULL
   ) {
-    "Add a \\link{scribeArg} to \\code{argList}
+    "Add a \\link{scribeArg} to \\code{args}
 
     \\describe{
       \\item{\\code{...}}{Either aliases or a \\link{scribeArg}.  If the latter,
@@ -143,78 +211,6 @@ scribeCommandArgs$methods(
       n = n,
       info = info
     )
-  },
-
-  get_args = function(included = TRUE) {
-    "Retrieve \\code{argList}"
-    ca_get_args(.self, included = included)
-  },
-
-  get_working = function() {
-    "Retrieve \\code{working}"
-    ca_get_working(.self)
-  },
-
-  remove_working = function(i) {
-    "Retrieve \\code{working}
-
-    \\describe{
-      \\item{\\code{i}}{Index value of \\code{working} to remove}
-    }"
-    ca_remove_working(.self, i = i)
-  },
-
-  get_values = function() {
-    "Retrieve \\code{values}"
-    ca_get_values(.self)
-  },
-
-  set_values = function(i = TRUE, value) {
-    "Set \\code{values}
-
-    \\describe{
-      \\item{\\code{i}}{Index value of \\code{working} to set}
-      \\item{\\code{value}}{The value to set}
-    }"
-    ca_set_values(.self, i = i, value = value)
-  },
-
-  get_input = function() {
-    "Retrieve \\code{input}"
-    ca_get_input(.self)
-  },
-
-  set_input = function(value) {
-    "Set \\code{input}
-
-    \\describe{
-      \\item{\\code{value}}{Value to set}
-    }"
-    ca_set_input(.self, value = value)
-  },
-
-  arg_counter = function() {
-    "Increase the value of \\code{nArgs} by \\code{1L}"
-    ca_arg_counter(.self)
-  },
-
-  append_arg = function(arg) {
-    "Append a new \\link{scribeArg} value to \\code{argList}
-
-    \\describe{
-      \\item{\\code{arg}}{The \\link{scribeArg} to include}
-    }"
-    ca_append_arg(.self, arg)
-  },
-
-  get_n_args = function() {
-    "Retrieve the current number of \\link{scribeArg}s"
-    ca_get_n_args(.self)
-  },
-
-  write_usage = function() {
-    "Write usage information to a \\code{character} vector"
-    ca_write_usage(.self)
   },
 
   set_description = function(..., sep = "") {
@@ -279,356 +275,3 @@ scribeCommandArgs$methods(
     ca_get_examples(.self)
   }
 )
-
-# wrappers ----------------------------------------------------------------
-
-ca_initialize <- function(
-    self,
-    input = NULL,
-    include = c("help", "version", NA_character_)
-) {
-  include <- match.arg(
-    as.character(include),
-    c("help", "version", NA_character_),
-    several.ok = TRUE
-  )
-
-  include <- include[!is.na(include)]
-  if (!length(include)) {
-    include <- character()
-  }
-
-  self$input <- input %||% character()
-  self$working <- self$input
-  self$argList <- list()
-  self$nArgs <- 0L
-  self$resolved <- FALSE
-  self$description <- character()
-  self$examples <- character()
-  self$comments <- character()
-  self$included <- include
-
-  if ("help" %in% include) {
-    self$add_argument(
-      "--help",
-      action = "flag",
-      default = FALSE,
-      n = 0,
-      info = "prints this and quietly exits",
-      options = list(no = FALSE)
-    )
-  }
-
-  if ("version" %in% include) {
-    self$add_argument(
-      "--version",
-      action = "flag",
-      default = FALSE,
-      n = 0,
-      info = "prints the version of {scribe} and quietly exits",
-      options = list(no = FALSE)
-    )
-  }
-
-  self
-}
-
-ca_show <- function(self, ...) {
-  print_line("Initial call: ", to_string(self$get_input()))
-
-  if (!self$resolved) {
-    print_line("w Call $resolve() or $parse() to resolve arguments")
-  }
-
-  lapply(self$get_args(), print)
-  invisible(self)
-}
-
-ca_help <- function(self) {
-  file <- grep("^--file=", commandArgs(), value = TRUE)
-  if (length(file)) {
-    # nocov start
-    path <- substr(file, 8, nchar(file))
-    bn <- basename(path)
-    # nocov end
-  } else {
-    path <- "{path}"
-    bn <- "{command}"
-  }
-
-  lines <- sapply(
-    self$get_args(),
-    function(arg) arg$get_help(),
-    simplify = "array"
-  )
-  lines <- apply(lines, 1L, format) # get consistent width
-  lines <- apply(lines, 1L, paste, collapse = " : ") # middle colon
-
-  print_lines(
-    "{scribe} command_args",
-    "",
-    sprintf("file : %s", path),
-    "",
-    if (length(self$get_description())) {
-      c(
-        "DESCRIPTION",
-        paste0("  ", self$get_description(), collapse = "\n\n"),
-        ""
-      )
-    },
-    "USAGE",
-    sprintf("  %s [--help | --version]", bn),
-    sprintf("  %s %s ", bn, self$write_usage()),
-    "",
-    "ARGUMENTS",
-    paste0("  ", lines),
-    if (length(self$get_examples())) {
-      examples <- self$get_examples()
-      comments <- self$comments
-      ok <- comments != ""
-      comments[ok] <- paste(" #", comments[ok])
-      examples <- as.character(examples)
-      c("", "EXAMPLES", paste0("  ", format(examples), comments))
-    },
-    NULL
-  )
-}
-
-ca_set_description <- function(self, ..., sep = "") {
-  x <- c(...)
-  if (is.null(x)) {
-    self$description <- NA_character_
-    return(invisible(self))
-  }
-  self$description <- paste0(x, collapse = sep)
-  invisible(self)
-}
-
-ca_add_description <- function(self, ..., sep = "") {
-  x <- paste0(c(...), collapse = sep)
-
-  if (nzchar(x)) {
-    self$description <- c(self$description, x)
-  }
-
-  invisible(self)
-}
-
-ca_get_description <- function(self) {
-  self$description
-}
-
-ca_set_example <- function(self, x = character(), comment = "", prefix = "$ ") {
-  self$examples <- x
-  self$comments <- ""
-  invisible(self)
-}
-
-ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
-  if (is.null(x)) {
-    return(invisible(self))
-  }
-
-  x <- paste0(prefix, x)
-  self$examples <- c(self$examples, x)
-  self$comments <- c(self$comments, comment)
-  invisible(self)
-}
-
-ca_get_examples <- function(self) {
-  self$examples
-}
-
-ca_write_usage <- function(self) {
-  x <- vapply(
-    self$get_args(included = FALSE),
-    function(arg) arg$get_help()[1],
-    NA_character_
-  )
-  paste(sprintf("[%s]", x), collapse = " ")
-}
-
-ca_resolve <- function(self) {
-  # loop through the possibly arg in argList.  When found in args, extract and
-  # determine what the param should be.  Take into account the action: none
-  if (self$resolved) {
-    return(invisible(self))
-  }
-
-  # reset if not unsuccessful
-  on.exit(
-    expr =  if (!self$resolved) {
-      self$working <- self$get_input()
-    },
-    add = TRUE
-  )
-
-  # Sort smarter.  Flag argument just need to be present and then can be
-  # dropped.  Single value arguments are easier to match, should always have
-  # that value present if arg is present. Non-multiple value arguments have at
-  # least a limit to the number of values that can be found.
-  args <- self$get_args()
-
-  arg_order <- unique(
-    c(
-      wapply(args, function(i) i$action == "flag"),
-      wapply(args, function(i) i$action == "list"),
-      seq_along(args),
-      # dots must always be parsed last
-      wapply(args, function(i) i$positional),
-      wapply(args, function(i) i$action == "dots")
-    ),
-    fromLast = TRUE
-  )
-
-  arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$values <- vector("list", length(arg_order))
-  names(self$values) <- arg_names[arg_order]
-
-  for (arg in args[arg_order]) {
-    self$set_values(arg$get_name(), arg$parse_value(self))
-  }
-
-  if (length(self$get_working())) {
-    warning(
-      "Not all values parsed:\n",
-      to_string(self$get_working()),
-      call. = FALSE
-    )
-  }
-
-  self$values <- self$values[order(arg_order)]
-  self$resolved <- TRUE
-
-  if ("help" %in% self$included) {
-    m <- match("help", names(self$values), 0L)
-    if (self$values$help) {
-      self$help()
-      exit()
-      return(invisible(self))
-    }
-    self$values <- self$values[-m]
-  }
-
-  if ("version" %in% self$included) {
-    m <- match("version", names(self$values), 0L)
-    if (self$values$version) {
-      self$version()
-      exit()
-      return(invisible(self))
-    }
-    self$values <- self$values[-m]
-  }
-
-  self
-}
-
-ca_parse <- function(self) {
-  self$resolve()
-  values <- self$get_values()
-  # clean up names
-  regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  values
-}
-
-ca_add_argument <- function(
-    self,
-    ...,
-    n = NA_integer_,
-    action = NULL,
-    convert = default_convert,
-    options = NULL,
-    default = NULL,
-    info = NULL
-) {
-  if (is_arg(..1)) {
-    arg <- ..1
-  } else {
-    arg <- new_arg(
-      aliases = list(...),
-      action = action,
-      options = options,
-      convert = convert,
-      default = default,
-      info = info,
-      n = as.integer(n)
-    )
-  }
-
-  stopifnot(is_arg(arg))
-
-  # update arg counter now
-  self$arg_counter()
-  self$append_arg(arg)
-  self$resolved <- FALSE
-  invisible(self)
-}
-
-ca_get_working <- function(self, i = TRUE) {
-  if (length(self$working)) {
-    self$working[i]
-  } else {
-    character()
-  }
-}
-
-ca_remove_working <- function(self, i) {
-  self$working <- self$working[-i]
-  self
-}
-
-ca_get_args <- function(self, included = TRUE) {
-  if (included) {
-    return(self$argList)
-  }
-
-  nms <- sapply(self$argList, function(arg) arg$get_name())
-  ok <- match(nms, self$included, 0L) == 0L
-  self$argList[ok]
-}
-
-ca_get_input <- function(self) {
-  self$input
-}
-
-ca_set_input <- function(self, value) {
-  self$input <- as.character(value)
-  self$working <- self$input
-  self
-}
-
-ca_get_values <- function(self) {
-  self$values
-}
-
-ca_set_values <- function(self, i = NULL, value) {
-  stopifnot(length(i) == 1)
-
-  if (is.null(value)) {
-    return(NULL)
-  }
-
-  self$values[[i]] <- value
-  self
-}
-
-ca_arg_counter <- function(self) {
-  self$nArgs <- self$get_n_args() + 1L
-  self
-}
-
-ca_get_n_args <- function(self) {
-  self$nArgs
-}
-
-ca_append_arg <- function(self, arg) {
-  self$argList[[self$get_n_args()]] <- arg
-  self
-}
-
-# helpers -----------------------------------------------------------------
-
-is_command_args <- function(x) {
-  identical(class(x), structure("scribeCommandArgs", package = "scribe"))
-}

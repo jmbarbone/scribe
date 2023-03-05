@@ -1,7 +1,14 @@
 
-# slightly different here
 
-`%||%` <- function(x, y) { if (is_empty(x)) y else x } # nolint: brace_linter.
+`%||%` <- function(x, y) {
+  # slightly different here
+  if (is_empty(x)) y else x
+}
+
+replace2 <- function(x, i, value) {
+  x[[i]] <- value
+  x
+}
 
 is_empty <- function(x) {
   if (is.function(x)) {
@@ -33,23 +40,10 @@ is_intish <- function(x) {
   !is.null(x) && (is.numeric(x) | all(is.na(x))) && !isFALSE(x %% 1 == 0)
 }
 
-maybe_quit <- function(force = !interactive()) {
-  if (force) quit(save = "no", status = 0L) else invisible() # nocov
-}
-
-
-# nolint start: object_name_linter.
-wapply <- function(x, FUN, ...) {
-  FUN <- match.fun(FUN)
-  # nolint end: object_name_linter.
-  fun <- function(x, ...) isTRUE(FUN(x, ...))
-  which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
-}
-
 exit <- function(
     # allow for manual checking
-    force = !getOption("scribe.interactive", interactive())
-  ) {
+  force = !getOption("scribe.interactive", interactive())
+) {
 
   # nocov start
   if (force) {
@@ -59,6 +53,18 @@ exit <- function(
   # nocov end
 
   invisible()
+}
+
+maybe_quit <- function(force = !interactive()) {
+  if (force) quit(save = "no", status = 0L) else invisible() # nocov
+}
+
+# nolint start: object_name_linter.
+wapply <- function(x, FUN, ...) {
+  FUN <- match.fun(FUN)
+  # nolint end: object_name_linter.
+  fun <- function(x, ...) isTRUE(FUN(x, ...))
+  which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }
 
 print_scribe_version <- function() {

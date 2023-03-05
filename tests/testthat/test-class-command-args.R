@@ -52,8 +52,8 @@ test_that("command_args() handles dots", {
 test_that("bad arguments don't create NULLs", {
   ca <- command_args(include = NA)
   expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
-  expect_identical(ca$get_n_args(), 0L)
-  expect_identical(ca$argList, list())
+  expect_identical(length(ca$args), 0L)
+  expect_identical(ca$args, list())
 })
 
 test_that("resolving", {
@@ -69,10 +69,10 @@ test_that("resolving", {
 
   ca <- command_args("1")
   ca$add_argument("foo", convert = function(x) stop("my error"))
-  w <- ca$get_working()
+  w <- ca_get_working(ca)
   expect_error(ca$resolve(), "my error")
   expect_false(ca$resolved)
-  expect_identical(w, ca$get_working())
+  expect_identical(w, ca_get_working(ca))
 })
 
 test_that("$add_argument('...', default = character()) [#3]", {
@@ -126,6 +126,14 @@ test_that("$add_argument()", {
   obj <- ca$parse()
   exp <- list(foo = TRUE, bar = TRUE)
   expect_identical(obj, exp)
+})
+
+test_that("$add_argument(named list)", {
+  ca <- command_args()
+  expect_warning(
+    ca$add_argument("foo", bad_name = "bar"),
+    "names: bad_name"
+  )
 })
 
 test_that("$add_argument() after initialization [#19]", {

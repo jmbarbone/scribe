@@ -8,25 +8,47 @@
 \description{
 Reference class object for managing command line arguments.
 }
+\details{
+This class manages the command line argument inputs when passed via
+the \link{Rscript} utility.  Take the simple script below which adds two
+numbers, which we will save in an executable file called \code{add.R},
+
+\if{html}{\out{<div class="sourceCode sh">}}\preformatted{#!/usr/bin/env Rscript
+
+library(scribe)
+ca <- command_args()
+ca$add_argument("--value1", default = 0L)
+ca$add_argument("--value2", default = 0L)
+args <- ca$parse()
+writeLines(args$value1 + args$value2)
+}\if{html}{\out{</div>}}
+
+When called by a terminal, we can pass arguments and return a function.
+
+\if{html}{\out{<div class="sourceCode sh">}}\preformatted{add.R --value1 10 --value2 1
+11
+}\if{html}{\out{</div>}}
+
+When testing, you can simulate command line arguments by passing them into
+the \code{input} field. By default, this will grab values from
+\code{\link[base:commandArgs]{base::commandArgs()}}, so use with the \link{Rscript} utility doesn't require
+any extra steps.
+
+Most methods are designed to return \code{.self}, or the \link{scribeCommandArgs}
+class. The exceptions to these are the the \verb{$get_*()} methods, which return
+their corresponding values, and \verb{$parse()} which returns a named \code{list} of
+the parsed input values.
+}
 \section{Fields}{
 
 \describe{
 \item{\code{input}}{\verb{[character]}\cr A character vector of command line arguments.
 See also \code{\link[=command_args]{command_args()}}}
 
-\item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to
-track parsing progress and is not meant to be accessed directly.}
-
 \item{\code{values}}{\verb{[list]}\cr A named \code{list} of values.  Empty on initialization
 and populated during argument resolving.}
 
-\item{\code{argList}}{\verb{[list]}\cr a List of \link{scribeArg}s}
-
-\item{\code{nArgs}}{\verb{[interger]}\cr A current counter for the number of \link{scribeArg}s
-included}
-
-\item{\code{resolved}}{\verb{[logical]}\cr A \code{logical} value indicated if the \code{resolve()}
-method has been successfully executed.}
+\item{\code{args}}{\verb{[list]}\cr a List of \link{scribeArg}s}
 
 \item{\code{description}}{\verb{[character]}\cr Additional help information}
 
@@ -35,6 +57,12 @@ method has been successfully executed.}
 \item{\code{examples}}{\verb{[character]}\cr Examples to print with help}
 
 \item{\code{comments}}{\verb{[character]}\cr Comments printed with}
+
+\item{\code{resolved}}{\verb{[logical]}\cr A \code{logical} value indicated if the
+\verb{$resolve()} method has been successfully executed.}
+
+\item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to
+track parsing progress and is not meant to be accessed directly.}
 }}
 
 \section{Methods}{
@@ -48,7 +76,7 @@ method has been successfully executed.}
   default = NULL,
   n = NA_integer_,
   info = NULL
-)}}{Add a \link{scribeArg} to \code{argList}
+)}}{Add a \link{scribeArg} to \code{args}
 
     \describe{
       \item{\code{...}}{Either aliases or a \link{scribeArg}.  If the latter,
@@ -73,15 +101,12 @@ method has been successfully executed.}
       \item{\code{prefix}}{An optional prefix for the example}
     }}
 
-\item{\code{append_arg(arg)}}{Append a new \link{scribeArg} value to \code{argList}
+\item{\code{get_args(included = TRUE)}}{Retrieve \code{args}
 
     \describe{
-      \item{\code{arg}}{The \link{scribeArg} to include}
+      \item{\code{included}}{If \code{TRUE} also returns included default
+        \link{scribeArg}s defined in \code{$initialize()}}
     }}
-
-\item{\code{arg_counter()}}{Increase the value of \code{nArgs} by \code{1L}}
-
-\item{\code{get_args(included = TRUE)}}{Retrieve \code{argList}}
 
 \item{\code{get_description()}}{Retrieve \code{description}}
 
@@ -89,28 +114,26 @@ method has been successfully executed.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_n_args()}}{Retrieve the current number of \link{scribeArg}s}
-
 \item{\code{get_values()}}{Retrieve \code{values}}
-
-\item{\code{get_working()}}{Retrieve \code{working}}
 
 \item{\code{help()}}{Print the help information}
 
-\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{    Initialize the \link{scribeCommandArgs} object
-
-    See \strong{fields} for parameter information.
-    }
-
-\item{\code{parse()}}{Return the parsed values of from each \code{argList}}
-
-\item{\code{remove_working(i)}}{Retrieve \code{working}
+\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
+    \code{\link[=command_args]{command_args()}} is recommended rather than
+    calling this method directly.
 
     \describe{
-      \item{\code{i}}{Index value of \code{working} to remove}
+      \item{\code{input}}{A \code{character} vector of command line arguments
+        to parse}
+      \item{\code{include}}{A character vector denoting which default
+        \link{scribeArg}s to include in \code{args}}
     }}
 
-\item{\code{resolve()}}{Resolve the values of each \link{scribeArg} in \code{argList}}
+\item{\code{parse()}}{Return a named \code{list} of parsed values of from each \link{scribeArg}
+in \code{args}}
+
+\item{\code{resolve()}}{Resolve the values of each \link{scribeArg} in \code{args}.  This method
+is called prior to $parse()}
 
 \item{\code{set_description(..., sep = "")}}{Set the value of \code{description}
 
@@ -141,7 +164,45 @@ method has been successfully executed.}
     }}
 
 \item{\code{version()}}{Print the \link{scribe-package} version}
-
-\item{\code{write_usage()}}{Write usage information to a \code{character} vector}
 }}
 
+\examples{
+# command_args() is recommended over direct use of scribeCommandArgs$new()
+
+ca <- command_args(c(1, 2, 3, "--verbose"))
+ca$add_argument("--verbose", action = "flag")
+ca$add_argument("...", "values", info = "values to add", default = 0.0)
+args <- ca$parse()
+
+if (args$verbose) {
+  message("Adding ", length(args$values), " values")
+}
+
+sum(args$values)
+
+# $parse() returns a named list, which means scribeCommandArgs can function
+# as a wrapper for calling R functions inside Rscript
+
+ca <- command_args(c("mean", "--size", 20, "--absolute"))
+ca$add_argument("fun", action = "list")
+ca$add_argument("--size", default = 5L)
+ca$add_argument("--absolute", action = "flag")
+args <- ca$parse()
+
+my_function <- function(fun, size, absolute = FALSE) {
+  fun <- match.fun(fun)
+  x <- sample(size, size, replace = TRUE)
+  res <- fun(x)
+  if (absolute) res <- abs(res)
+  res
+}
+
+do.call(my_function, args)
+}
+\seealso{
+Other scribe: 
+\code{\link{command_args}()},
+\code{\link{new_arg}()},
+\code{\link{scribeArg-class}}
+}
+\concept{scribe}
