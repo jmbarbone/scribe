@@ -52,8 +52,8 @@ test_that("command_args() handles dots", {
 test_that("bad arguments don't create NULLs", {
   ca <- command_args(include = NA)
   expect_error(ca$add_argument("-a", convert = as.integer, default = "1"))
-  expect_identical(ca$get_n_args(), 0L)
-  expect_identical(ca$argList, list())
+  expect_identical(length(ca$args), 0L)
+  expect_identical(ca$args, list())
 })
 
 test_that("resolving", {

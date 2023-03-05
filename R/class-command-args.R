@@ -1,5 +1,4 @@
 
-
 #' {scribe} command arguments
 #'
 #' Reference class object for managing command line arguments.
@@ -10,9 +9,7 @@
 #'   track parsing progress and is not meant to be accessed directly.
 #' @field values `[list]`\cr A named `list` of values.  Empty on initialization
 #'   and populated during argument resolving.
-#' @field argList `[list]`\cr a List of [scribeArg]s
-#' @field nArgs `[interger]`\cr A current counter for the number of [scribeArg]s
-#'   included
+#' @field args `[list]`\cr a List of [scribeArg]s
 #' @field resolved `[logical]`\cr A `logical` value indicated if the `resolve()`
 #'   method has been successfully executed.
 #' @field description `[character]`\cr Additional help information
@@ -25,15 +22,14 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
   fields = list(
     input = "character",
-    working = "character",
     values = "list",
-    argList = "list",
-    nArgs = "integer",
+    args = "list",
     resolved = "logical",
     description = "character",
     included = "character",
     examples = "character",
-    comments = "character"
+    comments = "character",
+    working = "character"
   )
 )
 
@@ -67,12 +63,12 @@ scribeCommandArgs$methods(
   },
 
   resolve = function() {
-    "Resolve the values of each \\link{scribeArg} in \\code{argList}"
+    "Resolve the values of each \\link{scribeArg} in \\code{args}"
     ca_resolve(.self)
   },
 
   parse = function() {
-    "Return the parsed values of from each \\code{argList}"
+    "Return the parsed values of from each \\code{args}"
     ca_parse(.self)
   },
 
@@ -85,7 +81,7 @@ scribeCommandArgs$methods(
     n = NA_integer_,
     info = NULL
   ) {
-    "Add a \\link{scribeArg} to \\code{argList}
+    "Add a \\link{scribeArg} to \\code{args}
 
     \\describe{
       \\item{\\code{...}}{Either aliases or a \\link{scribeArg}.  If the latter,
@@ -107,7 +103,7 @@ scribeCommandArgs$methods(
   },
 
   get_args = function(included = TRUE) {
-    "Retrieve \\code{argList}"
+    "Retrieve \\code{args}"
     ca_get_args(.self, included = included)
   },
 
@@ -154,23 +150,13 @@ scribeCommandArgs$methods(
     ca_set_input(.self, value = value)
   },
 
-  arg_counter = function() {
-    "Increase the value of \\code{nArgs} by \\code{1L}"
-    ca_arg_counter(.self)
-  },
-
   append_arg = function(arg) {
-    "Append a new \\link{scribeArg} value to \\code{argList}
+    "Append a new \\link{scribeArg} value to \\code{args}
 
     \\describe{
       \\item{\\code{arg}}{The \\link{scribeArg} to include}
     }"
     ca_append_arg(.self, arg)
-  },
-
-  get_n_args = function() {
-    "Retrieve the current number of \\link{scribeArg}s"
-    ca_get_n_args(.self)
   },
 
   write_usage = function() {

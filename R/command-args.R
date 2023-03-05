@@ -45,8 +45,7 @@ ca_initialize <- function(
 ) {
   # default values
   self$initFields(
-    argList = list(),
-    nArgs = 0L,
+    args = list(),
     resolved = FALSE,
     description = character(),
     examples = character(),
@@ -194,7 +193,7 @@ ca_write_usage <- function(self) {
 }
 
 ca_resolve <- function(self) {
-  # loop through the possibly arg in argList.  When found in args, extract and
+  # loop through the possibly arg in args.  When found in args, extract and
   # determine what the param should be.  Take into account the action: none
   if (self$resolved) {
     return(invisible(self))
@@ -303,8 +302,6 @@ ca_add_argument <- function(
 
   stopifnot(is_arg(arg))
 
-  # update arg counter now
-  self$arg_counter()
   self$append_arg(arg)
   self$field("resolved", FALSE)
   invisible(self)
@@ -325,12 +322,12 @@ ca_remove_working <- function(self, i) {
 
 ca_get_args <- function(self, included = TRUE) {
   if (included) {
-    return(self$argList)
+    return(self$args)
   }
 
-  nms <- sapply(self$argList, function(arg) arg$get_name())
+  nms <- sapply(self$args, function(arg) arg$get_name())
   ok <- match(nms, self$included, 0L) == 0L
-  self$argList[ok]
+  self$args[ok]
 }
 
 ca_get_input <- function(self) {
@@ -358,17 +355,8 @@ ca_set_values <- function(self, i = NULL, value) {
   self
 }
 
-ca_arg_counter <- function(self) {
-  self$field("nArgs", self$get_n_args() + 1L)
-  self
-}
-
-ca_get_n_args <- function(self) {
-  self$nArgs
-}
-
 ca_append_arg <- function(self, arg) {
-  self$field("argList", replace2(self$argList, self$get_n_args(), arg))
+  self$field("args", replace2(self$args, length(self$args) + 1L, arg))
   self
 }
 
