@@ -27,6 +27,28 @@ new_arg <- function(
   )
 }
 
+scribe_help_arg <- function() {
+  new_arg(
+    aliases = "--help",
+    action = "flag",
+    default = FALSE,
+    n = 0,
+    info = "prints this and quietly exits",
+    options = list(no = FALSE)
+  )
+}
+
+scribe_version_arg <- function() {
+  new_arg(
+    aliases = "--version",
+    action = "flag",
+    default = FALSE,
+    n = 0,
+    info = "prints the version of {scribe} and quietly exits",
+    options = list(no = FALSE)
+  )
+}
+
 # wrappers ----------------------------------------------------------------
 
 arg_initialize <- function( # nolint: cyclocomp_linter.
