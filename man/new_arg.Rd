@@ -10,9 +10,8 @@ new_arg(
   convert = default_convert,
   options = list(),
   default = NULL,
-  info = character(),
-  n = NA_integer_,
-  id = NA_integer_
+  help = NULL,
+  n = NA_integer_
 )
 }
 \arguments{

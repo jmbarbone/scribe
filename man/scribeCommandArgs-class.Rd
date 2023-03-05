@@ -48,7 +48,7 @@ method has been successfully executed.}
   default = NULL,
   n = NA_integer_,
   info = NULL,
-  id = NULL
+  arg = NULL
 )}}{Add a \link{scribeArg} to \code{argList}
 
     \describe{

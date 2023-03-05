@@ -53,7 +53,6 @@ printed}
 
 \item{\code{initialize(
   aliases = NULL,
-  id = NULL,
   action = NULL,
   options = NULL,
   convert = NULL,

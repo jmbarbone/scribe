@@ -140,8 +140,7 @@ scribeCommandArgs$methods(
       convert = convert,
       default = default,
       n = n,
-      info = info,
-      id = id
+      info = info
     )
   },
 

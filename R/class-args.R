@@ -13,7 +13,7 @@ new_arg <- function(
     convert = default_convert,
     options = list(),
     default = NULL,
-    help    = NULL,
+    info    = NULL,
     n       = NA_integer_
 ) {
   scribeArg$new(
