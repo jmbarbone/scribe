@@ -59,6 +59,7 @@
 #' # special `...` action which absorbs left-over arguments
 #' new_arg("values", action = "dots", info = "list of values")
 #' new_arg("...", info = "list of values") # defaults when alias is "..."
+#' @family scribe
 #' @export
 scribeArg <- methods::setRefClass( # nolint: object_name_linter.
   "scribeArg",

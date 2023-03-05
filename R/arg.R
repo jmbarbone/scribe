@@ -6,6 +6,7 @@
 #' @param aliases,action,convert,options,default,info,n See `$initialize()`
 #'   in [scribeArg].
 #' @returns A [scribeArg] object
+#' @family scribe
 #' @export
 new_arg <- function(
     aliases = "",

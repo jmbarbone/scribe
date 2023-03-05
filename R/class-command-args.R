@@ -81,6 +81,7 @@
 #' }
 #'
 #' do.call(my_function, args)
+#' @family scribe
 #' @export
 scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
   "scribeCommandArgs",
