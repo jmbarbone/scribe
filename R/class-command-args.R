@@ -88,10 +88,12 @@ scribeCommandArgs$methods(
     default = NULL,
     n = NA_integer_,
     nargs = 1,
-    help = NULL
+    help = NULL,
+    arg = NULL
   ) {
     ca_add_argument(
       self = .self,
+      arg = arg,
       ...,
       action = action,
       options = options,
@@ -441,20 +443,24 @@ ca_add_argument <- function(
     options = NULL,
     nargs = 1L,
     default = NULL,
-    help = NULL
+    help = NULL,
+    arg = NULL
 ) {
   # id starts at 0 because we want to wait for new_arg() to not fail before
   # adding to the counter
-  arg <- new_arg(
-    id = self$get_n_args(),
-    aliases = list(...),
-    action = action,
-    options = options,
-    convert = convert,
-    default = default,
-    help = help,
-    n = as.integer(n)
-  )
+  if (is.null(arg)) {
+    arg <- new_arg(
+      aliases = list(...),
+      action = action,
+      options = options,
+      convert = convert,
+      default = default,
+      help = help,
+      n = as.integer(n)
+    )
+  }
+
+  stopifnot(is_arg(arg))
 
   # update arg counter now
   self$arg_counter()
