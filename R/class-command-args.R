@@ -150,7 +150,8 @@ scribeCommandArgs$methods(
   },
 
   set_input = function(value) {
-    "Set \\code{input}
+    "Set \\code{input}.  Note: when called, \\code{resolved} is (re)set to
+     \\code{FALSE} and values need to be parsed again.
 
     \\describe{
       \\item{\\code{value}}{Value to set}

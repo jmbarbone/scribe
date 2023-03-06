@@ -236,6 +236,7 @@ ca_get_input <- function(self) {
 ca_set_input <- function(self, value) {
   self$field("input", as.character(value))
   self$field("working", self$input)
+  self$field("resolved", FALSE)
   self
 }
 
