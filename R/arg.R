@@ -177,7 +177,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("n", as.integer(n))
   self$field("positional", as.logical(positional))
   self$field("default", default)
-  self
+  invisible(self)
 }
 
 arg_show <- function(self) {

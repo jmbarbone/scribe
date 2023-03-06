@@ -78,7 +78,7 @@ ca_initialize <- function(
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
-  self
+  invisible(self)
 }
 
 ca_show <- function(self, ...) {
@@ -217,15 +217,21 @@ ca_resolve <- function(self) {
     self$field("values", self$values[-m])
   }
 
-  self
+  invisible(self)
 }
 
 ca_parse <- function(self) {
   self$resolve()
   values <- self$get_values()
+
   # clean up names
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
   regmatches(names(values), gregexpr("-", names(values))) <- "_"
+
+  if (any(names(values)[vapply(values, isTRUE, NA)] %in% self$included)) {
+    return(invisible(values))
+  }
+
   values
 }
 
@@ -237,7 +243,7 @@ ca_set_input <- function(self, value) {
   self$field("input", as.character(value))
   self$field("working", self$input)
   self$field("resolved", FALSE)
-  self
+  invisible(self)
 }
 
 ca_get_values <- function(self) {
@@ -252,7 +258,7 @@ ca_set_values <- function(self, i = NULL, value) {
   }
 
   self$field("values", replace2(self$values, i, value))
-  self
+  invisible(self)
 }
 
 ca_get_args <- function(self, included = TRUE) {
@@ -371,7 +377,7 @@ ca_remove_working <- function(self, i) {
 
 ca_append_arg <- function(self, arg) {
   self$field("args", replace2(self$args, length(self$args) + 1L, arg))
-  self
+  invisible(self)
 }
 
 ca_write_usage <- function(self) {
