@@ -18,6 +18,18 @@ The goal of scribe is to provide a detailed argument parser for
 library(scribe)
 ```
 
+Install `{scribe}` from CRAN with:
+
+``` r
+install.packages("scribe")
+```
+
+Alternatively, you can install the development version of `{scribe}`
+[GitHub](https://github.com/) with:
+
+    # install.packages("devtools")
+    devtools::install_github("jmbarbone/scribe")
+
 You can enter command arguments as a vector to test out the behavior.
 Arguments can be added to the `scribeCommandArgs` class (here as `ca`).
 Default behavior tries to parse objects but additional control can be
