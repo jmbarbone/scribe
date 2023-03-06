@@ -11,9 +11,13 @@
 #'   vector.
 #' @param include Special default arguments to included.  See `$initialize()`
 #'   in [scribeCommandArgs] for more details.
+#' @examples
+#' command_args()
+#' command_args(c("-a", 1, "-b", 2))
+#' command_args(string = "-a 1 -b 2")
 #' @returns A [scribeCommandArgs] object
-#' @export
 #' @family scribe
+#' @export
 command_args <- function(
     x = NULL,
     include = c("help", "version", NA_character_),

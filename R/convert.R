@@ -16,8 +16,11 @@
 #'   implemented for `factor`s to more safely convert.  Lastly, `NULL` will do
 #'   nothing and will simply return `x`.
 #'
-#' @export
+#' @examples
+#' str(value_convert("2023-03-05", as.Date))
+#' value_convert("a", factor(letters))
 #' @returns A parsed value from `x`
+#' @export
 value_convert <- function(x, to = default_convert) {
   if (!is.character(x) || is.null(to)) {
     return(x)
