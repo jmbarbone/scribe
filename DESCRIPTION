@@ -10,6 +10,7 @@ Authors@R:
       comment = c(ORCID = "0000-0001-9788-3628")
     )
 Description: A base R solution with basic argument parsing for use with Rscript.
+Maintainer: Jordan Mark Barbone <jmbarbone@gmail.com>
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
