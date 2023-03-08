@@ -1,5 +1,5 @@
 Package: scribe
-Title: Command Argument Parsing for R
+Title: Command Argument Parsing
 Version: 0.1.0
 Authors@R: 
     person(
