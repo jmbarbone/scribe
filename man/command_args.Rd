@@ -27,6 +27,11 @@ A \link{scribeCommandArgs} object
 \description{
 Make a new \link{scribeCommandArgs} object
 }
+\examples{
+command_args()
+command_args(c("-a", 1, "-b", 2))
+command_args(string = "-a 1 -b 2")
+}
 \seealso{
 Other scribe: 
 \code{\link{new_arg}()},

@@ -11,9 +11,13 @@
 #'   vector.
 #' @param include Special default arguments to included.  See `$initialize()`
 #'   in [scribeCommandArgs] for more details.
+#' @examples
+#' command_args()
+#' command_args(c("-a", 1, "-b", 2))
+#' command_args(string = "-a 1 -b 2")
 #' @returns A [scribeCommandArgs] object
-#' @export
 #' @family scribe
+#' @export
 command_args <- function(
     x = NULL,
     include = c("help", "version", NA_character_),
@@ -74,7 +78,7 @@ ca_initialize <- function(
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
-  self
+  invisible(self)
 }
 
 ca_show <- function(self, ...) {
@@ -213,15 +217,21 @@ ca_resolve <- function(self) {
     self$field("values", self$values[-m])
   }
 
-  self
+  invisible(self)
 }
 
 ca_parse <- function(self) {
   self$resolve()
   values <- self$get_values()
+
   # clean up names
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
   regmatches(names(values), gregexpr("-", names(values))) <- "_"
+
+  if (any(names(values)[vapply(values, isTRUE, NA)] %in% self$included)) {
+    return(invisible(values))
+  }
+
   values
 }
 
@@ -232,7 +242,8 @@ ca_get_input <- function(self) {
 ca_set_input <- function(self, value) {
   self$field("input", as.character(value))
   self$field("working", self$input)
-  self
+  self$field("resolved", FALSE)
+  invisible(self)
 }
 
 ca_get_values <- function(self) {
@@ -247,7 +258,7 @@ ca_set_values <- function(self, i = NULL, value) {
   }
 
   self$field("values", replace2(self$values, i, value))
-  self
+  invisible(self)
 }
 
 ca_get_args <- function(self, included = TRUE) {
@@ -366,7 +377,7 @@ ca_remove_working <- function(self, i) {
 
 ca_append_arg <- function(self, arg) {
   self$field("args", replace2(self$args, length(self$args) + 1L, arg))
-  self
+  invisible(self)
 }
 
 ca_write_usage <- function(self) {

@@ -150,7 +150,8 @@ is called prior to $parse()}
       \item{\code{prefix}}{An optional prefix for the example}
     }}
 
-\item{\code{set_input(value)}}{Set \code{input}
+\item{\code{set_input(value)}}{Set \code{input}.  Note: when called, \code{resolved} is (re)set to
+     \code{FALSE} and values need to be parsed again.
 
     \describe{
       \item{\code{value}}{Value to set}

@@ -24,6 +24,11 @@ A \link{scribeArg} object
 \description{
 Make a new \link{scribeArg} object
 }
+\examples{
+new_arg()
+new_arg("values", action = "dots")
+new_arg(c("-f", "--force"), action = "flag")
+}
 \seealso{
 Other scribe: 
 \code{\link{command_args}()},

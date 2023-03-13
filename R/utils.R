@@ -55,10 +55,6 @@ exit <- function(
   invisible()
 }
 
-maybe_quit <- function(force = !interactive()) {
-  if (force) quit(save = "no", status = 0L) else invisible() # nocov
-}
-
 # nolint start: object_name_linter.
 wapply <- function(x, FUN, ...) {
   FUN <- match.fun(FUN)

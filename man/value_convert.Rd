@@ -29,3 +29,7 @@ types.  Here, the values of \code{\link[=mode]{mode()}}, \code{\link[=storage.mo
 implemented for \code{factor}s to more safely convert.  Lastly, \code{NULL} will do
 nothing and will simply return \code{x}.
 }
+\examples{
+str(value_convert("2023-03-05", as.Date))
+value_convert("a", factor(letters))
+}

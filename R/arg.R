@@ -5,6 +5,10 @@
 #'
 #' @param aliases,action,convert,options,default,info,n See `$initialize()`
 #'   in [scribeArg].
+#' @examples
+#' new_arg()
+#' new_arg("values", action = "dots")
+#' new_arg(c("-f", "--force"), action = "flag")
 #' @returns A [scribeArg] object
 #' @family scribe
 #' @export
@@ -173,7 +177,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("n", as.integer(n))
   self$field("positional", as.logical(positional))
   self$field("default", default)
-  self
+  invisible(self)
 }
 
 arg_show <- function(self) {

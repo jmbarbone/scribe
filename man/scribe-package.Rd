@@ -4,9 +4,9 @@
 \name{scribe-package}
 \alias{scribe}
 \alias{scribe-package}
-\title{scribe: Command Argument Parsing for R}
+\title{scribe: Command Argument Parsing}
 \description{
-A base R solution with basic argument parsing for use with Rscript.
+A base dependency solution with basic argument parsing for use with 'Rscript'.
 }
 \details{
 For a quick overview, see \code{vignette("scribe")}
