@@ -338,6 +338,13 @@ test_that("versions", {
   expect_output(ca$version())
 })
 
+test_that("positional defaults [#52]", {
+  ca <- command_args(include = NA)
+  ca$add_argument("pos", default = 1)
+  obj <- ca$parse()
+  exp <- list(pos = 1)
+  expect_identical(obj, exp)
+})
 
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")
