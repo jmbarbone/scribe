@@ -331,9 +331,14 @@ arg_parse_value <- function(self, ca) {
       }
     },
     list = {
-      m <- m + seq.int(0L, self$n)
-      value <- ca_get_working(ca)[m[-off]]
-      ca_remove_working(ca, m)
+        m <- m + seq.int(0L, self$n)
+        value <- ca_get_working(ca)[m[-off]]
+
+        if (self$positional && is.na(value)) {
+          value <- self$get_default()
+        } else {
+          ca_remove_working(ca, m)
+        }
     },
     flag = {
       value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
