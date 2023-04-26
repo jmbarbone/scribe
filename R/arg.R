@@ -91,10 +91,17 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       convert <- NULL
       options$no <- options$no %||% TRUE
 
-      if (!(isFALSE(default) | is.null(default))) {
-        warning("flag must be NULL or TRUE when action=\"flag\"", call. = FALSE)
+      if (is.null(default)) {
+        default <- FALSE
       }
-      default <- FALSE
+
+      if (!(is.logical(default) && length(default) == 1 && !is.na(default))) {
+        warning(
+          "flag must be NULL, TRUE, or FALSE when action=\"flag\"",
+          call. = FALSE
+        )
+        default <- FALSE
+      }
 
       if (is.na(n)) {
         n <- 0L
@@ -342,6 +349,11 @@ arg_parse_value <- function(self, ca) {
     },
     flag = {
       value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
+
+      if (value) {
+        value <- !self$get_default()
+      }
+
       ca_remove_working(ca, m)
     }
   )
