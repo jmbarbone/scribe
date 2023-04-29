@@ -104,6 +104,11 @@ test_that("action = 'flag' allows TRUE [#55]", {
 
   ca$set_input("--foo")
   obj <- ca$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--no-foo")
+  obj <- ca$parse()
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
 })

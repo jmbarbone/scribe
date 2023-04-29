@@ -349,11 +349,6 @@ arg_parse_value <- function(self, ca) {
     },
     flag = {
       value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
-
-      if (value) {
-        value <- !self$get_default()
-      }
-
       ca_remove_working(ca, m)
     }
   )
