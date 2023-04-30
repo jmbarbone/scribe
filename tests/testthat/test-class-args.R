@@ -92,6 +92,27 @@ test_that("new_arg(action = 'default')", {
   expect_identical(new_arg(options = list(no = FALSE))$action, "flag")
 })
 
+test_that("action = 'flag' allows TRUE [#55]", {
+  ca <- command_args()
+  expect_warning(
+    ca$add_argument("--foo", action = "flag", default = TRUE),
+    NA
+  )
+  obj <- ca$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--foo")
+  obj <- ca$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--no-foo")
+  obj <- ca$parse()
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+})
+
 test_that("snapshots", {
   arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
