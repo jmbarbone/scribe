@@ -71,6 +71,10 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   options <- options %||% list()
 
   if (action == "default") {
+    if (is_arg(default)) {
+      action <- default$get_action()
+    }
+
     # consider other sorts of improvements
     if ("no" %in% names(options) || isTRUE(n == 0L)) {
       action <- "flag"
@@ -91,16 +95,18 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       convert <- NULL
       options$no <- options$no %||% TRUE
 
-      if (is.null(default)) {
-        default <- FALSE
-      }
+      if (!is_arg(default)) {
+        if (is.null(default)) {
+          default <- FALSE
+        }
 
-      if (!(is.logical(default) && length(default) == 1 && !is.na(default))) {
-        warning(
-          "flag must be NULL, TRUE, or FALSE when action=\"flag\"",
-          call. = FALSE
-        )
-        default <- FALSE
+        if (!(is.logical(default) && length(default) == 1 && !is.na(default))) {
+          warning(
+            "flag must be NULL, TRUE, or FALSE when action=\"flag\"",
+            call. = FALSE
+          )
+          default <- FALSE
+        }
       }
 
       if (is.na(n)) {
@@ -184,6 +190,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("n", as.integer(n))
   self$field("positional", as.logical(positional))
   self$field("default", default)
+  self$field("resolved", FALSE)
+  self$field("value", NULL)
   invisible(self)
 }
 
@@ -287,7 +295,23 @@ arg_get_action  <- function(self) {
 }
 
 arg_get_default <- function(self) {
-  self$default
+  if (is_arg(self$default)) {
+    self$default$get_value()
+  } else {
+    self$default
+  }
+}
+
+arg_get_value <- function(self) {
+  if (!self$is_resolved()) {
+    warning("scribeArg object has not been resolved", call. = FALSE)
+  }
+
+  self$value
+}
+
+arg_is_resolved <- function(self) {
+  isTRUE(self$resolved)
 }
 
 # internal ----------------------------------------------------------------
@@ -314,30 +338,29 @@ arg_parse_value <- function(self, ca) {
   }
 
   if (length(m) == 0L) {
-    return(self$get_default())
-  }
+    value <- self$get_default()
+  } else {
+    if (length(m) > 1L) {
+      warning(
+        sprintf(
+          "w Multiple command arguments matched for [%s]",
+          to_string(alias)
+        ),
+        call = FALSE
+      )
+    }
 
-  if (length(m) > 1L) {
-    warning(
-      sprintf(
-        "w Multiple command arguments matched for [%s]",
-        to_string(alias)
-      ),
-      call = FALSE
-    )
-  }
+    switch(
+      self$action,
+      dots = {
+        value <- ca_get_working(ca)
+        ca_remove_working(ca, seq_along(value))
 
-  switch(
-    self$action,
-    dots = {
-      value <- ca_get_working(ca)
-      ca_remove_working(ca, seq_along(value))
-
-      if (!length(value)) {
-        value <- self$get_default()
-      }
-    },
-    list = {
+        if (!length(value)) {
+          value <- self$get_default()
+        }
+      },
+      list = {
         m <- m + seq.int(0L, self$n)
         value <- ca_get_working(ca)[m[-off]]
 
@@ -346,14 +369,25 @@ arg_parse_value <- function(self, ca) {
         } else {
           ca_remove_working(ca, m)
         }
-    },
-    flag = {
-      value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
-      ca_remove_working(ca, m)
-    }
-  )
+      },
+      flag = {
+        value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
+        ca_remove_working(ca, m)
+      }
+    )
 
-  value <- value_convert(value, to = self$default %||% self$convert)
+    default <-
+      if (is_arg(self$default)) {
+        self$default$get_value()
+      } else {
+        self$default
+      }
+
+    value <- value_convert(value, to = default %||% self$convert)
+  }
+
+  self$field("value", value)
+  self$field("resolved", TRUE)
   value
 }
 
