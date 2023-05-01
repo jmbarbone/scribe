@@ -9,19 +9,22 @@
 ReferenceClass object for managing arguments
 }
 \details{
-The \code{scribeArg} class sets specifications and controls for how
+The \link{scribeArg} class sets specifications and controls for how
 command line arguments are to be parsed.  These are meant to be used in
 conjunction with \link{scribeCommandArgs} and specifically with the \link{Rscript}
-utility.  However, a use can define their own \code{scribeArg} separately.
+utility.  However, a use can define their own \link{scribeArg} separately.
 }
 \section{Fields}{
 
 \describe{
 \item{\code{aliases}}{\verb{[character]}\cr A vector to denote the argument's name}
 
-\item{\code{action}}{\verb{[character]}\cr An action for resolving the argument}
+\item{\code{action}}{\verb{[character]}\cr An action for resolving the argument (see
+\code{default} for note on using another \link{scribeArg} object)}
 
-\item{\code{default}}{\verb{[ANY]}\cr A default value}
+\item{\code{default}}{\verb{[ANY]}\cr A default value.  This can be another \link{scribeArg}
+object.  When that is the case, the default value and action are pass
+through from the other \link{scribeArg} object.}
 
 \item{\code{convert}}{\verb{[ANY]}\cr Passed to the \code{to} argument in \code{\link[=value_convert]{value_convert()}}}
 
@@ -74,7 +77,7 @@ printed}
     See \strong{fields} for parameter information.
     }
 
-\item{\code{is_resolved()}}{Check if arg has been resolved}
+\item{\code{is_resolved()}}{Check if object has been resolved}
 }}
 
 \section{Options}{

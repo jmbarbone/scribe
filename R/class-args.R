@@ -3,10 +3,10 @@
 #'
 #' ReferenceClass object for managing arguments
 #'
-#' @details The `scribeArg` class sets specifications and controls for how
+#' @details The [scribeArg] class sets specifications and controls for how
 #'   command line arguments are to be parsed.  These are meant to be used in
 #'   conjunction with [scribeCommandArgs] and specifically with the [Rscript]
-#'   utility.  However, a use can define their own `scribeArg` separately.
+#'   utility.  However, a use can define their own [scribeArg] separately.
 #'
 #' @section Options:
 #'
@@ -34,8 +34,11 @@
 #' }
 #'
 #' @field aliases `[character]`\cr A vector to denote the argument's name
-#' @field action `[character]`\cr An action for resolving the argument
-#' @field default `[ANY]`\cr A default value
+#' @field action `[character]`\cr An action for resolving the argument (see
+#'   `default` for note on using another [scribeArg] object)
+#' @field default `[ANY]`\cr A default value.  This can be another [scribeArg]
+#'   object.  When that is the case, the default value and action are pass
+#'   through from the other [scribeArg] object.
 #' @field convert `[ANY]`\cr Passed to the `to` argument in [value_convert()]
 #' @field n `[integer]`\cr The length of the values
 #' @field info `[character]`\cr Additional information about the argument when
@@ -152,7 +155,7 @@ scribeArg$methods(
   },
 
   is_resolved = function() {
-    "Check if arg has been resolved"
+    "Check if object has been resolved"
     arg_is_resolved(.self)
   }
 )
