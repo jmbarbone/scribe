@@ -113,6 +113,12 @@ test_that("action = 'flag' allows TRUE [#55]", {
   expect_identical(obj, exp)
 })
 
+test_that("pass arg as default [#54]", {
+  arg <- new_arg("-a")
+  new <- new_arg("-b", default = arg)
+  expect_output(expect_warning(print(new), "has not been resolved"))
+})
+
 test_that("snapshots", {
   arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
