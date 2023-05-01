@@ -43,6 +43,8 @@
 #' @field options `[list]`\cr A named list of options (see **Options**)
 #' @field positional `[logical]`\cr Indicator if the argument is _positional_
 #'   (i.e., not preceded by a `-` or `--` command line argument)
+#' @field resolved `[logical]`\cr Has the object been resolved
+#' @field value `[ANY]`\cr The resolve value
 #'
 #' @examples
 #' # new_arg() is recommended over direct use of scribeArg$new()
@@ -71,7 +73,9 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     n          = "integer",
     info       = "character",
     options    = "list",
-    positional = "logical"
+    positional = "logical",
+    resolved   = "logical",
+    value      = "ANY"
   )
 )
 
@@ -140,5 +144,15 @@ scribeArg$methods(
   get_default = function() {
     "Retrieve the default value"
     arg_get_default(.self)
+  },
+
+  get_value = function() {
+    "Retrieve the resolved value"
+    arg_get_value(.self)
+  },
+
+  is_resolved = function() {
+    "Check if arg has been resolved"
+    arg_is_resolved(.self)
   }
 )
