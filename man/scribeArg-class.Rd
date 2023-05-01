@@ -34,6 +34,10 @@ printed}
 
 \item{\code{positional}}{\verb{[logical]}\cr Indicator if the argument is \emph{positional}
 (i.e., not preceded by a \code{-} or \verb{--} command line argument)}
+
+\item{\code{resolved}}{\verb{[logical]}\cr Has the object been resolved}
+
+\item{\code{value}}{\verb{[ANY]}\cr The resolve value}
 }}
 
 \section{Methods}{
@@ -53,6 +57,8 @@ printed}
       \item{\code{clean}}{When \code{TRUE} removes \code{-}s from text}
     }}
 
+\item{\code{get_value()}}{Retrieve the resolved value}
+
 \item{\code{help()}}{Print out formatted help information}
 
 \item{\code{initialize(
@@ -67,6 +73,8 @@ printed}
 
     See \strong{fields} for parameter information.
     }
+
+\item{\code{is_resolved()}}{Check if arg has been resolved}
 }}
 
 \section{Options}{
