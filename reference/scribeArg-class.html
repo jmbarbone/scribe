@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,10 +49,10 @@
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The <code>scribeArg</code> class sets specifications and controls for how
+    <p>The scribeArg class sets specifications and controls for how
 command line arguments are to be parsed.  These are meant to be used in
 conjunction with <a href="scribeCommandArgs-class.html">scribeCommandArgs</a> and specifically with the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a>
-utility.  However, a use can define their own <code>scribeArg</code> separately.</p>
+utility.  However, a use can define their own scribeArg separately.</p>
     </div>
     <div class="section level2">
     <h2 id="fields">Fields<a class="anchor" aria-label="anchor" href="#fields"></a></h2>
@@ -63,11 +63,14 @@ utility.  However, a use can define their own <code>scribeArg</code> separately.
 
 
 <dt><code>action</code></dt>
-<dd><p><code>[character]</code><br> An action for resolving the argument</p></dd>
+<dd><p><code>[character]</code><br> An action for resolving the argument (see
+<code>default</code> for note on using another scribeArg object)</p></dd>
 
 
 <dt><code>default</code></dt>
-<dd><p><code>[ANY]</code><br> A default value</p></dd>
+<dd><p><code>[ANY]</code><br> A default value.  This can be another scribeArg
+object.  When that is the case, the default value and action are pass
+through from the other scribeArg object.</p></dd>
 
 
 <dt><code>convert</code></dt>
@@ -90,6 +93,14 @@ printed</p></dd>
 <dt><code>positional</code></dt>
 <dd><p><code>[logical]</code><br> Indicator if the argument is <em>positional</em>
 (i.e., not preceded by a <code>-</code> or <code>--</code> command line argument)</p></dd>
+
+
+<dt><code>resolved</code></dt>
+<dd><p><code>[logical]</code><br> Has the object been resolved</p></dd>
+
+
+<dt><code>value</code></dt>
+<dd><p><code>[ANY]</code><br> The resolve value</p></dd>
 
 
 </dl></div>
@@ -122,6 +133,10 @@ printed</p></dd>
 </dl></dd>
 
 
+<dt><code>get_value()</code></dt>
+<dd><p>Retrieve the resolved value</p></dd>
+
+
 <dt><code><a href="https://rdrr.io/r/utils/help.html" class="external-link">help()</a></code></dt>
 <dd><p>Print out formatted help information</p></dd>
 
@@ -137,6 +152,10 @@ printed</p></dd>
 )</code></dt>
 <dd><p>Initialize the scribeArg object</p>
 <p>See <strong>fields</strong> for parameter information.</p></dd>
+
+
+<dt><code>is_resolved()</code></dt>
+<dd><p>Check if object has been resolved</p></dd>
 
 
 </dl></div>
