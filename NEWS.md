@@ -1,5 +1,6 @@
 # scribe (development version)
 
+* `scribeArgs` can now be given a separate `scribeArg` as a default [#54](https://github.com/jmbarbone/scribe/issues/54)
 * positional arguments now can have default values [#52](https://github.com/jmbarbone/scribe/issues/52)
 * `scribeArgs` with `action = 'flag'` now accept `default = TRUE` [#55](https://github.com/jmbarbone/scribe/issues/55)
 

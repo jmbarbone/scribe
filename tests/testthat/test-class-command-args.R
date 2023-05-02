@@ -345,6 +345,32 @@ test_that("positional defaults [#52]", {
   expect_identical(obj, exp)
 })
 
+test_that("pass arg as default [#54]", {
+  ca <- command_args(include = NA)
+  arg <- new_arg("-a", action = "flag")
+  ca$add_argument(arg)
+  ca$add_argument("-b", default = arg)
+
+  obj <- ca$parse()
+  exp <- list(a = FALSE, b = FALSE)
+  expect_identical(obj, exp)
+
+  ca$set_input("-a")
+  obj <- ca$parse()
+  exp <- list(a = TRUE, b = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("-b")
+  obj <- ca$parse()
+  exp <- list(a = FALSE, b = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input(c("-a", "-b"))
+  obj <- ca$parse()
+  exp <- list(a = TRUE, b = TRUE)
+  expect_identical(obj, exp)
+})
+
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")

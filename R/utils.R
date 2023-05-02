@@ -11,7 +11,9 @@ replace2 <- function(x, i, value) {
 }
 
 is_empty <- function(x) {
-  if (is.function(x)) {
+  if (is_arg(x)) {
+    FALSE
+  } else if (is.function(x)) {
     FALSE
   } else {
     is.null(x) || length(x) == 0L || !any(nzchar(x))
