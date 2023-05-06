@@ -42,11 +42,8 @@ is_intish <- function(x) {
   !is.null(x) && (is.numeric(x) | all(is.na(x))) && !isFALSE(x %% 1 == 0)
 }
 
-exit <- function(
-    # allow for manual checking
-  force = !getOption("scribe.interactive", interactive())
-) {
-
+# allow for manual checking
+exit <- function(force = !getOption("scribe.interactive", interactive())) {
   # nocov start
   if (force) {
     # testing in tests/testthat/scripts/help.R

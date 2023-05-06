@@ -1,5 +1,6 @@
 # scribe (development version)
 
+* `options()` for `{scribe}` are now listed in `?scribe` documentation and set in `.onAttach()` [#57](https://github.com/jmbarbone/scribe/issues/57)
 * `--help` no longer fails when `scribeArg` has `length(info) > 1` [#59](https://github.com/jmbarbone/scribe/issues/59)
 * `scribeArgs` can now be given a separate `scribeArg` as a default [#54](https://github.com/jmbarbone/scribe/issues/54)
 * positional arguments now can have default values [#52](https://github.com/jmbarbone/scribe/issues/52)

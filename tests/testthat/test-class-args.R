@@ -123,7 +123,7 @@ test_that("length(info) > 1 [#57]", {
   ca <- command_args("--help")
   ca$add_argument("bad", info = c("one", "two"))
   expect_length(ca$get_args()[[3]]$get_help(), 2)
-  expect_error(ca$parse(), NA)
+  expect_output(ca$parse())
 })
 
 test_that("snapshots", {

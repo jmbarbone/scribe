@@ -11,6 +11,14 @@ A base dependency solution with basic argument parsing for use with 'Rscript'.
 \details{
 For a quick overview, see \code{vignette("scribe")}
 }
+\section{options}{
+
+\describe{
+\item{\code{scribe.flag.no}}{\verb{[TRUE]}\cr Default value when \code{scribeArg} uses action \code{"flag"}}
+\item{\code{scribe.interactive}}{\verb{[NULL]}\cr Controls \code{interactive()} check within internal \code{exit()}}
+}
+}
+
 \seealso{
 Useful links:
 \itemize{

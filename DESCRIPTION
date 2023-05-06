@@ -1,6 +1,6 @@
 Package: scribe
 Title: Command Argument Parsing
-Version: 0.1.0.9003
+Version: 0.1.0.9004
 Authors@R: 
     person(
       given   = "Jordan Mark",
