@@ -119,6 +119,13 @@ test_that("pass arg as default [#54]", {
   expect_output(expect_warning(print(new), "has not been resolved"))
 })
 
+test_that("length(info) > 1 [#57]", {
+  ca <- command_args("--help")
+  ca$add_argument("bad", info = c("one", "two"))
+  expect_length(ca$get_args()[[3]]$get_help(), 2)
+  expect_error(ca$parse(), NA)
+})
+
 test_that("snapshots", {
   arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
