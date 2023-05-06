@@ -93,7 +93,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     action,
     flag = {
       convert <- NULL
-      options$no <- options$no %||% getOption("scribe.option.no")
+      options$no <- options$no %||% getOption("scribe.flag.no")
 
       if (!is_arg(default)) {
         if (is.null(default)) {
