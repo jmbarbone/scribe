@@ -93,7 +93,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     action,
     flag = {
       convert <- NULL
-      options$no <- options$no %||% TRUE
+      options$no <- options$no %||% getOption("scribe.option.no")
 
       if (!is_arg(default)) {
         if (is.null(default)) {
@@ -118,6 +118,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       }
     },
     list = {
+      # don' assume default choices
       options$choices <- options$choices %||% list()
 
       if (is.na(n)) {
