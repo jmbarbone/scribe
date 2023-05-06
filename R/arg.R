@@ -255,6 +255,7 @@ arg_get_help <- function(self) {
     }
   )
 
+  right <- paste0(right, collapse = "")
   out <- trimws(c(left, right))
   out[is.na(out)] <- ""
   out
