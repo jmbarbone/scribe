@@ -184,6 +184,18 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     }
   }
 
+
+  if (is.logical(stop) && length(stop) == 1L) {
+    stop <- if (is.na(stop)) {
+      "soft"
+    } else if (stop) {
+      "hard"
+    } else {
+      "none"
+    }
+  }
+
+  stop <- match.arg(stop)
   action <- match.arg(action, arg_actions())
 
   self$field("aliases", aliases)
@@ -196,6 +208,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("default", default)
   self$field("resolved", FALSE)
   self$field("value", NULL)
+  self$field("stop", stop)
   invisible(self)
 }
 
