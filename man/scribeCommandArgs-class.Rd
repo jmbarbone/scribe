@@ -63,6 +63,8 @@ and populated during argument resolving.}
 
 \item{\code{working}}{\verb{[character]}\cr A copy of \code{input}.  Note: this is used to
 track parsing progress and is not meant to be accessed directly.}
+
+\item{\code{stop}}{\verb{[character]}\cr Determines parsing}
 }}
 
 \section{Methods}{

@@ -11,7 +11,8 @@ new_arg(
   convert = default_convert,
   n = NA_integer_,
   info = NULL,
-  options = list()
+  options = list(),
+  stop = c("none", "hard", "soft")
 )
 }
 \arguments{

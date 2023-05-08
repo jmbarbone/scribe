@@ -41,6 +41,8 @@ printed}
 \item{\code{resolved}}{\verb{[logical]}\cr Has the object been resolved}
 
 \item{\code{value}}{\verb{[ANY]}\cr The resolve value}
+
+\item{\code{stop}}{\verb{[character]}\cr \code{"none"}, \code{"hard"}, or \code{"soft"}}
 }}
 
 \section{Methods}{
@@ -71,7 +73,8 @@ printed}
   convert = default_convert,
   n = NA_integer_,
   info = NA_character_,
-  options = list()
+  options = list(),
+  stop = c("none", "hard", "soft")
 )}}{    Initialize the \link{scribeArg} object
 
     See \strong{fields} for parameter information.
