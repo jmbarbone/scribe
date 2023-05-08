@@ -3,7 +3,7 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n See `$initialize()`
+#' @param aliases,action,convert,options,default,info,n,stop See `$initialize()`
 #'   in [scribeArg].
 #' @examples
 #' new_arg()
