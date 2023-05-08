@@ -41,7 +41,8 @@ scribe_help_arg <- function() {
     default = FALSE,
     n = 0,
     info = "prints this and quietly exits",
-    options = list(no = FALSE)
+    options = list(no = FALSE),
+    stop = "hard"
   )
 }
 
@@ -52,7 +53,8 @@ scribe_version_arg <- function() {
     default = FALSE,
     n = 0,
     info = "prints the version of {scribe} and quietly exits",
-    options = list(no = FALSE)
+    options = list(no = FALSE),
+    stop = "hard"
   )
 }
 
