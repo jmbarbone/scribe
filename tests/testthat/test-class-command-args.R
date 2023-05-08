@@ -371,6 +371,22 @@ test_that("pass arg as default [#54]", {
   expect_identical(obj, exp)
 })
 
+test_that("'stop' args [#60]", {
+  ca <- command_args(string = "-a -b")
+  ca$add_argument("-a", action = "flag", stop = "hard")
+  ca$add_argument("-b", action = "flag")
+  obj <- ca$parse()
+  exp <- list(a = TRUE)
+  expect_identical(obj, exp)
+
+  ca <- command_args(string = "-a -b")
+  ca$add_argument("-a", action = "flag", stop = "soft")
+  ca$add_argument("-b", action = "flag")
+  obj <- ca$parse()
+  exp <- list(a = TRUE, b = FALSE)
+  expect_identical(obj, exp)
+})
+
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")
