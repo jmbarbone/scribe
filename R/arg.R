@@ -19,7 +19,8 @@ new_arg <- function(
     convert = default_convert,
     n       = NA_integer_,
     info    = NULL,
-    options = list()
+    options = list(),
+    stop    = c("none", "hard", "soft")
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -28,7 +29,8 @@ new_arg <- function(
     convert = convert,
     n       = n,
     info    = info,
-    options = options
+    options = options,
+    stop    = stop
   )
 }
 
@@ -64,7 +66,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   convert = default_convert,
   n       = NA_integer_,
   info    = NA_character_,
-  options = list()
+  options = list(),
+  stop    = c("none", "hard", "soft")
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_

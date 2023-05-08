@@ -48,6 +48,7 @@
 #'   (i.e., not preceded by a `-` or `--` command line argument)
 #' @field resolved `[logical]`\cr Has the object been resolved
 #' @field value `[ANY]`\cr The resolve value
+#' @field stop `[character]`\cr `"none"`, `"hard"`, or `"soft"`
 #'
 #' @examples
 #' # new_arg() is recommended over direct use of scribeArg$new()
@@ -78,7 +79,8 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     options    = "list",
     positional = "logical",
     resolved   = "logical",
-    value      = "ANY"
+    value      = "ANY",
+    stop       = "character"
   )
 )
 
@@ -90,7 +92,8 @@ scribeArg$methods(
     convert = default_convert,
     n       = NA_integer_,
     info    = NA_character_,
-    options = list()
+    options = list(),
+    stop    = c("none", "hard", "soft")
   ) {
     "
     Initialize the \\link{scribeArg} object
@@ -105,7 +108,8 @@ scribeArg$methods(
       convert = convert,
       n       = n,
       info    = info,
-      options = options
+      options = options,
+      stop    = stop
     )
   },
 
