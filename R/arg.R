@@ -335,6 +335,27 @@ arg_is_resolved <- function(self) {
 # internal ----------------------------------------------------------------
 
 arg_parse_value <- function(self, ca) {
+  default <-
+    if (is_arg(self$default)) {
+      self$default$get_value()
+    } else {
+      self$default
+    }
+
+  if (ca$stop == "soft") {
+    value <- default
+    self$field("value", value)
+    self$field("resolved", TRUE)
+    return(value)
+  }
+
+  if (ca$stop == "hard") {
+    value <- scribe_empty_value()
+    self$field("value", value)
+    self$field("resolved", TRUE)
+    return(value)
+  }
+
   # find alias in working
   alias <- self$get_aliases()
 
@@ -394,14 +415,8 @@ arg_parse_value <- function(self, ca) {
       }
     )
 
-    default <-
-      if (is_arg(self$default)) {
-        self$default$get_value()
-      } else {
-        self$default
-      }
-
     value <- value_convert(value, to = default %||% self$convert)
+    ca$field("stop", self$stop)
   }
 
   self$field("value", value)
@@ -419,4 +434,8 @@ ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_
 
 arg_actions <- function() {
   c("default", "list", "flag", "dots")
+}
+
+scribe_empty_value <- function() {
+  structure(list(), class = c("scribe_empty_value"))
 }
