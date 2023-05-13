@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,10 @@ printed</p></dd>
 <dd><p><code>[ANY]</code><br> The resolve value</p></dd>
 
 
+<dt><code>stop</code></dt>
+<dd><p><code>[character]</code><br><code>"none"</code>, <code>"hard"</code>, or <code>"soft"</code></p></dd>
+
+
 </dl></div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -148,7 +152,8 @@ printed</p></dd>
   convert = default_convert,
   n = NA_integer_,
   info = NA_character_,
-  options = list()
+  options = list(),
+  stop = c("none", "hard", "soft")
 )</code></dt>
 <dd><p>Initialize the scribeArg object</p>
 <p>See <strong>fields</strong> for parameter information.</p></dd>
