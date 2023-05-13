@@ -48,6 +48,7 @@
 #'   `$resolve()` method has been successfully executed.
 #' @field working `[character]`\cr A copy of `input`.  Note: this is used to
 #'   track parsing progress and is not meant to be accessed directly.
+#' @field stop `[character]`\cr Determines parsing
 #'
 #' @examples
 #' # command_args() is recommended over direct use of scribeCommandArgs$new()
@@ -94,7 +95,8 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     examples = "character",
     comments = "character",
     resolved = "logical",
-    working = "character"
+    working = "character",
+    stop = "character"
   )
 )
 

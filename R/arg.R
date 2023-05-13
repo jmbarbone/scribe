@@ -3,7 +3,7 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n See `$initialize()`
+#' @param aliases,action,convert,options,default,info,n,stop See `$initialize()`
 #'   in [scribeArg].
 #' @examples
 #' new_arg()
@@ -19,7 +19,8 @@ new_arg <- function(
     convert = default_convert,
     n       = NA_integer_,
     info    = NULL,
-    options = list()
+    options = list(),
+    stop    = c("none", "hard", "soft")
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -28,7 +29,8 @@ new_arg <- function(
     convert = convert,
     n       = n,
     info    = info,
-    options = options
+    options = options,
+    stop    = stop
   )
 }
 
@@ -39,7 +41,8 @@ scribe_help_arg <- function() {
     default = FALSE,
     n = 0,
     info = "prints this and quietly exits",
-    options = list(no = FALSE)
+    options = list(no = FALSE),
+    stop = "hard"
   )
 }
 
@@ -50,7 +53,8 @@ scribe_version_arg <- function() {
     default = FALSE,
     n = 0,
     info = "prints the version of {scribe} and quietly exits",
-    options = list(no = FALSE)
+    options = list(no = FALSE),
+    stop = "hard"
   )
 }
 
@@ -64,7 +68,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   convert = default_convert,
   n       = NA_integer_,
   info    = NA_character_,
-  options = list()
+  options = list(),
+  stop    = c("none", "hard", "soft")
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -181,6 +186,18 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     }
   }
 
+
+  if (is.logical(stop) && length(stop) == 1L) {
+    stop <- if (is.na(stop)) {
+      "soft"
+    } else if (stop) {
+      "hard"
+    } else {
+      "none"
+    }
+  }
+
+  stop <- match.arg(stop)
   action <- match.arg(action, arg_actions())
 
   self$field("aliases", aliases)
@@ -193,6 +210,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("default", default)
   self$field("resolved", FALSE)
   self$field("value", NULL)
+  self$field("stop", stop)
   invisible(self)
 }
 
@@ -319,6 +337,27 @@ arg_is_resolved <- function(self) {
 # internal ----------------------------------------------------------------
 
 arg_parse_value <- function(self, ca) {
+  default <-
+    if (is_arg(self$default)) {
+      self$default$get_value()
+    } else {
+      self$default
+    }
+
+  if (ca$stop == "soft") {
+    value <- default
+    self$field("value", value)
+    self$field("resolved", TRUE)
+    return(value)
+  }
+
+  if (ca$stop == "hard") {
+    value <- scribe_empty_value()
+    self$field("value", value)
+    self$field("resolved", TRUE)
+    return(value)
+  }
+
   # find alias in working
   alias <- self$get_aliases()
 
@@ -378,14 +417,8 @@ arg_parse_value <- function(self, ca) {
       }
     )
 
-    default <-
-      if (is_arg(self$default)) {
-        self$default$get_value()
-      } else {
-        self$default
-      }
-
     value <- value_convert(value, to = default %||% self$convert)
+    ca$field("stop", self$stop)
   }
 
   self$field("value", value)
@@ -403,4 +436,8 @@ ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_
 
 arg_actions <- function() {
   c("default", "list", "flag", "dots")
+}
+
+scribe_empty_value <- function() {
+  structure(list(), class = c("scribe_empty_value"))
 }

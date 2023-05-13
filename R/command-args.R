@@ -78,6 +78,7 @@ ca_initialize <- function(
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
+  self$field("stop", "none")
   invisible(self)
 }
 
@@ -178,15 +179,25 @@ ca_resolve <- function(self) {
     fromLast = TRUE
   )
 
+  # move stops earlier
+  arg_order <- unique(
+    c(
+      wapply(args, function(i) i$stop == "hard"),
+      wapply(args, function(i) i$stop == "soft"),
+      arg_order
+    )
+  )
+
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
   self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
 
   for (arg in args[arg_order]) {
+    # TODO when `stop` is introduced, we'll have a `skipped` class
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
   }
 
-  if (length(ca_get_working(self))) {
+  if (length(ca_get_working(self)) && self$stop == "none") {
     warning(
       "Not all values parsed:\n",
       to_string(ca_get_working(self)),
@@ -199,7 +210,7 @@ ca_resolve <- function(self) {
 
   if ("help" %in% self$included) {
     m <- match("help", names(self$values), 0L)
-    if (self$values$help) {
+    if (isTRUE(self$values$help)) {
       self$help()
       exit()
       return(invisible(self))
@@ -209,7 +220,7 @@ ca_resolve <- function(self) {
 
   if ("version" %in% self$included) {
     m <- match("version", names(self$values), 0L)
-    if (self$values$version) {
+    if (isTRUE(self$values$version)) {
       self$version()
       exit()
       return(invisible(self))
@@ -247,7 +258,7 @@ ca_set_input <- function(self, value) {
 }
 
 ca_get_values <- function(self) {
-  self$values
+  Filter(function(x) !inherits(x, "scribe_empty_value"), self$values)
 }
 
 ca_set_values <- function(self, i = NULL, value) {
@@ -279,7 +290,8 @@ ca_add_argument <- function(
     convert = default_convert,
     options = NULL,
     default = NULL,
-    info = NULL
+    info = NULL,
+    stop = "none"
 ) {
   if (is_arg(..1)) {
     arg <- ..1
@@ -304,6 +316,7 @@ ca_add_argument <- function(
       convert = convert,
       default = default,
       info = info,
+      stop = stop,
       n = as.integer(n)
     )
   }
