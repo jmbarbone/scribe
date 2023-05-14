@@ -93,7 +93,7 @@ test_that("new_arg(action = 'default')", {
 })
 
 test_that("action = 'flag' allows TRUE [#55]", {
-  ca <- command_args()
+  ca <- command_args(include = NA)
   expect_warning(
     ca$add_argument("--foo", action = "flag", default = TRUE),
     NA
@@ -120,7 +120,7 @@ test_that("pass arg as default [#54]", {
 })
 
 test_that("length(info) > 1 [#57]", {
-  ca <- command_args("--help")
+  ca <- command_args("--help", include = c("help", "version"))
   ca$add_argument("bad", info = c("one", "two"))
   expect_length(ca$get_args()[[3]]$get_help(), 2)
   expect_output(ca$parse())
