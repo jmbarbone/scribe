@@ -95,7 +95,7 @@ ca$add_argument('-a', default = 1)
 ca$add_argument('-b', default = 2)
 args <- ca$parse()
 
-foo <- function(a, b) {
+foo <- function(a, b, ...) {
   a + b
 }
 
