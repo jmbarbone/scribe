@@ -12,12 +12,13 @@ new_arg(
   n = NA_integer_,
   info = NULL,
   options = list(),
-  stop = c("none", "hard", "soft")
+  stop = c("none", "hard", "soft"),
+  execute = function(...) invisible()
 )
 }
 \arguments{
-\item{aliases, action, convert, options, default, info, n, stop}{See \verb{$initialize()}
-in \link{scribeArg}.}
+\item{aliases, action, convert, options, default, info, n, stop, execute}{See
+\verb{$initialize()} in \link{scribeArg}.}
 }
 \value{
 A \link{scribeArg} object

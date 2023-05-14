@@ -6,7 +6,7 @@
 \usage{
 command_args(
   x = NULL,
-  include = c("help", "version", NA_character_),
+  include = getOption("scribe.include", c("help", "version", NA_character_)),
   string = NULL
 )
 }
