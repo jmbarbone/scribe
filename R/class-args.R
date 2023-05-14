@@ -49,6 +49,8 @@
 #' @field resolved `[logical]`\cr Has the object been resolved
 #' @field value `[ANY]`\cr The resolve value
 #' @field stop `[character]`\cr `"none"`, `"hard"`, or `"soft"`
+#' @field execute `[function]`\cr (For advanced use).  A `function` to be
+#'   evaluated along with the arg.
 #'
 #' @examples
 #' # new_arg() is recommended over direct use of scribeArg$new()
@@ -80,7 +82,8 @@ scribeArg <- methods::setRefClass( # nolint: object_name_linter.
     positional = "logical",
     resolved   = "logical",
     value      = "ANY",
-    stop       = "character"
+    stop       = "character",
+    execute    = "function"
   )
 )
 
@@ -93,7 +96,8 @@ scribeArg$methods(
     n       = NA_integer_,
     info    = NA_character_,
     options = list(),
-    stop    = c("none", "hard", "soft")
+    stop    = c("none", "hard", "soft"),
+    execute = function(...) invisible()
   ) {
     "
     Initialize the \\link{scribeArg} object
@@ -101,7 +105,7 @@ scribeArg$methods(
     See \\strong{fields} for parameter information.
     "
     arg_initialize(
-      .self,
+      self    = .self,
       aliases = aliases,
       action  = action,
       default = default,
@@ -109,7 +113,8 @@ scribeArg$methods(
       n       = n,
       info    = info,
       options = options,
-      stop    = stop
+      stop    = stop,
+      execute = execute
     )
   },
 
@@ -156,6 +161,11 @@ scribeArg$methods(
   get_value = function() {
     "Retrieve the resolved value"
     arg_get_value(.self)
+  },
+
+  do_execute = function(ca) {
+    "Perform the execute function"
+    arg_do_execute(.self, ca)
   },
 
   is_resolved = function() {

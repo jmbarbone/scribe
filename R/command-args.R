@@ -20,7 +20,7 @@
 #' @export
 command_args <- function(
     x = NULL,
-    include = c("help", "version", NA_character_),
+    include = getOption("scribe.include", c("help", "version", NA_character_)),
     string = NULL
 ) {
   if (is.null(string)) {
@@ -207,27 +207,6 @@ ca_resolve <- function(self) {
 
   self$field("values", self$values[order(arg_order)])
   self$field("resolved", TRUE)
-
-  if ("help" %in% self$included) {
-    m <- match("help", names(self$values), 0L)
-    if (isTRUE(self$values$help)) {
-      self$help()
-      exit()
-      return(invisible(self))
-    }
-    self$field("values", self$values[-m])
-  }
-
-  if ("version" %in% self$included) {
-    m <- match("version", names(self$values), 0L)
-    if (isTRUE(self$values$version)) {
-      self$version()
-      exit()
-      return(invisible(self))
-    }
-    self$field("values", self$values[-m])
-  }
-
   invisible(self)
 }
 
@@ -239,8 +218,8 @@ ca_parse <- function(self) {
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
   regmatches(names(values), gregexpr("-", names(values))) <- "_"
 
-  if (any(names(values)[vapply(values, isTRUE, NA)] %in% self$included)) {
-    return(invisible(values))
+  for (arg in self$get_args()) {
+    ca_do_execute(self, arg)
   }
 
   values
@@ -291,7 +270,8 @@ ca_add_argument <- function(
     options = NULL,
     default = NULL,
     info = NULL,
-    stop = "none"
+    stop = "none",
+    execute = function(...) invisible()
 ) {
   if (is_arg(..1)) {
     arg <- ..1
@@ -317,7 +297,8 @@ ca_add_argument <- function(
       default = default,
       info = info,
       stop = stop,
-      n = as.integer(n)
+      n = as.integer(n),
+      execute = execute
     )
   }
 
@@ -371,6 +352,11 @@ ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
 
 ca_get_examples <- function(self) {
   self$examples
+}
+
+ca_do_execute <- function(self, arg) {
+  arg$execute(arg, self)
+  invisible(self)
 }
 
 # internal ----------------------------------------------------------------

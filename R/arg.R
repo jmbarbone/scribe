@@ -3,8 +3,8 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n,stop See `$initialize()`
-#'   in [scribeArg].
+#' @param aliases,action,convert,options,default,info,n,stop,execute See
+#'   `$initialize()` in [scribeArg].
 #' @examples
 #' new_arg()
 #' new_arg("values", action = "dots")
@@ -20,7 +20,8 @@ new_arg <- function(
     n       = NA_integer_,
     info    = NULL,
     options = list(),
-    stop    = c("none", "hard", "soft")
+    stop    = c("none", "hard", "soft"),
+    execute = function(...) invisible()
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -30,7 +31,8 @@ new_arg <- function(
     n       = n,
     info    = info,
     options = options,
-    stop    = stop
+    stop    = stop,
+    execute = execute
   )
 }
 
@@ -42,7 +44,13 @@ scribe_help_arg <- function() {
     n = 0,
     info = "prints this and quietly exits",
     options = list(no = FALSE),
-    stop = "hard"
+    stop = "hard",
+    execute = function(arg, ca) {
+      if (isTRUE(arg$get_value())) {
+        ca$help()
+        exit()
+      }
+    }
   )
 }
 
@@ -54,7 +62,13 @@ scribe_version_arg <- function() {
     n = 0,
     info = "prints the version of {scribe} and quietly exits",
     options = list(no = FALSE),
-    stop = "hard"
+    stop = "hard",
+    execute = function(arg, ca) {
+      if (isTRUE(arg$get_value())) {
+        ca$version()
+        exit()
+      }
+    }
   )
 }
 
@@ -69,7 +83,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   n       = NA_integer_,
   info    = NA_character_,
   options = list(),
-  stop    = c("none", "hard", "soft")
+  stop    = c("none", "hard", "soft"),
+  execute = function(...) invisible()
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -211,6 +226,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("resolved", FALSE)
   self$field("value", NULL)
   self$field("stop", stop)
+  self$field("execute", execute)
   invisible(self)
 }
 
@@ -425,6 +441,7 @@ arg_parse_value <- function(self, ca) {
   self$field("resolved", TRUE)
   value
 }
+
 
 # helpers -----------------------------------------------------------------
 

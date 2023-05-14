@@ -18,7 +18,8 @@ NULL
 
 op.scribe <- list( # nolint: object_name_linter.
   scribe.flag.no = TRUE,
-  scribe.interactive = NULL
+  scribe.interactive = NULL,
+  scribe.include = c("help", "version")
 )
 
 .onAttach <- function(libname, pkgname) {
