@@ -50,7 +50,10 @@
 #' @field value `[ANY]`\cr The resolve value
 #' @field stop `[character]`\cr `"none"`, `"hard"`, or `"soft"`
 #' @field execute `[function]`\cr (For advanced use).  A `function` to be
-#'   evaluated along with the arg.
+#'   evaluated along with the arg.  The function can have no parameters, a
+#'   single parameter for the [scribeArg] object, or accept the [scribeArg]
+#'   object as its first argument, and the [scribeCommandArgs] object as its
+#'   second.  Both objects will be passed by position
 #'
 #' @examples
 #' # new_arg() is recommended over direct use of scribeArg$new()
@@ -97,7 +100,7 @@ scribeArg$methods(
     info    = NA_character_,
     options = list(),
     stop    = c("none", "hard", "soft"),
-    execute = function(...) invisible()
+    execute = invisible
   ) {
     "
     Initialize the \\link{scribeArg} object
@@ -161,11 +164,6 @@ scribeArg$methods(
   get_value = function() {
     "Retrieve the resolved value"
     arg_get_value(.self)
-  },
-
-  do_execute = function(ca) {
-    "Perform the execute function"
-    arg_do_execute(.self, ca)
   },
 
   is_resolved = function() {

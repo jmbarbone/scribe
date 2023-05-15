@@ -157,6 +157,7 @@ ca_resolve <- function(self) {
   on.exit(
     expr =  if (!self$resolved) {
       self$field("working", self$get_input())
+      self$field("stop", "none")
     },
     add = TRUE
   )
@@ -192,6 +193,11 @@ ca_resolve <- function(self) {
   self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
 
+  if (self$stop != "none") {
+    warning("$stop will be reset in $resolve()", call. = FALSE)
+    self$field("stop", "none")
+  }
+
   for (arg in args[arg_order]) {
     # TODO when `stop` is introduced, we'll have a `skipped` class
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
@@ -212,16 +218,15 @@ ca_resolve <- function(self) {
 
 ca_parse <- function(self) {
   self$resolve()
-  values <- self$get_values()
-
-  # clean up names
-  regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("-", names(values))) <- "_"
 
   for (arg in self$get_args()) {
     ca_do_execute(self, arg)
   }
 
+  # clean up names
+  values <- self$get_values()
+  regmatches(names(values), regexpr("^-+", names(values))) <- ""
+  regmatches(names(values), gregexpr("-", names(values))) <- "_"
   values
 }
 
@@ -263,15 +268,15 @@ ca_get_args <- function(self, included = TRUE) {
 
 ca_add_argument <- function(
     self,
-    ...,
-    n = NA_integer_,
-    action = NULL,
-    convert = default_convert,
-    options = NULL,
-    default = NULL,
-    info = NULL,
-    stop = "none",
-    execute = function(...) invisible()
+  ...,
+  n = NA_integer_,
+  action = NULL,
+  convert = default_convert,
+  options = NULL,
+  default = NULL,
+  info = NULL,
+  stop = "none",
+  execute = invisible
 ) {
   if (is_arg(..1)) {
     arg <- ..1
@@ -355,7 +360,17 @@ ca_get_examples <- function(self) {
 }
 
 ca_do_execute <- function(self, arg) {
-  arg$execute(arg, self)
+  n <- length(formals(arg$execute))
+
+  # switch(int) doesn't account for defaults
+  if (n == 0L) {
+    arg$execute()
+  } else if (n == 1L) {
+    arg$execute(arg)
+  } else {
+    arg$execute(arg, self)
+  }
+
   invisible(self)
 }
 
