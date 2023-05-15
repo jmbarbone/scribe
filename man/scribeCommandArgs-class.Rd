@@ -78,7 +78,7 @@ track parsing progress and is not meant to be accessed directly.}
   default = NULL,
   n = NA_integer_,
   info = NULL,
-  execute = function(...) invisible()
+  execute = invisible
 )}}{Add a \link{scribeArg} to \code{args}
 
     \describe{

@@ -13,7 +13,7 @@ new_arg(
   info = NULL,
   options = list(),
   stop = c("none", "hard", "soft"),
-  execute = function(...) invisible()
+  execute = invisible
 )
 }
 \arguments{

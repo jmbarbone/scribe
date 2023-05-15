@@ -45,14 +45,15 @@ printed}
 \item{\code{stop}}{\verb{[character]}\cr \code{"none"}, \code{"hard"}, or \code{"soft"}}
 
 \item{\code{execute}}{\verb{[function]}\cr (For advanced use).  A \code{function} to be
-evaluated along with the arg.}
+evaluated along with the arg.  The function can have no parameters, a
+single parameter for the \link{scribeArg} object, or accept the \link{scribeArg}
+object as its first argument, and the \link{scribeCommandArgs} object as its
+second.  Both objects will be passed by position}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{do_execute(ca)}}{Perform the execute function}
-
 \item{\code{get_action()}}{Retrieve action}
 
 \item{\code{get_aliases()}}{Retrieve aliases}
@@ -80,7 +81,7 @@ evaluated along with the arg.}
   info = NA_character_,
   options = list(),
   stop = c("none", "hard", "soft"),
-  execute = function(...) invisible()
+  execute = invisible
 )}}{    Initialize the \link{scribeArg} object
 
     See \strong{fields} for parameter information.
