@@ -2,7 +2,7 @@ withr::local_options(list(scribe.interactive = TRUE))
 
 test_that("command_args() works", {
   x <- c("-a", "1", "-b", "2")
-  ca <- command_args(x, include = NA)
+  ca <- command_args(x)
   ca$add_argument("-a", "--alpha")
   ca$add_argument("-b", "--beta")
 
@@ -20,7 +20,7 @@ test_that("command_args() works", {
 
 test_that("command_args() handles defaults", {
   foo <- function(x = character()) {
-    ca <- command_args(x, include = NA)
+    ca <- command_args(x)
     ca$add_argument("-a", "--alpha", default = 1L)
     ca$add_argument("-b", "--beta",  default = 1L)
     ca$parse()
@@ -41,7 +41,7 @@ test_that("command_args() handles defaults", {
 
 test_that("command_args() handles dots", {
   x <- c("-a", "1", "2", "3")
-  ca <- command_args(x, include = NA)
+  ca <- command_args(x)
   ca$add_argument("-a", "--alpha")
   ca$add_argument("...", "values")
   obj <- ca$parse()
@@ -76,33 +76,33 @@ test_that("resolving", {
 })
 
 test_that("$add_argument('...', default = character()) [#3]", {
-  obj <- command_args("foo", include = NA)$add_argument("...")$parse()
+  obj <- command_args("foo")$add_argument("...")$parse()
   exp <- list(... = "foo")
   expect_identical(obj, exp)
 })
 
 test_that("$add_argument('...', default = 'bar') [#11]", {
-  obj <- command_args("", include = NA)$add_argument("...", default = "bar")$parse()
+  obj <- command_args("")$add_argument("...", default = "bar")$parse()
   exp <- list(... = "bar")
   expect_identical(obj, exp)
 
-  obj <- command_args("", include = NA)$add_argument("...", default = 1:3)$parse()
+  obj <- command_args("")$add_argument("...", default = 1:3)$parse()
   exp <- list(... = 1:3)
   expect_identical(obj, exp)
 })
 
 test_that("$add_argument(action = 'flag') [#17]", {
-  ca <- command_args(include = NA)
+  ca <- command_args()
   ca$add_argument("-f", "--foo", action = "flag")
   obj <- ca$parse()
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
 
-  obj <- command_args("-f", include = NA)$add_argument("-f", "--foo", action = "flag")$parse()
+  obj <- command_args("-f")$add_argument("-f", "--foo", action = "flag")$parse()
   exp <- list(foo = TRUE)
   expect_identical(obj, exp)
 
-  obj <- command_args("--foo", include = NA)$add_argument("-f", "--foo", action = "flag")$parse() # nolint: line_length_linter.
+  obj <- command_args("--foo")$add_argument("-f", "--foo", action = "flag")$parse() # nolint: line_length_linter.
   exp <- list(foo = TRUE)
   expect_identical(obj, exp)
 
@@ -114,7 +114,7 @@ test_that("$add_argument(action = 'flag') [#17]", {
 
 test_that("$add_argument()", {
   # should be fine during creation
-  ca <- command_args(c("foo", "bar"), include = NA)
+  ca <- command_args(c("foo", "bar"))
   ca$add_argument("foo", action = "flag")
   ca$add_argument("bar", action = "flag")
 
@@ -137,7 +137,7 @@ test_that("$add_argument(named list)", {
 
 test_that("$add_argument() after initialization [#19]", {
   # should be okay after ca is created
-  ca <- command_args(include = NA)
+  ca <- command_args()
   obj <- ca$get_input()
   exp <- character()
   expect_identical(obj, exp)
@@ -166,7 +166,7 @@ test_that("$add_argument(arg) [#45]", {
 test_that("args are returned in original order [#25]", {
   ca <- command_args(
     c("-b", "one", "-c", "two", "-a", "three", "foo", "bar"),
-    include = NA
+
   )
   ca$add_argument("...")
   ca$add_argument("-a", default = "zero")
@@ -178,7 +178,7 @@ test_that("args are returned in original order [#25]", {
 })
 
 test_that("default values", {
-  ca <- command_args(c("1", "2.0", "3", "4.0"), include = NA)
+  ca <- command_args(c("1", "2.0", "3", "4.0"))
   ca$add_argument("one",   default = 0L)
   ca$add_argument("two",   default = 0)
   ca$add_argument("three", default = 0)
@@ -208,21 +208,21 @@ test_that("$get_args(included)", {
 })
 
 test_that("positional values [#22]", {
-  ca <- command_args(1:2, include = NA)
+  ca <- command_args(1:2)
   ca$add_argument("foo", default = 0)
   ca$add_argument("bar", default = 0)
   obj <- ca$parse()
   exp <- list(foo = 1, bar = 2)
   expect_identical(obj, exp)
 
-  ca <- command_args(c(1, "--bar", 2), include = NA)
+  ca <- command_args(c(1, "--bar", 2))
   ca$add_argument("foo", default = 0)
   ca$add_argument("--bar", default = 0)
   obj <- ca$parse()
   exp <- list(foo = 1, bar = 2)
   expect_identical(obj, exp)
 
-  ca <- command_args(c("--bar", 2, 1), include = NA)
+  ca <- command_args(c("--bar", 2, 1))
   ca$add_argument("foo", default = 0)
   ca$add_argument("--bar", default = 0)
   obj <- ca$parse()
@@ -231,13 +231,13 @@ test_that("positional values [#22]", {
 })
 
 test_that("n args [#20]", {
-  ca <- command_args(c("--values", "1", "2"), include = NA)
+  ca <- command_args(c("--values", "1", "2"))
   ca$add_argument("--values", n = 2)
   obj <- ca$parse()
   exp <- list(values = 1:2)
   expect_identical(obj, exp)
 
-  ca <- command_args(c("--values", 1:5), include = NA)
+  ca <- command_args(c("--values", 1:5))
   ca$add_argument("--values", n = 3)
   ca$add_argument("...")
   obj <- ca$parse()
@@ -266,7 +266,7 @@ test_that("--help has early stop", {
 })
 
 test_that("- parsed as _ [#33]", {
-  ca <- command_args("--foo-bar", include = NA)
+  ca <- command_args("--foo-bar")
   ca$add_argument("--foo-bar")
   obj <- ca$parse()
   exp <- list(foo_bar = NA)
@@ -274,7 +274,7 @@ test_that("- parsed as _ [#33]", {
 })
 
 test_that("--no-flag parses [#34]", {
-  ca <- command_args("--no-foo", include = NA)
+  ca <- command_args("--no-foo")
   ca$add_argument("-f", "--foo", action = "flag")
   obj <- ca$parse()
   exp <- list(foo = FALSE)
@@ -341,7 +341,7 @@ test_that("versions", {
 })
 
 test_that("positional defaults [#52]", {
-  ca <- command_args(include = NA)
+  ca <- command_args()
   ca$add_argument("pos", default = 1)
   obj <- ca$parse()
   exp <- list(pos = 1)
@@ -349,7 +349,7 @@ test_that("positional defaults [#52]", {
 })
 
 test_that("pass arg as default [#54]", {
-  ca <- command_args(include = NA)
+  ca <- command_args()
   arg <- new_arg("-a", action = "flag")
   ca$add_argument(arg)
   ca$add_argument("-b", default = arg)
@@ -375,14 +375,14 @@ test_that("pass arg as default [#54]", {
 })
 
 test_that("'stop' args [#60]", {
-  ca <- command_args(string = "-a -b", include = NA)
+  ca <- command_args(string = "-a -b")
   ca$add_argument("-a", action = "flag", stop = "hard")
   ca$add_argument("-b", action = "flag")
   obj <- ca$parse()
   exp <- list(a = TRUE)
   expect_identical(obj, exp)
 
-  ca <- command_args(string = "-a -b", include = NA)
+  ca <- command_args(string = "-a -b")
   ca$add_argument("-a", action = "flag", stop = "soft")
   ca$add_argument("-b", action = "flag")
   obj <- ca$parse()

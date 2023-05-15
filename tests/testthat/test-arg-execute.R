@@ -8,7 +8,7 @@ test_that("execute works", {
     }
   )
 
-  ca <- command_args(include = NA)
+  ca <- command_args()
   ca$add_argument(arg)
 
   # sanity check

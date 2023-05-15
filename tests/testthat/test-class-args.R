@@ -14,7 +14,7 @@ test_that("errors", {
   expect_error(new_arg(action = "flag", n = 1))
   expect_error(new_arg(c("foo", "--bar")))
 
-  ca <- command_args(string = "-a 2 -a 1", include = NA)
+  ca <- command_args(string = "-a 2 -a 1")
   ca$add_argument("-a")
   expect_warning(expect_warning(ca$parse()))
 })
@@ -93,7 +93,7 @@ test_that("new_arg(action = 'default')", {
 })
 
 test_that("action = 'flag' allows TRUE [#55]", {
-  ca <- command_args(include = NA)
+  ca <- command_args()
   expect_warning(
     ca$add_argument("--foo", action = "flag", default = TRUE),
     NA
