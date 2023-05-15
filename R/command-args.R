@@ -193,11 +193,6 @@ ca_resolve <- function(self) {
   self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
 
-  if (self$stop != "none") {
-    warning("$stop will be reset in $resolve()", call. = FALSE)
-    self$field("stop", "none")
-  }
-
   for (arg in args[arg_order]) {
     # TODO when `stop` is introduced, we'll have a `skipped` class
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
