@@ -388,6 +388,10 @@ test_that("'stop' args [#60]", {
   obj <- ca$parse()
   exp <- list(a = TRUE, b = FALSE)
   expect_identical(obj, exp)
+
+  expect_identical(new_arg(stop = NA)$stop, "soft")
+  expect_identical(new_arg(stop = TRUE)$stop, "hard")
+  expect_identical(new_arg(stop = FALSE)$stop, "none")
 })
 
 test_that("snapshots", {
