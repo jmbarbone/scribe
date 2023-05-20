@@ -194,7 +194,6 @@ ca_resolve <- function(self) {
   names(self$values) <- arg_names[arg_order]
 
   for (arg in args[arg_order]) {
-    # TODO when `stop` is introduced, we'll have a `skipped` class
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
   }
 
