@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,6 +107,14 @@ printed</p></dd>
 <dd><p><code>[character]</code><br><code>"none"</code>, <code>"hard"</code>, or <code>"soft"</code></p></dd>
 
 
+<dt><code>execute</code></dt>
+<dd><p><code>[function]</code><br> (For advanced use).  A <code>function</code> to be
+evaluated along with the arg.  The function can have no parameters, a
+single parameter for the scribeArg object, or accept the scribeArg
+object as its first argument, and the <a href="scribeCommandArgs-class.html">scribeCommandArgs</a> object as its
+second.  Both objects will be passed by position</p></dd>
+
+
 </dl></div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -153,7 +161,8 @@ printed</p></dd>
   n = NA_integer_,
   info = NA_character_,
   options = list(),
-  stop = c("none", "hard", "soft")
+  stop = c("none", "hard", "soft"),
+  execute = invisible
 )</code></dt>
 <dd><p>Initialize the scribeArg object</p>
 <p>See <strong>fields</strong> for parameter information.</p></dd>
