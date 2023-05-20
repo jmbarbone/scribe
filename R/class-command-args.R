@@ -193,7 +193,8 @@ scribeCommandArgs$methods(
     convert = default_convert,
     default = NULL,
     n = NA_integer_,
-    info = NULL
+    info = NULL,
+    execute = invisible
   ) {
     "Add a \\link{scribeArg} to \\code{args}
 

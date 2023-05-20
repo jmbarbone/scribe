@@ -14,7 +14,7 @@ test_that("errors", {
   expect_error(new_arg(action = "flag", n = 1))
   expect_error(new_arg(c("foo", "--bar")))
 
-  ca <- command_args(string = "-a 2 -a 1", include = NA)
+  ca <- command_args(string = "-a 2 -a 1")
   ca$add_argument("-a")
   expect_warning(expect_warning(ca$parse()))
 })
@@ -120,7 +120,7 @@ test_that("pass arg as default [#54]", {
 })
 
 test_that("length(info) > 1 [#57]", {
-  ca <- command_args("--help")
+  ca <- command_args("--help", include = c("help", "version"))
   ca$add_argument("bad", info = c("one", "two"))
   expect_length(ca$get_args()[[3]]$get_help(), 2)
   expect_output(ca$parse())

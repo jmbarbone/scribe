@@ -3,8 +3,8 @@
 #'
 #' Make a new [scribeArg] object
 #'
-#' @param aliases,action,convert,options,default,info,n,stop See `$initialize()`
-#'   in [scribeArg].
+#' @param aliases,action,convert,options,default,info,n,stop,execute See
+#'   `$initialize()` in [scribeArg].
 #' @examples
 #' new_arg()
 #' new_arg("values", action = "dots")
@@ -20,7 +20,8 @@ new_arg <- function(
     n       = NA_integer_,
     info    = NULL,
     options = list(),
-    stop    = c("none", "hard", "soft")
+    stop    = c("none", "hard", "soft"),
+    execute = invisible
 ) {
   scribeArg$new(
     aliases = aliases,
@@ -30,7 +31,8 @@ new_arg <- function(
     n       = n,
     info    = info,
     options = options,
-    stop    = stop
+    stop    = stop,
+    execute = execute
   )
 }
 
@@ -42,7 +44,19 @@ scribe_help_arg <- function() {
     n = 0,
     info = "prints this and quietly exits",
     options = list(no = FALSE),
-    stop = "hard"
+    stop = "hard",
+    execute = function(self, ca) {
+      if (isTRUE(self$get_value())) {
+        ca$help()
+        return(exit())
+      }
+
+      if (isFALSE(self$get_value())) {
+        # remove 'help'
+        values <- ca$get_values()
+        ca$field("values", values[-match("help", names(values))])
+      }
+    }
   )
 }
 
@@ -54,7 +68,19 @@ scribe_version_arg <- function() {
     n = 0,
     info = "prints the version of {scribe} and quietly exits",
     options = list(no = FALSE),
-    stop = "hard"
+    stop = "hard",
+    execute = function(self, ca) {
+      if (isTRUE(self$get_value())) {
+        ca$version()
+        return(exit())
+      }
+
+      if (isFALSE(self$get_value())) {
+        # remove 'version'
+        values <- ca$get_values()
+        ca$field("values", values[-match("version", names(values))])
+      }
+    }
   )
 }
 
@@ -69,7 +95,8 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   n       = NA_integer_,
   info    = NA_character_,
   options = list(),
-  stop    = c("none", "hard", "soft")
+  stop    = c("none", "hard", "soft"),
+  execute = invisible
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -211,6 +238,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   self$field("resolved", FALSE)
   self$field("value", NULL)
   self$field("stop", stop)
+  self$field("execute", execute)
   invisible(self)
 }
 
@@ -418,13 +446,14 @@ arg_parse_value <- function(self, ca) {
     )
 
     value <- value_convert(value, to = default %||% self$convert)
-    ca$field("stop", self$stop)
+    ca$field("stop", structure(self$stop, arg = self))
   }
 
   self$field("value", value)
   self$field("resolved", TRUE)
   value
 }
+
 
 # helpers -----------------------------------------------------------------
 

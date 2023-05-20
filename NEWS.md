@@ -1,5 +1,6 @@
 # scribe (development version)
 
+* `execute` is a new field for `scribeArg` where a function can be called [#63](https://github.com/jmbarbone/scribe/issues/63)
 * `stop` is a new field for `scribeArg` which controls how further arguments are parsed and allows for early stops [#60](https://github.com/jmbarbone/scribe/issues/60)
 * `options()` for `{scribe}` are now listed in `?scribe` documentation and set in `.onAttach()` [#57](https://github.com/jmbarbone/scribe/issues/57)
 * `--help` no longer fails when `scribeArg` has `length(info) > 1` [#59](https://github.com/jmbarbone/scribe/issues/59)
