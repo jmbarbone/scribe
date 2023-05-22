@@ -53,12 +53,6 @@ ca <- command_args(c("-a", "1", "-b", "1.0"))
 ca$add_argument("-a", convert = character())
 ca$add_argument("-b", convert = character())
 ca$parse()
-#> $help
-#> [1] FALSE
-#> 
-#> $version
-#> [1] FALSE
-#> 
 #> $a
 #> [1] "1"
 #> 
@@ -70,12 +64,6 @@ ca <- command_args(c("verbose", "1", "1.5", "1.9"))
 ca$add_argument("verbose", action = "flag")
 ca$add_argument("...", convert = integer())
 ca$parse()
-#> $help
-#> [1] FALSE
-#> 
-#> $version
-#> [1] FALSE
-#> 
 #> $verbose
 #> [1] TRUE
 #> 
@@ -87,12 +75,6 @@ ca <- command_args(c("verbose", "12-9-2022", "12-10-2022"))
 ca$add_argument("verbose", action = "flag")
 ca$add_argument("...", convert = function(i) as.Date(i, "%m-%d-%Y"))
 ca$parse()
-#> $help
-#> [1] FALSE
-#> 
-#> $version
-#> [1] FALSE
-#> 
 #> $verbose
 #> [1] TRUE
 #> 
