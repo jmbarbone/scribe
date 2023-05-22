@@ -43,6 +43,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="scribe-development-version">scribe (development version)<a class="anchor" aria-label="anchor" href="#scribe-development-version"></a></h2>
+<div class="section level3">
+<h3 id="fixes-development-version">Fixes<a class="anchor" aria-label="anchor" href="#fixes-development-version"></a></h3>
+<ul><li>
+<code>--help</code> no longer fails when <code>scribeArg</code> has <code>length(info) &gt; 1</code> <a href="https://github.com/jmbarbone/scribe/issues/59" class="external-link">#59</a>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>
 <code>execute</code> is a new field for <code>scribeArg</code> where a function can be called <a href="https://github.com/jmbarbone/scribe/issues/63" class="external-link">#63</a>
 </li>
@@ -53,9 +61,6 @@
 <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> for <a href="https://jmbarbone.github.io/scribe/">scribe</a> are now listed in <code><a href="../reference/scribe-package.html">?scribe</a></code> documentation and set in <code>.onAttach()</code> <a href="https://github.com/jmbarbone/scribe/issues/57" class="external-link">#57</a>
 </li>
 <li>
-<code>--help</code> no longer fails when <code>scribeArg</code> has <code>length(info) &gt; 1</code> <a href="https://github.com/jmbarbone/scribe/issues/59" class="external-link">#59</a>
-</li>
-<li>
 <code>scribeArgs</code> can now be given a separate <code>scribeArg</code> as a default <a href="https://github.com/jmbarbone/scribe/issues/54" class="external-link">#54</a>
 </li>
 <li>positional arguments now can have default values <a href="https://github.com/jmbarbone/scribe/issues/52" class="external-link">#52</a>
@@ -64,6 +69,7 @@
 <code>scribeArgs</code> with <code>action = 'flag'</code> now accept <code>default = TRUE</code> <a href="https://github.com/jmbarbone/scribe/issues/55" class="external-link">#55</a>
 </li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="scribe-010">scribe 0.1.0<a class="anchor" aria-label="anchor" href="#scribe-010"></a></h2><p class="text-muted">CRAN release: 2023-03-13</p>
 <ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
