@@ -132,12 +132,11 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
           default <- FALSE
         }
 
-          warning(
-            "flag must be NULL, TRUE, or FALSE when action=\"flag\"",
         if (!(is.logical(default) && length(default) == 1)) {
+          stop(
+            "flag must be NULL, TRUE, FALSE, or NA when action=\"flag\"",
             call. = FALSE
           )
-          default <- FALSE
         }
       }
 
@@ -222,7 +221,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       }
     }
   }
-
 
   if (is.logical(stop) && length(stop) == 1L) {
     stop <- if (is.na(stop)) {
