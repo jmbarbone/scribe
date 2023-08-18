@@ -17,7 +17,7 @@
 
 ## Breaking
 
-- `scribeArgs` with `action = "flag"` will now throw an `error` instead of a `warning` when `default` is not `logical(1)`
+- `scribeArgs` with `action = "flag"` will now throw an `error` instead of a `warning` when `default` is not `logical(1)` [#68](https://github.com/jmbarbone/scribe/issues/68) 
 
 # scribe 0.1.0
 
