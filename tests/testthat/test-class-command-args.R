@@ -98,18 +98,16 @@ test_that("$add_argument(action = 'flag') [#17]", {
   exp <- list(foo = FALSE)
   expect_identical(obj, exp)
 
-  obj <- command_args("-f")$add_argument("-f", "--foo", action = "flag")$parse()
+  obj <- ca$set_input("-f")$parse()
   exp <- list(foo = TRUE)
   expect_identical(obj, exp)
 
-  obj <- command_args("--foo")$add_argument("-f", "--foo", action = "flag")$parse() # nolint: line_length_linter.
+  obj <- ca$set_input("--foo")$parse()
   exp <- list(foo = TRUE)
   expect_identical(obj, exp)
 
-  # nolint start: line_length_linter.
-  expect_warning(command_args()$add_argument("f", action = "flag", default = "1"))
-  expect_warning(command_args()$add_argument("f", action = "flag", default = "1"))
-  # nolint end: line_length_linter.
+  expect_error(command_args()$add_argument("f", action = "flag", default = "1"))
+  expect_error(command_args()$add_argument("f", action = "flag", default = "1"))
 })
 
 test_that("$add_argument()", {
