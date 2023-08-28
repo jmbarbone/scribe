@@ -1,5 +1,7 @@
 # scribe (development version)
 
+- `flag` action now accepts `NA` as a default [#67](https://github.com/jmbarbone/scribe/issues/67)
+
 # scribe 0.2.0
 
 ## Fixes
