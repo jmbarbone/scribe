@@ -43,7 +43,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="scribe-development-version">scribe (development version)<a class="anchor" aria-label="anchor" href="#scribe-development-version"></a></h2>
-</div>
+<ul><li>
+<code>flag</code> action now accepts <code>NA</code> as a default <a href="https://github.com/jmbarbone/scribe/issues/67" class="external-link">#67</a>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="scribe-020">scribe 0.2.0<a class="anchor" aria-label="anchor" href="#scribe-020"></a></h2><p class="text-muted">CRAN release: 2023-05-22</p>
 <div class="section level3">
@@ -69,7 +72,13 @@
 <li>positional arguments now can have default values <a href="https://github.com/jmbarbone/scribe/issues/52" class="external-link">#52</a>
 </li>
 <li>
-<code>scribeArgs</code> with <code>action = 'flag'</code> now accept <code>default = TRUE</code> <a href="https://github.com/jmbarbone/scribe/issues/55" class="external-link">#55</a>
+<code>scribeArgs</code> with <code>action = 'flag'</code> now accept <code>default = TRUE</code> <a href="https://github.com/jmbarbone/scribe/issues/55" class="external-link">#55</a> and (when option <code>no = TRUE</code>) can also accept <code>NA</code> <a href="https://github.com/jmbarbone/scribe/issues/67" class="external-link">#67</a>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-0-2-0">Breaking<a class="anchor" aria-label="anchor" href="#breaking-0-2-0"></a></h3>
+<ul><li>
+<code>scribeArgs</code> with <code>action = "flag"</code> will now throw an <code>error</code> instead of a <code>warning</code> when <code>default</code> is not <code>logical(1)</code> <a href="https://github.com/jmbarbone/scribe/issues/68" class="external-link">#68</a>
 </li>
 </ul></div>
 </div>
