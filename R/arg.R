@@ -132,12 +132,11 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
           default <- FALSE
         }
 
-        if (!(is.logical(default) && length(default) == 1 && !is.na(default))) {
-          warning(
-            "flag must be NULL, TRUE, or FALSE when action=\"flag\"",
+        if (!(is.logical(default) && length(default) == 1)) {
+          stop(
+            "flag must be NULL, TRUE, FALSE, or NA when action=\"flag\"",
             call. = FALSE
           )
-          default <- FALSE
         }
       }
 
@@ -147,6 +146,16 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 
       if (n != 0L) {
         stop("n must be 0L when action=\"flag\"", call. = FALSE)
+      }
+
+      if (isFALSE(options$no) && is.na(default)) {
+        warning(
+          "default=NA is not a valid default when option no=FALSE",
+          "\nusing to FALSE instead",
+          call. = FALSE
+        )
+
+        default <- FALSE
       }
     },
     list = {
@@ -212,7 +221,6 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
       }
     }
   }
-
 
   if (is.logical(stop) && length(stop) == 1L) {
     stop <- if (is.na(stop)) {

@@ -126,6 +126,48 @@ test_that("length(info) > 1 [#57]", {
   expect_output(ca$parse())
 })
 
+test_that("flag can default to NA [#67]", {
+  ca <- command_args()
+  ca$add_argument("--foo", action = "flag", default = NA)
+
+  obj <- ca$parse()
+  exp <- list(foo = NA)
+  expect_identical(obj, exp)
+
+  ca$set_input("--foo")
+  obj <- ca$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--no-foo")
+  obj <- ca$parse()
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+
+  # now with 'no' turned off.  this will cause the default to become FALSE
+  ca <- command_args()
+  expect_warning(ca$add_argument(
+    "--foo",
+    action = "flag",
+    default = NA,
+    options = list(no = FALSE)
+  ))
+
+  obj <- ca$parse()
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--foo")
+  obj <- ca$parse()
+  exp <- list(foo = TRUE)
+  expect_identical(obj, exp)
+
+  ca$set_input("--no-foo")
+  expect_warning(obj <- ca$parse())
+  exp <- list(foo = FALSE)
+  expect_identical(obj, exp)
+})
+
 test_that("snapshots", {
   arg <- new_arg("...", info = "help text")
   expect_output(arg$show())
