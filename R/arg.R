@@ -372,7 +372,7 @@ arg_is_resolved <- function(self) {
 
 # internal ----------------------------------------------------------------
 
-arg_parse_value <- function(self, ca) {
+arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
   default <-
     if (is_arg(self$default)) {
       self$default$get_value()

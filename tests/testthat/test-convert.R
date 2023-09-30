@@ -52,7 +52,7 @@ test_that("is_bool_like(), as_bool()", {
 })
 
 test_that("scribe_convert()", {
-  expect_identical(scribe_convert(scribe_convert(scribe_convert())), value_convert)
+  expect_identical(scribe_convert(scribe_convert()), value_convert)
   expect_identical(scribe_convert(TRUE), value_convert)
   expect_identical(scribe_convert("default"), value_convert)
   expect_identical(scribe_convert(NA), identity)
