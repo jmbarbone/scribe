@@ -7,7 +7,7 @@
 \usage{
 value_convert(x, to = default_convert)
 
-scribe_convert(method = c("default", "evaluate"))
+scribe_convert(method = c("default", "evaluate", "none"))
 }
 \arguments{
 \item{x}{A vector of character values}

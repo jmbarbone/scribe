@@ -5,7 +5,7 @@ on:
 name: version checks
 
 jobs:
-  lint:
+  check-r-version:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -18,7 +18,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::gh, local::fuj
+          extra-packages: any::gh, any::fuj
 
       - uses: jmbarbone/actions/r-check-version@main
         with:
