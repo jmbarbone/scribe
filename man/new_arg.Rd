@@ -8,7 +8,7 @@ new_arg(
   aliases = "",
   action = arg_actions(),
   default = NULL,
-  convert = default_convert,
+  convert = scribe_convert(),
   n = NA_integer_,
   info = NULL,
   options = list(),

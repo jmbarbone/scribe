@@ -74,7 +74,7 @@ track parsing progress and is not meant to be accessed directly.}
   ...,
   action = arg_actions(),
   options = NULL,
-  convert = default_convert,
+  convert = scribe_convert(),
   default = NULL,
   n = NA_integer_,
   info = NULL,
