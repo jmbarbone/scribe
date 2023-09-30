@@ -190,7 +190,7 @@ scribeCommandArgs$methods(
     ...,
     action = arg_actions(),
     options = NULL,
-    convert = default_convert,
+    convert = scribe_convert(),
     default = NULL,
     n = NA_integer_,
     info = NULL,

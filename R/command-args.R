@@ -265,7 +265,7 @@ ca_add_argument <- function(
   ...,
   n = NA_integer_,
   action = NULL,
-  convert = default_convert,
+  convert = scribe_convert(),
   options = NULL,
   default = NULL,
   info = NULL,

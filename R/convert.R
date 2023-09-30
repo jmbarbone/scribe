@@ -19,7 +19,8 @@
 #' @examples
 #' str(value_convert("2023-03-05", as.Date))
 #' value_convert("a", factor(letters))
-#' @returns A parsed value from `x`
+#' @returns
+#' * [value_convert()]: A parsed value from `x`
 #' @export
 value_convert <- function(x, to = default_convert) {
   if (!is.character(x) || is.null(to)) {
@@ -41,6 +42,37 @@ value_convert <- function(x, to = default_convert) {
   attributes(x) <- attributes(to)
   class(x) <- class(to)
   x
+}
+
+#' @rdname value_convert
+#' @export
+#' @param method The conversion method:
+#'   * `TRUE` or `"default"`: uses [value_convert()]
+#'   * `"evaluate"` executes the string as an expression
+#'   * `FALSE` or `NA` does nothing
+#'   * When passed a `function`, simply returns the function
+#' @returns
+#' * [scribe_convert()]: A function that takes a argument `x` and converts it
+scribe_convert <- function(method = c("default", "evaluate", "none")) {
+  if (is.function(method)) {
+    return(method)
+  }
+
+  if (is.null(method) || isFALSE(method) || isTRUE(is.na(method))) {
+    method <- "none"
+  }
+
+  if (isTRUE(method)) {
+    method <- "default"
+  }
+
+  method <- match.arg(method)
+  switch(
+    method,
+    none = identity,
+    default = value_convert,
+    evaluate = function(x, ...) eval(str2expression(x), baseenv())
+  )
 }
 
 default_convert <- function(x) {
