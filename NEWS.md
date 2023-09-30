@@ -1,6 +1,6 @@
 # scribe (development version)
 
-- `convert` is no longer ignored when set in `scribeArg` [#70]
+- `convert` is no longer ignored when set in `scribeArg` [#70](https://github.com/jmbarbone/scribe/issues/70)
   - `$convert` field now defaults to the newly exported `scribe_convert()` helper.  This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.
   - default conversions use `value_convert()`, which internally uses `utils::type.convert()` (and some additional steps for dates.  Be aware that `type.convert("1", as.is = TRUE)` will return integers, and a decimal should be included if a numeric is desired (e.g., `type.convert("1.", as.is = TRUE)`
 - `flag` action now accepts `NA` as a default [#67](https://github.com/jmbarbone/scribe/issues/67)
