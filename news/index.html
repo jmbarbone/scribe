@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,13 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="scribe-development-version">scribe (development version)<a class="anchor" aria-label="anchor" href="#scribe-development-version"></a></h2>
 <ul><li>
+<code>convert</code> is no longer ignored when set in <code>scribeArg</code> <a href="https://github.com/jmbarbone/scribe/issues/70" class="external-link">#70</a>
+<ul><li>
+<code>$convert</code> field now defaults to the newly exported <code><a href="../reference/value_convert.html">scribe_convert()</a></code> helper. This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.</li>
+<li>default conversions use <code><a href="../reference/value_convert.html">value_convert()</a></code>, which internally uses <code><a href="https://rdrr.io/r/utils/type.convert.html" class="external-link">utils::type.convert()</a></code> (and some additional steps for dates. Be aware that <code>type.convert("1", as.is = TRUE)</code> will return integers, and a decimal should be included if a numeric is desired (e.g., <code>type.convert("1.", as.is = TRUE)</code>
+</li>
+</ul></li>
+<li>
 <code>flag</code> action now accepts <code>NA</code> as a default <a href="https://github.com/jmbarbone/scribe/issues/67" class="external-link">#67</a>
 </li>
 </ul></div>
