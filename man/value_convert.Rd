@@ -2,17 +2,34 @@
 % Please edit documentation in R/convert.R
 \name{value_convert}
 \alias{value_convert}
+\alias{scribe_convert}
 \title{Simple conversions}
 \usage{
 value_convert(x, to = default_convert)
+
+scribe_convert(method = c("default", "evaluate", "none"))
 }
 \arguments{
 \item{x}{A vector of character values}
 
 \item{to}{What to convert \code{x} to (see details for more)}
+
+\item{method}{The conversion method:
+\itemize{
+\item \code{TRUE} or \code{"default"}: uses \code{\link[=value_convert]{value_convert()}}
+\item \code{"evaluate"} executes the string as an expression
+\item \code{FALSE} or \code{NA} does nothing
+\item When passed a \code{function}, simply returns the function
+}}
 }
 \value{
-A parsed value from \code{x}
+\itemize{
+\item \code{\link[=value_convert]{value_convert()}}: A parsed value from \code{x}
+}
+
+\itemize{
+\item \code{\link[=scribe_convert]{scribe_convert()}}: A function that takes a argument \code{x} and converts it
+}
 }
 \description{
 Convert character to data types

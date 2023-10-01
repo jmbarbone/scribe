@@ -392,6 +392,16 @@ test_that("'stop' args [#60]", {
   expect_identical(new_arg(stop = FALSE)$stop, "none")
 })
 
+test_that("'convert' isn't ignored [#70]", {
+  ca <- command_args("1")
+  ca$add_argument("foo", convert = function(...) stop("success"))
+  expect_error(ca$parse(), "success")
+
+  ca <- command_args("1")
+  ca$add_argument("foo", convert = function(...) stop("success"), default = 1)
+  expect_error(ca$parse(), "success")
+})
+
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")
   ca$add_description("this does a thing")

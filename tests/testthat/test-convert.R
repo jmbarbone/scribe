@@ -51,6 +51,70 @@ test_that("is_bool_like(), as_bool()", {
   expect_true(as_bool(TRUE))
 })
 
+test_that("scribe_convert()", {
+  expect_identical(scribe_convert(scribe_convert()), value_convert)
+  expect_identical(scribe_convert(TRUE), value_convert)
+  expect_identical(scribe_convert("default"), value_convert)
+  expect_identical(scribe_convert(NA), identity)
+  expect_identical(scribe_convert(FALSE), identity)
+  expect_identical(scribe_convert(NULL), identity)
+
+  expect_type(scribe_convert("eval"), "closure")
+  expect_type(scribe_convert(function(x) x), "closure")
+})
+
+test_that("command_arg() default conversions", {
+  withr::local_options(scribe.include = NA)
+  ca <- command_args()
+  ca$add_argument("foo", convert = TRUE)
+
+  obj <- ca$set_input("1")$parse()
+  exp <- list(foo = 1L)
+  expect_identical(obj, exp)
+
+  obj <- ca$set_input("1.")$parse()
+  exp <- list(foo = 1.0)
+  expect_identical(obj, exp)
+
+  obj <- ca$set_input("2020-01-01")$parse()
+  exp <- list(foo = as.POSIXct("2020-01-01"))
+  expect_identical(obj, exp)
+})
+
+test_that("command_arg() no conversion", {
+  withr::local_options(scribe.include = NA)
+  ca <- command_args(100)
+  ca$add_argument("foo", convert = FALSE)
+  obj <- ca$parse()
+  exp <- list(foo = "100")
+  expect_identical(obj, exp)
+})
+
+test_that("command_arg() evaluate", {
+  withr::local_options(scribe.include = NA)
+  ca <- command_args("data.frame(a = 1)")
+  ca$add_argument("foo", convert = "evaluate")
+  obj <- ca$parse()
+  exp <- list(foo = data.frame(a = 1))
+  expect_identical(obj, exp)
+})
+
+test_that("command_arg() custom", {
+  withr::local_options(scribe.include = NA)
+
+  foo <- function(x) {
+    x <- strsplit(x, "|", fixed = TRUE)[[1]]
+    vapply(x, as.double, NA_real_, USE.NAMES = FALSE)
+  }
+
+  ca <- command_args()
+  ca$add_argument("foo", convert = foo)
+  ca$set_input("1|2|3")
+  obj <- ca$parse()
+  exp <- list(foo = c(1, 2, 3))
+  expect_identical(obj, exp)
+})
+
 test_that("default_convert(character()) [#5]", {
   expect_identical(default_convert(character()), character())
 })

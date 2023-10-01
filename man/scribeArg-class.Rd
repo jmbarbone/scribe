@@ -76,7 +76,7 @@ second.  Both objects will be passed by position}
   aliases = "",
   action = arg_actions(),
   default = NULL,
-  convert = default_convert,
+  convert = scribe_convert(),
   n = NA_integer_,
   info = NA_character_,
   options = list(),

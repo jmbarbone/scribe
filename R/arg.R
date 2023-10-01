@@ -16,7 +16,7 @@ new_arg <- function(
     aliases = "",
     action  = arg_actions(),
     default = NULL,
-    convert = default_convert,
+    convert = scribe_convert(),
     n       = NA_integer_,
     info    = NULL,
     options = list(),
@@ -91,7 +91,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
   aliases = "",
   action  = arg_actions(),
   default = NULL,
-  convert = default_convert,
+  convert = scribe_convert(),
   n       = NA_integer_,
   info    = NA_character_,
   options = list(),
@@ -237,7 +237,7 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 
   self$field("aliases", aliases)
   self$field("action", action)
-  self$field("convert", convert)
+  self$field("convert", scribe_convert(convert))
   self$field("options", options)
   self$field("info", as.character(info))
   self$field("n", as.integer(n))
@@ -372,7 +372,7 @@ arg_is_resolved <- function(self) {
 
 # internal ----------------------------------------------------------------
 
-arg_parse_value <- function(self, ca) {
+arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
   default <-
     if (is_arg(self$default)) {
       self$default$get_value()
@@ -443,9 +443,9 @@ arg_parse_value <- function(self, ca) {
 
         if (self$positional && is.na(value)) {
           value <- self$get_default()
-        } else {
-          ca_remove_working(ca, m)
         }
+
+        ca_remove_working(ca, m)
       },
       flag = {
         value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
@@ -453,15 +453,22 @@ arg_parse_value <- function(self, ca) {
       }
     )
 
-    value <- value_convert(value, to = default %||% self$convert)
     ca$field("stop", structure(self$stop, arg = self))
+    ca$field("stop", structure(self$stop, arg = self))
+  }
+
+  if (self$action == "flag") {
+    invisible() # do nothing
+  } else if (identical(self$convert, value_convert)) {
+    value <- self$convert(value, to = default %||% default_convert)
+  } else {
+    value <- self$convert(value)
   }
 
   self$field("value", value)
   self$field("resolved", TRUE)
   value
 }
-
 
 # helpers -----------------------------------------------------------------
 

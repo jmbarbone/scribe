@@ -2,6 +2,7 @@
 
 export(command_args)
 export(new_arg)
+export(scribe_convert)
 export(value_convert)
 exportClasses(scribeArg)
 exportClasses(scribeCommandArgs)
