@@ -31,4 +31,5 @@ Suggests:
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://jmbarbone.github.io/scribe/
+URL: https://jmbarbone.github.io/scribe/, https://github.com/jmbarbone/scribe
+BugReports: https://github.com/jmbarbone/scribe/issues
