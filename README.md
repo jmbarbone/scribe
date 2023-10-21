@@ -50,8 +50,8 @@ Control
 ``` r
 # don't convert numbers
 ca <- command_args(c("-a", "1", "-b", "1.0"))
-ca$add_argument("-a", convert = character())
-ca$add_argument("-b", convert = character())
+ca$add_argument("-a", convert = as.character)
+ca$add_argument("-b", convert = as.character)
 ca$parse()
 #> $a
 #> [1] "1"
@@ -62,13 +62,13 @@ ca$parse()
 # convert numbers to integers
 ca <- command_args(c("verbose", "1", "1.5", "1.9"))
 ca$add_argument("verbose", action = "flag")
-ca$add_argument("...", convert = integer())
+ca$add_argument("...", convert = as.integer)
 ca$parse()
 #> $verbose
 #> [1] TRUE
 #> 
 #> $...
-#> NULL
+#> integer(0)
 
 # use functions for more control
 ca <- command_args(c("verbose", "12-9-2022", "12-10-2022"))
@@ -79,7 +79,7 @@ ca$parse()
 #> [1] TRUE
 #> 
 #> $...
-#> NULL
+#> Date of length 0
 ```
 
 You’ll probably use `{scribe}` within small scripts that can be called

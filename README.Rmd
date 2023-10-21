@@ -6,7 +6,8 @@ editor_options:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r setup}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,7 +27,7 @@ The goal of scribe is to provide a detailed argument parser for `Rscript`.
 This package contains no dependencies outside of `base` and `methods`.
 The core functions utilize `ReferenceClasses` under the hood.
 
-```{r}
+```{r library}
 library(scribe)
 ```
 
@@ -47,7 +48,7 @@ You can enter command arguments as a vector to test out the behavior.
 Arguments can be added to the ``r class(command_args())`` class (here as `ca`).
 Default behavior tries to parse objects but additional control can be taken.
 
-```{r}
+```{r example-simple}
 ca <- command_args(c("-a", "1", "-b", "2"))
 ca$add_argument("-a")
 ca$add_argument("-b")
@@ -58,17 +59,17 @@ str(args$a + args$b)
 
 Control
 
-```{r}
+```{r example-controls}
 # don't convert numbers
 ca <- command_args(c("-a", "1", "-b", "1.0"))
-ca$add_argument("-a", convert = character())
-ca$add_argument("-b", convert = character())
+ca$add_argument("-a", convert = as.character)
+ca$add_argument("-b", convert = as.character)
 ca$parse()
 
 # convert numbers to integers
 ca <- command_args(c("verbose", "1", "1.5", "1.9"))
 ca$add_argument("verbose", action = "flag")
-ca$add_argument("...", convert = integer())
+ca$add_argument("...", convert = as.integer)
 ca$parse()
 
 # use functions for more control
@@ -85,7 +86,7 @@ The example below uses a function to call this file, but if it is added to your 
 r-file -a 1 -b 9
 ```
 
-```{r}
+```{r example-script}
 lines <- "
 #! /usr/bin/env -S Rscript --vanilla 
 
@@ -116,7 +117,7 @@ rscript(file, "-a 0")
 rscript(file, "-a 0 -b 10")
 ```
 
-```{r}
+```{r remove}
 #| include: false
 file.remove(file)
 ```
