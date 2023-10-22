@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/jmbarbone/scribe/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -85,8 +92,8 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># don't convert numbers</span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-a"</span>, <span class="st">"1"</span>, <span class="st">"-b"</span>, <span class="st">"1.0"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-a"</span>, convert <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-b"</span>, convert <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-a"</span>, convert <span class="op">=</span> <span class="va">as.character</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"-b"</span>, convert <span class="op">=</span> <span class="va">as.character</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $a</span></span>
 <span><span class="co">#&gt; [1] "1"</span></span>
@@ -97,13 +104,13 @@
 <span><span class="co"># convert numbers to integers</span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"verbose"</span>, <span class="st">"1"</span>, <span class="st">"1.5"</span>, <span class="st">"1.9"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"verbose"</span>, action <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span></span>
-<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"..."</span>, convert <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span><span class="st">"..."</span>, convert <span class="op">=</span> <span class="va">as.integer</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">parse</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $verbose</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $...</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; integer(0)</span></span>
 <span></span>
 <span><span class="co"># use functions for more control</span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"verbose"</span>, <span class="st">"12-9-2022"</span>, <span class="st">"12-10-2022"</span><span class="op">)</span><span class="op">)</span></span>
@@ -114,7 +121,7 @@
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $...</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="co">#&gt; Date of length 0</span></span></code></pre></div>
 <p>You’ll probably use <a href="https://jmbarbone.github.io/scribe/">scribe</a> within small scripts that can be called from your favorite terminal. The example below uses a function to call this file, but if it is added to your <code>PATH</code> you’d be able to call it directly:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">r-file</span> <span class="at">-a</span> 1 <span class="at">-b</span> 9</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -185,6 +192,8 @@
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=scribe" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/jmbarbone/scribe/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/jmbarbone/scribe/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 

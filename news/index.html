@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,13 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/jmbarbone/scribe/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -38,22 +44,39 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Changelog</h1>
-      
+      <small>Source: <a href="https://github.com/jmbarbone/scribe/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="scribe-development-version">scribe (development version)<a class="anchor" aria-label="anchor" href="#scribe-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="scribe-030">scribe 0.3.0<a class="anchor" aria-label="anchor" href="#scribe-030"></a></h2><p class="text-muted">CRAN release: 2023-10-21</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
 <ul><li>
-<code>convert</code> is no longer ignored when set in <code>scribeArg</code> <a href="https://github.com/jmbarbone/scribe/issues/70" class="external-link">#70</a>
-<ul><li>
-<code>$convert</code> field now defaults to the newly exported <code><a href="../reference/value_convert.html">scribe_convert()</a></code> helper. This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.</li>
+<code>$convert</code> field now defaults to the newly exported <code><a href="../reference/value_convert.html">scribe_convert()</a></code> helper
+<ul><li>This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.</li>
 <li>default conversions use <code><a href="../reference/value_convert.html">value_convert()</a></code>, which internally uses <code><a href="https://rdrr.io/r/utils/type.convert.html" class="external-link">utils::type.convert()</a></code> (and some additional steps for dates. Be aware that <code>type.convert("1", as.is = TRUE)</code> will return integers, and a decimal should be included if a numeric is desired (e.g., <code>type.convert("1.", as.is = TRUE)</code>
 </li>
+<li>previously, a prototype could be set (e.g., <code>convert = character()</code>), which will now fail but can be replaced with a simple function (e.g., <code>convert = as.character</code>).</li>
 </ul></li>
-<li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<ul><li>
+<code>convert</code> is no longer ignored when set in <code>scribeArg</code> <a href="https://github.com/jmbarbone/scribe/issues/70" class="external-link">#70</a>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li>
 <code>flag</code> action now accepts <code>NA</code> as a default <a href="https://github.com/jmbarbone/scribe/issues/67" class="external-link">#67</a>
 </li>
 </ul></div>
+<div class="section level3">
+<h3 id="non-user-facing-changes-0-3-0">Non-user facing changes<a class="anchor" aria-label="anchor" href="#non-user-facing-changes-0-3-0"></a></h3>
+<ul><li>GitHub workflow added to maintain version bumps on merge <a href="https://github.com/jmbarbone/actions/blob/main/examples/r-check-version.yaml" class="external-link"><code>jmbarbone/actions/r-check-version</code></a>
+</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="scribe-020">scribe 0.2.0<a class="anchor" aria-label="anchor" href="#scribe-020"></a></h2><p class="text-muted">CRAN release: 2023-05-22</p>
 <div class="section level3">
