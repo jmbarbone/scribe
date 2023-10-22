@@ -1,9 +1,23 @@
-# scribe (development version)
+# scribe 0.3.0
+
+## Breaking changes
+
+- `$convert` field now defaults to the newly exported `scribe_convert()` helper
+  - This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.
+  - default conversions use `value_convert()`, which internally uses `utils::type.convert()` (and some additional steps for dates.  Be aware that `type.convert("1", as.is = TRUE)` will return integers, and a decimal should be included if a numeric is desired (e.g., `type.convert("1.", as.is = TRUE)`
+  - previously, a prototype could be set (e.g., `convert = character()`), which will now fail but can be replaced with a simple function (e.g., `convert = as.character`).
+
+## Bug fixes
 
 - `convert` is no longer ignored when set in `scribeArg` [#70](https://github.com/jmbarbone/scribe/issues/70)
-  - `$convert` field now defaults to the newly exported `scribe_convert()` helper.  This selects one of three conversions: 1) default (see next bullet), 2) string evaluation, and 3) no conversion.
-  - default conversions use `value_convert()`, which internally uses `utils::type.convert()` (and some additional steps for dates.  Be aware that `type.convert("1", as.is = TRUE)` will return integers, and a decimal should be included if a numeric is desired (e.g., `type.convert("1.", as.is = TRUE)`
+
+## New features
+
 - `flag` action now accepts `NA` as a default [#67](https://github.com/jmbarbone/scribe/issues/67)
+
+## Non-user facing changes
+
+- GitHub workflow added to maintain version bumps on merge [`jmbarbone/actions/r-check-version`](https://github.com/jmbarbone/actions/blob/main/examples/r-check-version.yaml)
 
 # scribe 0.2.0
 

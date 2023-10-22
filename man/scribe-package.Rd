@@ -23,6 +23,8 @@ For a quick overview, see \code{vignette("scribe")}
 Useful links:
 \itemize{
   \item \url{https://jmbarbone.github.io/scribe/}
+  \item \url{https://github.com/jmbarbone/scribe}
+  \item Report bugs at \url{https://github.com/jmbarbone/scribe/issues}
 }
 
 }
