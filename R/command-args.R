@@ -93,6 +93,13 @@ ca_show <- function(self, ...) {
   invisible(self)
 }
 
+# ca <- command_args()
+# ca$add_argument(
+#   "foo",
+#   default = "December",
+#   info = paste(month.abb, month.name, sep = ": ", collapse = "--")
+# )
+# ca$help()
 ca_help <- function(self) {
   file <- grep("^--file=", commandArgs(), value = TRUE)
   if (length(file)) {
@@ -105,13 +112,17 @@ ca_help <- function(self) {
     bn <- "{command}"
   }
 
-  lines <- sapply(
-    self$get_args(),
-    function(arg) arg$get_help(),
-    simplify = "array"
-  )
-  lines <- apply(lines, 1L, format) # get consistent width
-  lines <- apply(lines, 1L, paste, collapse = " : ") # middle colon
+  # TODO need to get an indent for the left side
+  args <- sapply(self$get_args(), function(arg) arg$get_help())
+  args <- simplify2array(args)
+  args <- apply(args, 2L, function(row) two_column(row[1L], row[2L]))
+  args <- lapply(args, function(line) matrix(unlist(line), ncol = 2L))
+  args <- Reduce(rbind, args)
+  args <- apply(args, 2L, format)
+  args <- apply(args, 1L, paste, sep = "\n", collapse = " ")
+
+  usage <- two_column(bn, ca_write_usage(self))
+  usage <- apply(Reduce(cbind, usage), 1L, paste, collapse = "")
 
   print_lines(
     "{scribe} command_args",
@@ -127,10 +138,10 @@ ca_help <- function(self) {
     },
     "USAGE",
     sprintf("  %s [--help | --version]", bn),
-    sprintf("  %s %s ", bn, ca_write_usage(self)),
+    usage,
     "",
     "ARGUMENTS",
-    paste0("  ", lines),
+    paste0("  ", args),
     if (length(self$get_examples())) {
       examples <- self$get_examples()
       comments <- self$comments
@@ -145,6 +156,14 @@ ca_help <- function(self) {
   invisible(self)
 }
 
+two_column <- function(x, y, sep = "") {
+  # TODO need to implement a width argument
+  right <- strwrap(y, 0.8 * getOption("width"))
+  left <- character(length(right))
+  left[1L] <- paste0("  ", x, sep)
+  left <- format(left)
+  list(left, right)
+}
 
 ca_resolve <- function(self) {
   # loop through the possibly arg in args.  When found in args, extract and
@@ -262,15 +281,15 @@ ca_get_args <- function(self, included = TRUE) {
 
 ca_add_argument <- function(
     self,
-  ...,
-  n = NA_integer_,
-  action = NULL,
-  convert = scribe_convert(),
-  options = NULL,
-  default = NULL,
-  info = NULL,
-  stop = "none",
-  execute = invisible
+    ...,
+    n = NA_integer_,
+    action = NULL,
+    convert = scribe_convert(),
+    options = NULL,
+    default = NULL,
+    info = NULL,
+    stop = "none",
+    execute = invisible
 ) {
   if (is_arg(..1)) {
     arg <- ..1
