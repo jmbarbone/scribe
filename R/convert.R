@@ -71,7 +71,7 @@ scribe_convert <- function(method = c("default", "evaluate", "none")) {
     method,
     none = identity,
     default = value_convert,
-    evaluate = function(x, ...) eval(str2expression(x), baseenv())
+    evaluate = function(x, ...) eval(str2expression(as.character(x)), baseenv())
   )
 }
 

@@ -272,6 +272,13 @@ arg_help <- function(self) {
   invisible(self)
 }
 
+# a <- new_arg(
+#   "foo",
+#   default = 1,
+#   n = 1,
+#   info = paste0(month.name, sep = " ")
+# )
+# a$get_help()
 arg_get_help <- function(self) {
   switch(
     self$get_action(),
@@ -414,8 +421,10 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
     m <- m[ok]
   }
 
+  default <- FALSE
   if (length(m) == 0L) {
     value <- self$get_default()
+    default <- TRUE
   } else {
     if (length(m) > 1L) {
       warning(
@@ -434,6 +443,7 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
         ca_remove_working(ca, seq_along(value))
 
         if (!length(value)) {
+          default <- TRUE
           value <- self$get_default()
         }
       },
@@ -442,6 +452,7 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
         value <- ca_get_working(ca)[m[-off]]
 
         if (self$positional && is.na(value)) {
+          default <- TRUE
           value <- self$get_default()
         }
 
@@ -454,13 +465,12 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
     )
 
     ca$field("stop", structure(self$stop, arg = self))
-    ca$field("stop", structure(self$stop, arg = self))
   }
 
-  if (self$action == "flag") {
+  if (self$action == "flag" || default) {
     invisible() # do nothing
   } else if (identical(self$convert, value_convert)) {
-    value <- self$convert(value, to = default %||% default_convert)
+    value <- self$convert(value, to = self$get_default() %||% default_convert)
   } else {
     value <- self$convert(value)
   }
