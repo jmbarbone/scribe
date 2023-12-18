@@ -12,11 +12,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
 ---
 
@@ -34,11 +34,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
 ---
 
@@ -54,11 +54,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
 ---
 
@@ -74,11 +74,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
 # examples snaps
 
@@ -91,11 +91,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
       
       EXAMPLES
         $ foo --flag      
@@ -112,11 +112,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
 ---
 
@@ -129,11 +129,11 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
       
       EXAMPLES
         foo command value
@@ -162,9 +162,9 @@
       
       USAGE
         {command} [--help | --version]
-        {command}  
+        {command}
       
       ARGUMENTS
-        --help    : prints this and quietly exits                   
-        --version : prints the version of {scribe} and quietly exits
+        --help    prints this and quietly exits                   
+        --version prints the version of {scribe} and quietly exits
 
