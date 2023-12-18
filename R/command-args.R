@@ -115,7 +115,7 @@ ca_help <- function(self) {
   args <- apply(args, 1L, paste, sep = "\n", collapse = " ")
 
   usage <- two_column(bn, ca_write_usage(self))
-  usage <- apply(Reduce(cbind, usage), 1L, paste, collapse = "")
+  usage <- apply(Reduce(cbind, usage), 1L, paste, collapse = " ")
 
   print_lines(
     "{scribe} command_args",

@@ -12,7 +12,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -34,7 +34,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -54,7 +54,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -74,7 +74,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -91,7 +91,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -112,7 +112,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -129,7 +129,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
@@ -162,7 +162,7 @@
       
       USAGE
         {command} [--help | --version]
-        {command}
+        {command} 
       
       ARGUMENTS
         --help    prints this and quietly exits                   
