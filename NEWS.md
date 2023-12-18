@@ -1,3 +1,8 @@
+# scribe (development version)
+
+- improves `ca$help()` printing
+- corrects issue with `ca$parse()`
+
 # scribe 0.3.0
 
 ## Breaking changes
