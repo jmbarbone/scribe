@@ -272,13 +272,6 @@ arg_help <- function(self) {
   invisible(self)
 }
 
-# a <- new_arg(
-#   "foo",
-#   default = 1,
-#   n = 1,
-#   info = paste0(month.name, sep = " ")
-# )
-# a$get_help()
 arg_get_help <- function(self) {
   switch(
     self$get_action(),

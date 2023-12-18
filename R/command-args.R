@@ -93,13 +93,6 @@ ca_show <- function(self, ...) {
   invisible(self)
 }
 
-# ca <- command_args()
-# ca$add_argument(
-#   "foo",
-#   default = "December",
-#   info = paste(month.abb, month.name, sep = ": ", collapse = "--")
-# )
-# ca$help()
 ca_help <- function(self) {
   file <- grep("^--file=", commandArgs(), value = TRUE)
   if (length(file)) {
