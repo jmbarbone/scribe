@@ -141,7 +141,7 @@ ca_help <- function(self) {
     usage,
     "",
     "ARGUMENTS",
-    paste0("  ", args),
+    args,
     if (length(self$get_examples())) {
       examples <- self$get_examples()
       comments <- self$comments
