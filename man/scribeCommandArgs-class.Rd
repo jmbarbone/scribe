@@ -121,7 +121,11 @@ track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{help()}}{Print the help information}
 
-\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
+\item{\code{initialize(
+  input = "",
+  include = c("help", "version", NA_character_),
+  super = TRUE
+)}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
     \code{\link[=command_args]{command_args()}} is recommended rather than
     calling this method directly.
 

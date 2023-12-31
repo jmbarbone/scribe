@@ -7,7 +7,8 @@
 command_args(
   x = NULL,
   include = getOption("scribe.include", c("help", "version", NA_character_)),
-  string = NULL
+  string = NULL,
+  super = TRUE
 )
 }
 \arguments{
@@ -18,8 +19,11 @@ Otherwise the value of \code{x} is converted to a \code{character}.  If \code{st
 not \code{NULL}, \code{\link[=scan]{scan()}} will be used to split the value into a \code{character}
 vector.}
 
-\item{include}{Special default arguments to included.  See \verb{$initialize()}
-in \link{scribeCommandArgs} for more details.}
+\item{include}{Special default arguments to included.  See \verb{$initialize()} in
+\link{scribeCommandArgs} for more details.}
+
+\item{super}{When \code{TRUE} the \link{scribeCommandArgs} object will be initialized
+with standard \emph{super} arguments (e.g., \code{---help}, \code{---version})}
 }
 \value{
 A \link{scribeCommandArgs} object
