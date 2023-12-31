@@ -97,7 +97,8 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     resolved = "logical",
     working = "character",
     stop = "character",
-    super = "logical"
+    super = "logical",
+    supers = "character"
   )
 )
 

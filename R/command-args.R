@@ -210,6 +210,27 @@ ca_resolve <- function(self) {
   self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
 
+  if (self$super) {
+    # NOTE if a third is added, this should probably be a function
+    for (i in seq_along(ca_get_working(self))) {
+      switch(
+        ca_get_working(self)[i],
+        "---help" = {
+          scribe_help_super()
+          self$field("stop", "hard")
+          self$field("supers", c(self$supers, "help"))
+          self$field("working", ca_get_working(self)[-i])
+        },
+        "---version" = {
+          scribe_version_super()
+          self$field("stop", "hard")
+          self$field("supers", c(self$supers, "version"))
+          self$field("working", ca_get_working(self)[-i])
+        }
+      )
+    }
+  }
+
   for (arg in args[arg_order]) {
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
   }
@@ -229,6 +250,14 @@ ca_resolve <- function(self) {
 
 ca_parse <- function(self) {
   self$resolve()
+
+  for (arg in self$supers) {
+    switch(
+      arg,
+      "help" = scribe_help_super()$execute(),
+      "version" = scribe_version_super()$execute()
+    )
+  }
 
   for (arg in self$get_args()) {
     ca_do_execute(self, arg)

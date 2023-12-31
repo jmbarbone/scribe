@@ -1,4 +1,4 @@
-scribe_super_help_arg <- function() {
+scribe_help_super <- function() {
   new_arg(
     aliases = "---help",
     action = "flag",
@@ -7,20 +7,18 @@ scribe_super_help_arg <- function() {
     info = "prints help information for {scribe} and quietly exits",
     options = list(no = FALSE),
     stop = "hard",
-    execute = function(self, ca) {
-      # TODO include more information
-      if (isTRUE(self$get_value())) {
-        cat(
-          "{scribe} v ", scribe_version,
-          "For more information, see https://jmbarbone.github.io/scribe/"
-        )
-        return(exit())
-      }
+    execute = function() {
+      cat(
+        "{scribe} v ", format(scribe_version()), "\n",
+        "For more information, see https://jmbarbone.github.io/scribe/",
+        sep =
+      )
+      exit()
     }
   )
 }
 
-scribe_super_version_arg <- function() {
+scribe_version_super <- function() {
   new_arg(
     aliases = "---version",
     action = "flag",
@@ -30,20 +28,14 @@ scribe_super_version_arg <- function() {
     options = list(no = FALSE),
     stop = "hard",
     execute = function(self, ca) {
-      if (isTRUE(self$get_value())) {
-        ca$version()
-        return(exit())
-      }
-
-      if (isFALSE(self$get_value())) {
-        # remove 'version'
-        values <- ca$get_values()
-        ca$field("values", values[-match("version", names(values))])
-      }
+      cat(format(scribe_version()), "\n", sep = "")
+      exit()
     }
   )
 }
 
 scribe_version <- function() {
-  format(utils::packageVersion("scribe"))
+  package_version(
+    asNamespace("scribe")[[".__NAMESPACE__."]][["spec"]][["version"]]
+  )
 }

@@ -61,6 +61,7 @@ scribe_help_arg <- function() {
 }
 
 scribe_version_arg <- function() {
+  # TODO deprecate for ---version
   new_arg(
     aliases = "--version",
     action = "flag",
