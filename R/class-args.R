@@ -171,3 +171,24 @@ scribeArg$methods(
     arg_is_resolved(.self)
   }
 )
+
+scribeSuperArg <- methods::setRefClass(
+  "scribeSuperArg",
+  contains = "scribeArg",
+  methods = list(
+    initialize = function(
+      aliases = "",
+      ...
+    ) {
+      if (!all(startsWith(aliases, "---"))) {
+        stop("super args aliases must start with ---")
+      }
+
+      arg_initialize(
+        self    = .self,
+        aliases = aliases,
+        ...
+      )
+    }
+  )
+)
