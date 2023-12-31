@@ -96,7 +96,8 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     comments = "character",
     resolved = "logical",
     working = "character",
-    stop = "character"
+    stop = "character",
+    super = "logical"
   )
 )
 
@@ -104,7 +105,8 @@ scribeCommandArgs$methods(
   # creates the object
   initialize = function(
     input = "",
-    include = c("help", "version", NA_character_)
+    include = c("help", "version", NA_character_),
+    super = TRUE
   ) {
     "Initialize the \\link{scribeCommandArgs} object.  The wrapper
     \\code{\\link[=command_args]{command_args()}} is recommended rather than
@@ -116,7 +118,7 @@ scribeCommandArgs$methods(
       \\item{\\code{include}}{A character vector denoting which default
         \\link{scribeArg}s to include in \\code{args}}
     }"
-    ca_initialize(.self, input = input, include = include)
+    ca_initialize(.self, input = input, include = include, super = super)
   },
 
   show = function(...) {

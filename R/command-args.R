@@ -9,8 +9,10 @@
 #'   Otherwise the value of `x` is converted to a `character`.  If `string` is
 #'   not `NULL`, [scan()] will be used to split the value into a `character`
 #'   vector.
-#' @param include Special default arguments to included.  See `$initialize()`
-#'   in [scribeCommandArgs] for more details.
+#' @param include Special default arguments to included.  See `$initialize()` in
+#'   [scribeCommandArgs] for more details.
+#' @param super When `TRUE` the [scribeCommandArgs] object will be initialized
+#'   with standard _super_ arguments (e.g., `---help`, `---version`)
 #' @examples
 #' command_args()
 #' command_args(c("-a", 1, "-b", 2))
@@ -21,7 +23,8 @@
 command_args <- function(
     x = NULL,
     include = getOption("scribe.include", c("help", "version", NA_character_)),
-    string = NULL
+    string = NULL,
+    super = TRUE
 ) {
   if (is.null(string)) {
     if (is.null(x)) {
@@ -37,7 +40,7 @@ command_args <- function(
     x <- scan(text = string, what = "character", quiet = TRUE)
   }
 
-  scribeCommandArgs(input = x, include = include)
+  scribeCommandArgs(input = x, include = include, super = super)
 }
 
 # wrappers ----------------------------------------------------------------
@@ -45,7 +48,8 @@ command_args <- function(
 ca_initialize <- function(
     self,
     input = NULL,
-    include = c("help", "version", NA_character_)
+    include = c("help", "version", NA_character_),
+    super = TRUE
 ) {
   # default values
   self$initFields(
@@ -75,6 +79,7 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
+  self$field("super", super)
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
