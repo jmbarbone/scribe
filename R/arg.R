@@ -72,6 +72,7 @@ scribe_version_arg <- function() {
     stop = "hard",
     execute = function(self, ca) {
       if (isTRUE(self$get_value())) {
+        .Deprecated("For {scribe} package version, use ---version instead")
         ca$version()
         return(exit())
       }
