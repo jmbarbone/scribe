@@ -332,7 +332,10 @@ test_that("versions", {
   ca$add_argument("--foo")
   ca$add_argument("--bar")
   ca$add_description("This does things")
-  expect_output((obj <- ca$parse()))
+  expect_warning(
+    expect_output((obj <- ca$parse())),
+    class = "deprecatedWarning"
+  )
   exp <- list(version = TRUE)
   expect_identical(obj, exp)
   expect_output(ca$version())
