@@ -1,3 +1,6 @@
+# default super helpers.  though these may be the only super helpers.  the
+# object is not exported so these should only be used internally.
+
 scribe_help_super <- function() {
   new_arg(
     aliases = "---help",
@@ -9,7 +12,7 @@ scribe_help_super <- function() {
     stop = "hard",
     execute = function() {
       cat(
-        "{scribe} v ", format(scribe_version()), "\n",
+        "{scribe} v", format(scribe_version()), "\n",
         "For more information, see https://jmbarbone.github.io/scribe/",
         sep =
       )
