@@ -39,7 +39,7 @@
 #'   See also [command_args()]
 #' @field values `[list]`\cr A named `list` of values.  Empty on initialization
 #'   and populated during argument resolving.
-#' @field args `[list]`\cr a List of [scribeArg]s
+#' @field args `[list]`\cr A List of [scribeArg]s
 #' @field description `[character]`\cr Additional help information
 #' @field included `[character]`\cr Default [scribeArg]s to include
 #' @field examples `[character]`\cr Examples to print with help
@@ -49,6 +49,7 @@
 #' @field working `[character]`\cr A copy of `input`.  Note: this is used to
 #'   track parsing progress and is not meant to be accessed directly.
 #' @field stop `[character]`\cr Determines parsing
+#' @field supers `[list]`\cr A list of `scribeSuperArgs`s
 #'
 #' @examples
 #' # command_args() is recommended over direct use of scribeCommandArgs$new()
@@ -97,8 +98,7 @@ scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
     resolved = "logical",
     working = "character",
     stop = "character",
-    super = "logical",
-    supers = "character"
+    supers = "list"
   )
 )
 
@@ -107,7 +107,7 @@ scribeCommandArgs$methods(
   initialize = function(
     input = "",
     include = c("help", "version", NA_character_),
-    super = TRUE
+    supers = include
   ) {
     "Initialize the \\link{scribeCommandArgs} object.  The wrapper
     \\code{\\link[=command_args]{command_args()}} is recommended rather than
@@ -118,8 +118,11 @@ scribeCommandArgs$methods(
         to parse}
       \\item{\\code{include}}{A character vector denoting which default
         \\link{scribeArg}s to include in \\code{args}}
+      \\item{\\code{supers}}{A character vector denoting which default
+        \\code{scribeSuperArg}s to include in \\code{supers} (i.e., arguments
+        called with `---` prefixes)
     }"
-    ca_initialize(.self, input = input, include = include, super = super)
+    ca_initialize(.self, input = input, include = include, supers = supers)
   },
 
   show = function(...) {
@@ -179,14 +182,15 @@ scribeCommandArgs$methods(
     ca_set_values(.self, i = i, value = value)
   },
 
-  get_args = function(included = TRUE) {
+  get_args = function(included = TRUE, super = FALSE) {
     "Retrieve \\code{args}
 
     \\describe{
       \\item{\\code{included}}{If \\code{TRUE} also returns included default
         \\link{scribeArg}s defined in \\code{$initialize()}}
+      \\item{\\code{super}}{If \\code{TRUE} also returns super args
     }"
-    ca_get_args(.self, included = included)
+    ca_get_args(.self, included = included, super = super)
   },
 
   add_argument = function(

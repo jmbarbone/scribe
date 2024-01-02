@@ -24,7 +24,7 @@ command_args <- function(
     x = NULL,
     include = getOption("scribe.include", c("help", "version", NA_character_)),
     string = NULL,
-    super = TRUE
+    super = include
 ) {
   if (is.null(string)) {
     if (is.null(x)) {
@@ -49,7 +49,7 @@ ca_initialize <- function(
     self,
     input = NULL,
     include = c("help", "version", NA_character_),
-    super = TRUE
+    supers = include
 ) {
   # default values
   self$initFields(
@@ -62,6 +62,12 @@ ca_initialize <- function(
 
   include <- match.arg(
     as.character(include),
+    c("help", "version", NA_character_),
+    several.ok = TRUE
+  )
+
+  supers <- match.arg(
+    as.character(supers),
     c("help", "version", NA_character_),
     several.ok = TRUE
   )
@@ -79,7 +85,11 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
-  self$field("super", super)
+  self$field("supers", c(
+    if ("help" %in% supers) scribe_help_super(),
+    if ("version" %in% supers) scribe_version_super()
+  ) %||% list())
+
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
@@ -183,7 +193,7 @@ ca_resolve <- function(self) {
   # dropped.  Single value arguments are easier to match, should always have
   # that value present if arg is present. Non-multiple value arguments have at
   # least a limit to the number of values that can be found.
-  args <- self$get_args()
+  args <- self$get_args(super = TRUE)
 
   arg_order <- unique(
     c(
@@ -192,44 +202,22 @@ ca_resolve <- function(self) {
       seq_along(args),
       # dots must always be parsed last
       wapply(args, function(i) i$positional),
-      wapply(args, function(i) i$action == "dots")
+      wapply(args, function(i) i$action == "dots"),
+      wapply(args, function(i) inherits(i, "scribeSuperArg"))
     ),
     fromLast = TRUE
   )
 
   # move stops earlier
-  arg_order <- unique(
-    c(
-      wapply(args, function(i) i$stop == "hard"),
-      wapply(args, function(i) i$stop == "soft"),
-      arg_order
-    )
-  )
+  arg_order <- unique(c(
+    wapply(args, function(i) i$stop == "hard"),
+    wapply(args, function(i) i$stop == "soft"),
+    arg_order
+  ))
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
   self$field("values", vector("list", length(arg_order)))
   names(self$values) <- arg_names[arg_order]
-
-  if (self$super) {
-    # NOTE if a third is added, this should probably be a function
-    for (i in seq_along(ca_get_working(self))) {
-      switch(
-        ca_get_working(self)[i],
-        "---help" = {
-          scribe_help_super()
-          self$field("stop", "hard")
-          self$field("supers", c(self$supers, "help"))
-          self$field("working", ca_get_working(self)[-i])
-        },
-        "---version" = {
-          scribe_version_super()
-          self$field("stop", "hard")
-          self$field("supers", c(self$supers, "version"))
-          self$field("working", ca_get_working(self)[-i])
-        }
-      )
-    }
-  }
 
   for (arg in args[arg_order]) {
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
@@ -251,23 +239,20 @@ ca_resolve <- function(self) {
 ca_parse <- function(self) {
   self$resolve()
 
-  for (arg in self$supers) {
-    switch(
-      arg,
-      "help" = scribe_help_super()$execute(),
-      "version" = scribe_version_super()$execute()
-    )
-  }
-
-  for (arg in self$get_args()) {
+  for (arg in self$get_args(super = TRUE)) {
     ca_do_execute(self, arg)
   }
 
   # clean up names
   values <- self$get_values()
+  values <- values[!startsWith(names(values), "_")]
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
   regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  values
+  if (length(values)) {
+    values
+  } else {
+    list()
+  }
 }
 
 ca_get_input <- function(self) {
@@ -296,14 +281,20 @@ ca_set_values <- function(self, i = NULL, value) {
   invisible(self)
 }
 
-ca_get_args <- function(self, included = TRUE) {
-  if (included) {
-    return(self$args)
+ca_get_args <- function(self, included = TRUE, super = FALSE) {
+  args <- self$args
+
+  if (!included) {
+    nms <- sapply(args, function(arg) arg$get_name())
+    ok <- match(nms, self$included, 0L) == 0L
+    args <- args[ok]
   }
 
-  nms <- sapply(self$args, function(arg) arg$get_name())
-  ok <- match(nms, self$included, 0L) == 0L
-  self$args[ok]
+  if (super) {
+    args <- c(self$supers, args)
+  }
+
+  args
 }
 
 ca_add_argument <- function(
