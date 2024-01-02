@@ -8,7 +8,7 @@ command_args(
   x = NULL,
   include = getOption("scribe.include", c("help", "version", NA_character_)),
   string = NULL,
-  super = TRUE
+  super = include
 )
 }
 \arguments{
