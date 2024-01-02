@@ -2,7 +2,7 @@
 # object is not exported so these should only be used internally.
 
 scribe_help_super <- function() {
-  new_arg(
+  scribeSuperArg$new(
     aliases = "---help",
     action = "flag",
     default = FALSE,
@@ -10,11 +10,15 @@ scribe_help_super <- function() {
     info = "prints help information for {scribe} and quietly exits",
     options = list(no = FALSE),
     stop = "hard",
-    execute = function() {
+    execute = function(self, ca) {
+      if (!self$get_value()) {
+        return()
+      }
+
       cat(
         "{scribe} v", format(scribe_version()), "\n",
         "For more information, see https://jmbarbone.github.io/scribe/",
-        sep =
+        sep = ""
       )
       exit()
     }
@@ -22,7 +26,7 @@ scribe_help_super <- function() {
 }
 
 scribe_version_super <- function() {
-  new_arg(
+  scribeSuperArg$new(
     aliases = "---version",
     action = "flag",
     default = FALSE,
@@ -31,6 +35,10 @@ scribe_version_super <- function() {
     options = list(no = FALSE),
     stop = "hard",
     execute = function(self, ca) {
+      if (!isTRUE(self$get_value())) {
+        return()
+      }
+
       cat(format(scribe_version()), "\n", sep = "")
       exit()
     }
