@@ -56,10 +56,7 @@ test_that("help() [#16]", {
   exp <- c("...", "help text")
   expect_identical(obj, exp)
 
-  obj <- new_arg(
-    c("...", "dots"),
-    info = "more help here"
-  )$get_help()
+  obj <- new_arg(c("...", "dots"), info = "more help here")$get_help()
   exp <- c("...", "dots: more help here")
   expect_identical(obj, exp)
 
