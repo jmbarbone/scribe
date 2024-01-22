@@ -17,7 +17,7 @@ scribe_help_super <- function() {
 
       cat(
         "{scribe} v", format(scribe_version()), "\n",
-        "For more information, see https://jmbarbone.github.io/scribe/",
+        "For more information, see https://jmbarbone.github.io/scribe/\n",
         sep = ""
       )
       exit()

@@ -120,7 +120,7 @@ scribeCommandArgs$methods(
         \\link{scribeArg}s to include in \\code{args}}
       \\item{\\code{supers}}{A character vector denoting which default
         \\code{scribeSuperArg}s to include in \\code{supers} (i.e., arguments
-        called with `---` prefixes)
+        called with `---` prefixes)}
     }"
     ca_initialize(.self, input = input, include = include, supers = supers)
   },
@@ -161,9 +161,8 @@ scribeCommandArgs$methods(
     "Set \\code{input}.  Note: when called, \\code{resolved} is (re)set to
      \\code{FALSE} and values need to be parsed again.
 
-    \\describe{
-      \\item{\\code{value}}{Value to set}
-    }"
+    \\describe{\\item{\\code{value}}{Value to set}}
+    "
     ca_set_input(.self, value = value)
   },
 
@@ -192,7 +191,7 @@ scribeCommandArgs$methods(
     \\describe{
       \\item{\\code{included}}{If \\code{TRUE} also returns included default
         \\link{scribeArg}s defined in \\code{$initialize()}}
-      \\item{\\code{super}}{If \\code{TRUE} also returns super args
+      \\item{\\code{super}}{If \\code{TRUE} also returns super args}
     }"
     ca_get_args(.self, included = included, super = super)
   },

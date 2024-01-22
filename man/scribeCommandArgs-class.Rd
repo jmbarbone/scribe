@@ -111,7 +111,7 @@ track parsing progress and is not meant to be accessed directly.}
     \describe{
       \item{\code{included}}{If \code{TRUE} also returns included default
         \link{scribeArg}s defined in \code{$initialize()}}
-      \item{\code{super}}{If \code{TRUE} also returns super args
+      \item{\code{super}}{If \code{TRUE} also returns super args}
     }}
 
 \item{\code{get_description()}}{Retrieve \code{description}}
@@ -120,7 +120,11 @@ track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_values()}}{Retrieve \code{values}}
+\item{\code{get_values(all = FALSE)}}{Retrieve \code{values}
+\describe{
+  \item{\code{{all}}}{If \code{TRUE} returns all values, including empty
+  ones}
+}}
 
 \item{\code{help()}}{Print the help information}
 
@@ -139,7 +143,7 @@ track parsing progress and is not meant to be accessed directly.}
         \link{scribeArg}s to include in \code{args}}
       \item{\code{supers}}{A character vector denoting which default
         \code{scribeSuperArg}s to include in \code{supers} (i.e., arguments
-        called with `---` prefixes)
+        called with `---` prefixes)}
     }}
 
 \item{\code{parse()}}{Return a named \code{list} of parsed values of from each \link{scribeArg}
@@ -166,9 +170,8 @@ is called prior to $parse()}
 \item{\code{set_input(value)}}{Set \code{input}.  Note: when called, \code{resolved} is (re)set to
      \code{FALSE} and values need to be parsed again.
 
-    \describe{
-      \item{\code{value}}{Value to set}
-    }}
+    \describe{\item{\code{value}}{Value to set}}
+    }
 
 \item{\code{set_values(i = TRUE, value)}}{Set \code{values}
 

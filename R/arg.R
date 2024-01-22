@@ -183,9 +183,20 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     }
   )
 
-  if (!is.null(default)) {
-    if (!identical(value_convert(default, to = convert), default)) {
-      stop("default value doesn't convert to itself", call. = FALSE)
+  if (!is.null(default) && !is.null(convert)) {
+    attempt <- value_convert(default, to = convert)
+    if (!identical(attempt, default)) {
+      stop(
+        "default value doesn't convert to itself:\n",
+        "default:\n",
+        utils::capture.output(utils::str(default)),
+        "\nconverted:\n",
+        utils::capture.output(utils::str(attempt)),
+        "\n\n",
+        "to disable this check, set `convert = scribe_conert(\"none\")`",
+        " or review the `convert` argument in `?scribe_arg`",
+        call. = FALSE
+      )
     }
   }
 
@@ -273,8 +284,9 @@ arg_show <- function(self) {
       "<null>"
     } else if (inherits(value, "scribe_empty_value")) {
       "<empty>"
-    } else if (!nzchar(value)) {
-      "<>"
+    # is this even needed?
+    # } else if (length(value) == 0 || !nzchar(value)) {
+    #   "<>"
     } else {
       paste(vapply(value, format, NA_character_), collapse = " ")
     }
@@ -282,11 +294,11 @@ arg_show <- function(self) {
   aliases <- self$get_aliases()
   aliases <- to_string(aliases)
   print_line(sprintf(
-      "Argument [%s] %s: %s",
-      aliases,
-      if (self$is_resolved()) "R " else "",
-      value
-    ))
+    "Argument [%s] %s: %s",
+    aliases,
+    if (self$is_resolved()) "R " else "",
+    value
+  ))
   invisible(self)
 }
 
