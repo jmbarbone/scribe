@@ -88,17 +88,18 @@ scribe_version_arg <- function() {
 
 # wrappers ----------------------------------------------------------------
 
-arg_initialize <- function( # nolint: cyclocomp_linter.
-  self,
-  aliases = "",
-  action  = arg_actions(),
-  default = NULL,
-  convert = scribe_convert(),
-  n       = NA_integer_,
-  info    = NA_character_,
-  options = list(),
-  stop    = c("none", "hard", "soft"),
-  execute = invisible
+# nolint next: cyclocomp_linter.
+arg_initialize <- function(
+    self,
+    aliases = "",
+    action  = arg_actions(),
+    default = NULL,
+    convert = scribe_convert(),
+    n       = NA_integer_,
+    info    = NA_character_,
+    options = list(),
+    stop    = c("none", "hard", "soft"),
+    execute = invisible
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -284,9 +285,6 @@ arg_show <- function(self) {
       "<null>"
     } else if (inherits(value, "scribe_empty_value")) {
       "<empty>"
-    # is this even needed?
-    # } else if (length(value) == 0 || !nzchar(value)) {
-    #   "<>"
     } else {
       paste(vapply(value, format, NA_character_), collapse = " ")
     }
@@ -413,7 +411,8 @@ arg_is_resolved <- function(self) {
 
 # internal ----------------------------------------------------------------
 
-arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
+# nolint next: cyclocomp_linter.
+arg_parse_value <- function(self, ca) {
   default <-
     if (is_arg(self$default)) {
       self$default$get_value()

@@ -85,7 +85,8 @@
 #' do.call(my_function, args)
 #' @family scribe
 #' @export
-scribeCommandArgs <- methods::setRefClass( # nolint: object_name_linter.
+# nolint next: object_name_linter.
+scribeCommandArgs <- methods::setRefClass(
   "scribeCommandArgs",
   fields = list(
     input = "character",

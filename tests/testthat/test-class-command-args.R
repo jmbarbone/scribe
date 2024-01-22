@@ -416,8 +416,8 @@ test_that("snapshots", {
 
 test_that("snapshots - empty values", {
   ca <- command_args(string = "--bar zero")
-  ca$add_argument("--foo", stop = "hard")
-  ca$add_argument("--bar", action = "list", default = character(), stop = "hard")
+  ca$add_argument("--foo", stop = TRUE)
+  ca$add_argument("--bar", action = "list", default = character(), stop = TRUE)
   ca$add_argument("--fizz", action = "list", default = character())
   ca$resolve()
   ca$get_args()
