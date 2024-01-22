@@ -97,7 +97,7 @@ ca_initialize <- function(
   invisible(self)
 }
 
-ca_show <- function(self, ...) {
+ca_show <- function(self, all_values = FALSE, ...) {
   print_line("Initial call: ", to_string(self$get_input()))
 
   if (!self$resolved) {
@@ -248,11 +248,7 @@ ca_parse <- function(self) {
   values <- values[!startsWith(names(values), "_")]
   regmatches(names(values), regexpr("^-+", names(values))) <- ""
   regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  if (length(values)) {
-    values
-  } else {
-    list()
-  }
+  values
 }
 
 ca_get_input <- function(self) {
@@ -266,7 +262,11 @@ ca_set_input <- function(self, value) {
   invisible(self)
 }
 
-ca_get_values <- function(self) {
+ca_get_values <- function(self, all = FALSE) {
+  if (all) {
+    return(self$values)
+  }
+
   Filter(function(x) !inherits(x, "scribe_empty_value"), self$values)
 }
 
