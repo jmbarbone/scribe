@@ -413,3 +413,18 @@ test_that("snapshots", {
   expect_snapshot(ca$show())
   expect_snapshot(ca$help())
 })
+
+test_that("snapshots - empty values", {
+  ca <- command_args(string = "--bar zero")
+  ca$add_argument("--foo", stop = "hard")
+  ca$add_argument("--bar", action = "list", default = character(), stop = "hard")
+  ca$add_argument("--fizz", action = "list", default = character())
+  ca$resolve()
+  ca$get_args()
+  expect_snapshot(ca$get_args())
+})
+
+test_that("snapshots - super args", {
+  expect_snapshot(command_args("---help")$parse())
+  expect_snapshot(command_args("---version")$parse())
+})
