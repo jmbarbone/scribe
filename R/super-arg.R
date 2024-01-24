@@ -11,16 +11,14 @@ scribe_help_super <- function() {
     options = list(no = FALSE),
     stop = "hard",
     execute = function(self, ca) {
-      if (!self$get_value()) {
-        return()
+      if (isTRUE(self$get_value())) {
+        cat(
+          "{scribe} v", format(scribe_version()), "\n",
+          "For more information, see https://jmbarbone.github.io/scribe/\n",
+          sep = ""
+        )
+        exit()
       }
-
-      cat(
-        "{scribe} v", format(scribe_version()), "\n",
-        "For more information, see https://jmbarbone.github.io/scribe/\n",
-        sep = ""
-      )
-      exit()
     }
   )
 }
@@ -35,12 +33,10 @@ scribe_version_super <- function() {
     options = list(no = FALSE),
     stop = "hard",
     execute = function(self, ca) {
-      if (!isTRUE(self$get_value())) {
-        return()
+      if (isTRUE(self$get_value())) {
+        cat(format(scribe_version()), "\n", sep = "")
+        exit()
       }
-
-      cat(format(scribe_version()), "\n", sep = "")
-      exit()
     }
   )
 }

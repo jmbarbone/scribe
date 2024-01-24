@@ -244,11 +244,10 @@ ca_parse <- function(self) {
   }
 
   # clean up names
-  values <- self$get_values()
-  values <- values[!startsWith(names(values), "_")]
-  regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  values
+  res <- self$get_values(super = FALSE)
+  regmatches(names(res), regexpr("^-+", names(res))) <- ""
+  regmatches(names(res), gregexpr("-", names(res))) <- "_"
+  res
 }
 
 ca_get_input <- function(self) {
@@ -262,12 +261,22 @@ ca_set_input <- function(self, value) {
   invisible(self)
 }
 
-ca_get_values <- function(self, all = FALSE) {
-  if (all) {
-    return(self$values)
+ca_get_values <- function(self, all = FALSE, super = FALSE) {
+  values <- self$values
+
+  if (is.null(values) || length(values) == 0) {
+    return(list())
   }
 
-  Filter(function(x) !inherits(x, "scribe_empty_value"), self$values)
+  if (!super) {
+    values <- values[!startsWith(names(values), "_")]
+  }
+
+  if (all) {
+    return(values)
+  }
+
+  Filter(function(x) !inherits(x, "scribe_empty_value"), values)
 }
 
 ca_set_values <- function(self, i = NULL, value) {
