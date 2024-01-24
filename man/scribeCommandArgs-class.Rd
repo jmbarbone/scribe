@@ -120,10 +120,11 @@ track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_values(all = FALSE)}}{Retrieve \code{values}
+\item{\code{get_values(all = FALSE, super = FALSE)}}{Retrieve \code{values}
 \describe{
   \item{\code{{all}}}{If \code{TRUE} returns all values, including empty
   ones}
+  \item{\code{super}}{If \code{TRUE} also returns values from super args}
 }}
 
 \item{\code{help()}}{Print the help information}

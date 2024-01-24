@@ -167,13 +167,14 @@ scribeCommandArgs$methods(
     ca_set_input(.self, value = value)
   },
 
-  get_values = function(all = FALSE) {
+  get_values = function(all = FALSE, super = FALSE) {
     "Retrieve \\code{values}
     \\describe{
       \\item{\\code{{all}}}{If \\code{TRUE} returns all values, including empty
       ones}
+      \\item{\\code{super}}{If \\code{TRUE} also returns values from super args}
     }"
-    ca_get_values(.self, all = all)
+    ca_get_values(.self, all = all, super = super)
   },
 
   set_values = function(i = TRUE, value) {
