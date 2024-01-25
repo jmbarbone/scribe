@@ -161,6 +161,46 @@ test_that("$add_argument(arg) [#45]", {
   expect_identical(obj, exp)
 })
 
+test_that("$get_values() [#73]", {
+  # #73 includes super args
+  ca <- command_args(1L)
+  ca$add_argument("foo")
+  ca$add_argument("bar")
+  obj <- ca$get_values()
+  exp <- list()
+  expect_identical(obj, exp)
+
+  ca$resolve()
+
+  obj <- ca$get_values()
+  exp <- list(foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+  obj <- ca$get_values()
+
+  obj <- ca$get_values(included = TRUE)
+  exp <- list(help = FALSE, version = FALSE, foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+
+  obj <- ca$get_values(super = TRUE)
+  exp <- list(`_help` = FALSE, `_version` = FALSE, foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+})
+
+test_that("$get_values(empty)", {
+  ca <- command_args("--stop")
+  ca$add_argument("foo")
+  ca$add_argument("--stop", stop = TRUE)
+  ca$resolve()
+
+  obj <- ca$get_values()
+  exp <- list(stop = NA)
+  expect_identical(obj, exp)
+
+  obj <- ca$get_values(empty = TRUE)
+  exp <- list(foo = scribe_empty_value(), stop = NA)
+  expect_identical(obj, exp)
+})
+
 test_that("args are returned in original order [#25]", {
   ca <- command_args(
     c("-b", "one", "-c", "two", "-a", "three", "foo", "bar"),
