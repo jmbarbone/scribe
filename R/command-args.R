@@ -193,7 +193,7 @@ ca_resolve <- function(self) {
   # dropped.  Single value arguments are easier to match, should always have
   # that value present if arg is present. Non-multiple value arguments have at
   # least a limit to the number of values that can be found.
-  args <- self$get_args(super = TRUE)
+  args <- self$get_args(included = TRUE, super = TRUE)
 
   arg_order <- unique(
     c(
@@ -216,8 +216,10 @@ ca_resolve <- function(self) {
   ))
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$field("values", vector("list", length(arg_order)))
-  names(self$values) <- arg_names[arg_order]
+  self$field("values", structure(
+    vector("list", length(arg_order)),
+    names =  arg_names[arg_order]
+  ))
 
   for (arg in args[arg_order]) {
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
@@ -239,12 +241,12 @@ ca_resolve <- function(self) {
 ca_parse <- function(self) {
   self$resolve()
 
-  for (arg in self$get_args(super = TRUE)) {
+  for (arg in self$get_args(super = TRUE, included = TRUE)) {
     ca_do_execute(self, arg)
   }
 
   # clean up names
-  res <- self$get_values(super = FALSE)
+  res <- self$get_values()
   regmatches(names(res), regexpr("^-+", names(res))) <- ""
   regmatches(names(res), gregexpr("-", names(res))) <- "_"
   res
@@ -261,22 +263,27 @@ ca_set_input <- function(self, value) {
   invisible(self)
 }
 
-ca_get_values <- function(self, all = FALSE, super = FALSE) {
+ca_get_values <- function(
+    self,
+    empty = FALSE,
+    super = FALSE,
+    included = FALSE
+) {
   values <- self$values
 
-  if (is.null(values) || length(values) == 0) {
-    return(list())
+  if (!included && !is.null(names(values))) {
+    values <- values[setdiff(names(values), self$included)]
   }
 
-  if (!super) {
+  if (!super && !is.null(names(values))) {
     values <- values[!startsWith(names(values), "_")]
   }
 
-  if (all) {
-    return(values)
+  if (!empty) {
+    values <- values[vapply(values, Negate(inherits), NA, "scribe_empty_value")]
   }
 
-  Filter(function(x) !inherits(x, "scribe_empty_value"), values)
+  values
 }
 
 ca_set_values <- function(self, i = NULL, value) {

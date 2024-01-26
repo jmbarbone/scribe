@@ -120,11 +120,12 @@ track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_values(all = FALSE, super = FALSE)}}{Retrieve \code{values}
+\item{\code{get_values(empty = FALSE, super = FALSE, included = FALSE)}}{Retrieve \code{values}
 \describe{
-  \item{\code{{all}}}{If \code{TRUE} returns all values, including empty
-  ones}
+  \item{\code{{empty}}}{If \code{TRUE} returns empty values, too}
   \item{\code{super}}{If \code{TRUE} also returns values from super args}
+  \item{\code{included}}{If \code{TRUE} also returns included default
+    \link{scribeArg}s defined in \code{$initialize()}}
 }}
 
 \item{\code{help()}}{Print the help information}
