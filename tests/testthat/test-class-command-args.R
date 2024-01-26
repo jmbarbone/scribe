@@ -298,7 +298,7 @@ test_that("--help has early stop", {
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
-  exp <- list(help = TRUE)
+  exp <- structure(list(), names = character())
   expect_output(obj <- try(ca$parse()))
   expect_identical(obj, exp)
 })
@@ -376,7 +376,7 @@ test_that("versions", {
     expect_output((obj <- ca$parse())),
     class = "deprecatedWarning"
   )
-  exp <- list(version = TRUE)
+  exp <- structure(list(), names = character())
   expect_identical(obj, exp)
   expect_output(ca$version())
 })
