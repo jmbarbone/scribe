@@ -50,12 +50,6 @@ scribe_help_arg <- function() {
         ca$help()
         return(exit())
       }
-
-      if (isFALSE(self$get_value())) {
-        # remove 'help'
-        values <- ca$get_values()
-        ca$field("values", values[-match("help", names(values))])
-      }
     }
   )
 }
@@ -75,12 +69,6 @@ scribe_version_arg <- function() {
         .Deprecated("For {scribe} package version, use ---version instead")
         ca$version()
         return(exit())
-      }
-
-      if (isFALSE(self$get_value())) {
-        # remove 'version'
-        values <- ca$get_values()
-        ca$field("values", values[-match("version", names(values))])
       }
     }
   )
