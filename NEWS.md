@@ -1,7 +1,14 @@
 # scribe (development version)
 
-- improves `ca$help()` printing
+- `---help`, `---version` _super_ arguments (`scribeSuperArg` objects) are now included with `scribeCommandArgs` 
+  - `command_args(super = included)` added
+  - internal `scribe_version_arg()` function (used with `command_args(include = "verison")` and called with `--version`) is now deprecated.  Using `---version` now returns the version of `{scribe}`
+  - internal `scribe_help_super()` now available via `---help` and returns information about `{scribe}`
+  `ca$get_args(super = TRUE)` returns `scribeSuerArg`s
+- `ca$help()` printing has been improved
 - corrects issue with `ca$parse()`
+- `ca$get_values(empty, super, included)` added to prevent filtering of specific argument types and values
+- internal linting improvements
 
 # scribe 0.3.0
 
