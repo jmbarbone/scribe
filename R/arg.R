@@ -182,7 +182,8 @@ arg_initialize <- function(
         "\nconverted:\n",
         utils::capture.output(utils::str(attempt)),
         "\n\n",
-        "to disable this check, set `convert = scribe_conert(\"none\")`",
+        "to disable this check, use",
+        " `new_arg(convert = scribe_convert(\"none\"))`",
         " or review the `convert` argument in `?scribe_arg`",
         call. = FALSE
       )
