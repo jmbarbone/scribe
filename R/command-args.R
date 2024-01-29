@@ -271,7 +271,7 @@ ca_get_values <- function(
 ) {
   values <- self$values
 
-  if (!included && !is.null(names(values))) {
+  if (!included) {
     values <- values[setdiff(names(values), self$included)]
   }
 
