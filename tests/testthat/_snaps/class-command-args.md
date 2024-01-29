@@ -194,7 +194,7 @@
     Code
       command_args("---help")$parse()
     Output
-      {scribe} v0.3.0.9000
+      {scribe} v0.3.0.9001
       For more information, see https://jmbarbone.github.io/scribe/
       named list()
 
@@ -203,6 +203,6 @@
     Code
       command_args("---version")$parse()
     Output
-      0.3.0.9000
+      0.3.0.9001
       named list()
 
