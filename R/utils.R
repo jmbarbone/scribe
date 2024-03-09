@@ -54,10 +54,10 @@ exit <- function(force = !getOption("scribe.interactive", interactive())) {
   invisible()
 }
 
-# nolint start: object_name_linter.
+# nolint next: object_name_linter.
 wapply <- function(x, FUN, ...) {
+  # nolint next: object_name_linter.
   FUN <- match.fun(FUN)
-  # nolint end: object_name_linter.
   fun <- function(x, ...) isTRUE(FUN(x, ...))
   which(do.call(vapply, list(X = x, FUN = fun, FUN.VALUE = NA)))
 }

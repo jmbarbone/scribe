@@ -168,3 +168,41 @@
         --help    prints this and quietly exits                   
         --version prints the version of {scribe} and quietly exits
 
+# snapshots - empty values
+
+    Code
+      ca$get_args()
+    Output
+      [[1]]
+      Argument [--help] R : FALSE
+      
+      [[2]]
+      Argument [--version] R : FALSE
+      
+      [[3]]
+      Argument [--foo] R : <null>
+      
+      [[4]]
+      Argument [--bar] R : zero
+      
+      [[5]]
+      Argument [--fizz] R : <empty>
+      
+
+# snapshots - super args
+
+    Code
+      command_args("---help")$parse()
+    Output
+      {scribe} v0.3.0.9001
+      For more information, see https://jmbarbone.github.io/scribe/
+      named list()
+
+---
+
+    Code
+      command_args("---version")$parse()
+    Output
+      0.3.0.9001
+      named list()
+

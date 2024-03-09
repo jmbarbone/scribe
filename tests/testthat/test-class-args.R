@@ -56,10 +56,7 @@ test_that("help() [#16]", {
   exp <- c("...", "help text")
   expect_identical(obj, exp)
 
-  obj <- new_arg(
-    c("...", "dots"),
-    info = "more help here"
-  )$get_help()
+  obj <- new_arg(c("...", "dots"), info = "more help here")$get_help()
   exp <- c("...", "dots: more help here")
   expect_identical(obj, exp)
 
@@ -174,4 +171,13 @@ test_that("snapshots", {
   expect_output(arg$help())
   expect_snapshot(arg$show())
   expect_snapshot(arg$help())
+
+  ca <- command_args(1)
+  arg <- new_arg("foo", default = 0)
+  ca$add_argument(arg)
+  expect_snapshot(arg$show())
+
+  # now resolve the argument so we have a different print
+  ca$resolve()
+  expect_snapshot(arg$show())
 })

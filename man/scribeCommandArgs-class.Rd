@@ -48,7 +48,7 @@ See also \code{\link[=command_args]{command_args()}}}
 \item{\code{values}}{\verb{[list]}\cr A named \code{list} of values.  Empty on initialization
 and populated during argument resolving.}
 
-\item{\code{args}}{\verb{[list]}\cr a List of \link{scribeArg}s}
+\item{\code{args}}{\verb{[list]}\cr A List of \link{scribeArg}s}
 
 \item{\code{description}}{\verb{[character]}\cr Additional help information}
 
@@ -65,6 +65,8 @@ and populated during argument resolving.}
 track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{stop}}{\verb{[character]}\cr Determines parsing}
+
+\item{\code{supers}}{\verb{[list]}\cr A list of \code{scribeSuperArgs}s}
 }}
 
 \section{Methods}{
@@ -104,11 +106,12 @@ track parsing progress and is not meant to be accessed directly.}
       \item{\code{prefix}}{An optional prefix for the example}
     }}
 
-\item{\code{get_args(included = TRUE)}}{Retrieve \code{args}
+\item{\code{get_args(included = TRUE, super = FALSE)}}{Retrieve \code{args}
 
     \describe{
       \item{\code{included}}{If \code{TRUE} also returns included default
         \link{scribeArg}s defined in \code{$initialize()}}
+      \item{\code{super}}{If \code{TRUE} also returns super args}
     }}
 
 \item{\code{get_description()}}{Retrieve \code{description}}
@@ -117,11 +120,21 @@ track parsing progress and is not meant to be accessed directly.}
 
 \item{\code{get_input()}}{Retrieve \code{input}}
 
-\item{\code{get_values()}}{Retrieve \code{values}}
+\item{\code{get_values(empty = FALSE, super = FALSE, included = FALSE)}}{Retrieve \code{values}
+\describe{
+  \item{\code{{empty}}}{If \code{TRUE} returns empty values, too}
+  \item{\code{super}}{If \code{TRUE} also returns values from super args}
+  \item{\code{included}}{If \code{TRUE} also returns included default
+    \link{scribeArg}s defined in \code{$initialize()}}
+}}
 
 \item{\code{help()}}{Print the help information}
 
-\item{\code{initialize(input = "", include = c("help", "version", NA_character_))}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
+\item{\code{initialize(
+  input = "",
+  include = c("help", "version", NA_character_),
+  supers = include
+)}}{Initialize the \link{scribeCommandArgs} object.  The wrapper
     \code{\link[=command_args]{command_args()}} is recommended rather than
     calling this method directly.
 
@@ -130,6 +143,9 @@ track parsing progress and is not meant to be accessed directly.}
         to parse}
       \item{\code{include}}{A character vector denoting which default
         \link{scribeArg}s to include in \code{args}}
+      \item{\code{supers}}{A character vector denoting which default
+        \code{scribeSuperArg}s to include in \code{supers} (i.e., arguments
+        called with `---` prefixes)}
     }}
 
 \item{\code{parse()}}{Return a named \code{list} of parsed values of from each \link{scribeArg}
@@ -156,9 +172,8 @@ is called prior to $parse()}
 \item{\code{set_input(value)}}{Set \code{input}.  Note: when called, \code{resolved} is (re)set to
      \code{FALSE} and values need to be parsed again.
 
-    \describe{
-      \item{\code{value}}{Value to set}
-    }}
+    \describe{\item{\code{value}}{Value to set}}
+    }
 
 \item{\code{set_values(i = TRUE, value)}}{Set \code{values}
 
