@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,17 +58,17 @@
     <p>This class manages the command line argument inputs when passed via
 the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a> utility.  Take the simple script below which adds two
 numbers, which we will save in an executable file called <code>add.R</code>,</p>
-<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">library</span><span class="er">(</span><span class="ex">scribe</span><span class="kw">)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span> <span class="op">&lt;</span>- command_args<span class="er">(</span><span class="kw">)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value1"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value2"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">args</span> <span class="op">&lt;</span>- ca<span class="va">$parse</span><span class="er">(</span><span class="kw">)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">writeLines</span><span class="er">(</span><span class="ex">args</span><span class="va">$value1</span> + args<span class="va">$value2</span><span class="kw">)</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="ex">library</span><span class="er">(</span><span class="ex">scribe</span><span class="kw">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="ex">ca</span> <span class="op">&lt;</span>- command_args<span class="er">(</span><span class="kw">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value1"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="ex">ca</span><span class="va">$add_argument</span><span class="er">(</span><span class="st">"--value2"</span><span class="ex">,</span> default = 0L<span class="kw">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="ex">args</span> <span class="op">&lt;</span>- ca<span class="va">$parse</span><span class="er">(</span><span class="kw">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="ex">writeLines</span><span class="er">(</span><span class="ex">args</span><span class="va">$value1</span> + args<span class="va">$value2</span><span class="kw">)</span></span></code></pre><p></p></div>
 <p>When called by a terminal, we can pass arguments and return a function.</p>
-<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">add.R</span> <span class="at">--value1</span> 10 <span class="at">--value2</span> 1</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">11</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode sh"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">add.R</span> <span class="at">--value1</span> 10 <span class="at">--value2</span> 1</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">11</span></span></code></pre><p></p></div>
 <p>When testing, you can simulate command line arguments by passing them into
 the <code>input</code> field. By default, this will grab values from
 <code><a href="https://rdrr.io/r/base/commandArgs.html" class="external-link">base::commandArgs()</a></code>, so use with the <a href="https://rdrr.io/r/utils/Rscript.html" class="external-link">Rscript</a> utility doesn't require
@@ -93,7 +93,7 @@ and populated during argument resolving.</p></dd>
 
 
 <dt><code>args</code></dt>
-<dd><p><code>[list]</code><br> a List of <a href="scribeArg-class.html">scribeArg</a>s</p></dd>
+<dd><p><code>[list]</code><br> A List of <a href="scribeArg-class.html">scribeArg</a>s</p></dd>
 
 
 <dt><code>description</code></dt>
@@ -124,6 +124,10 @@ track parsing progress and is not meant to be accessed directly.</p></dd>
 
 <dt><code>stop</code></dt>
 <dd><p><code>[character]</code><br> Determines parsing</p></dd>
+
+
+<dt><code>supers</code></dt>
+<dd><p><code>[list]</code><br> A list of <code>scribeSuperArgs</code>s</p></dd>
 
 
 </dl></div>
@@ -182,11 +186,14 @@ track parsing progress and is not meant to be accessed directly.</p></dd>
 </dl></dd>
 
 
-<dt><code>get_args(included = TRUE)</code></dt>
+<dt><code>get_args(included = TRUE, super = FALSE)</code></dt>
 <dd><p>Retrieve <code>args</code></p>
 <p></p><dl><dt><code>included</code></dt>
 <dd><p>If <code>TRUE</code> also returns included default
         <a href="scribeArg-class.html">scribeArg</a>s defined in <code>$initialize()</code></p></dd>
+
+      <dt><code>super</code></dt>
+<dd><p>If <code>TRUE</code> also returns super args</p></dd>
 
     
 </dl></dd>
@@ -204,15 +211,30 @@ track parsing progress and is not meant to be accessed directly.</p></dd>
 <dd><p>Retrieve <code>input</code></p></dd>
 
 
-<dt><code>get_values()</code></dt>
-<dd><p>Retrieve <code>values</code></p></dd>
+<dt><code>get_values(empty = FALSE, super = FALSE, included = FALSE)</code></dt>
+<dd><p>Retrieve <code>values</code></p><dl><dt><code>{empty}</code></dt>
+<dd><p>If <code>TRUE</code> returns empty values, too</p></dd>
+
+  <dt><code>super</code></dt>
+<dd><p>If <code>TRUE</code> also returns values from super args</p></dd>
+
+  <dt><code>included</code></dt>
+<dd><p>If <code>TRUE</code> also returns included default
+    <a href="scribeArg-class.html">scribeArg</a>s defined in <code>$initialize()</code></p></dd>
+
+
+</dl></dd>
 
 
 <dt><code><a href="https://rdrr.io/r/utils/help.html" class="external-link">help()</a></code></dt>
 <dd><p>Print the help information</p></dd>
 
 
-<dt><code>initialize(input = "", include = c("help", "version", NA_character_))</code></dt>
+<dt><code>initialize(
+  input = "",
+  include = c("help", "version", NA_character_),
+  supers = include
+)</code></dt>
 <dd><p>Initialize the scribeCommandArgs object.  The wrapper
     <code><a href="command_args.html">command_args()</a></code> is recommended rather than
     calling this method directly.</p>
@@ -223,6 +245,11 @@ track parsing progress and is not meant to be accessed directly.</p></dd>
       <dt><code>include</code></dt>
 <dd><p>A character vector denoting which default
         <a href="scribeArg-class.html">scribeArg</a>s to include in <code>args</code></p></dd>
+
+      <dt><code>supers</code></dt>
+<dd><p>A character vector denoting which default
+        <code>scribeSuperArg</code>s to include in <code>supers</code> (i.e., arguments
+        called with `---` prefixes)</p></dd>
 
     
 </dl></dd>
@@ -268,11 +295,7 @@ is called prior to $parse()</p></dd>
 <dt><code>set_input(value)</code></dt>
 <dd><p>Set <code>input</code>.  Note: when called, <code>resolved</code> is (re)set to
      <code>FALSE</code> and values need to be parsed again.</p>
-<p></p><dl><dt><code>value</code></dt>
-<dd><p>Value to set</p></dd>
-
-    
-</dl></dd>
+<p></p><dl></dl><p></p></dd>
 
 
 <dt><code>set_values(i = TRUE, value)</code></dt>
@@ -335,7 +358,7 @@ is called prior to $parse()</p></dd>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">my_function</span>, <span class="va">args</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.6</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
