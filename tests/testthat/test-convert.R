@@ -118,3 +118,18 @@ test_that("command_arg() custom", {
 test_that("default_convert(character()) [#5]", {
   expect_identical(default_convert(character()), character())
 })
+
+test_that("scribe_convert('evaluate') with defaults", {
+  ca <- command_args(include = NA)
+  ca$add_argument("foo", default = 1L, convert = scribe_convert("evaluate"))
+  expect_identical(ca$parse(), list(foo = 1L))
+
+  ca$set_input("2")
+  expect_identical(ca$parse(), list(foo = 2))
+
+  ca$set_input("3L")
+  expect_identical(ca$parse(), list(foo = 3L))
+
+  ca$set_input("1:4")
+  expect_identical(ca$parse(), list(foo = 1:4))
+})
