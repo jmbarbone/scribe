@@ -72,7 +72,8 @@
 #' new_arg("...", info = "list of values") # defaults when alias is "..."
 #' @family scribe
 #' @export
-scribeArg <- methods::setRefClass( # nolint: object_name_linter.
+# nolint next: object_name_linter.
+scribeArg <- methods::setRefClass(
   "scribeArg",
   fields       = list(
     aliases    = "character",
@@ -169,5 +170,25 @@ scribeArg$methods(
   is_resolved = function() {
     "Check if object has been resolved"
     arg_is_resolved(.self)
+  }
+)
+
+# nolint next: object_name_linter.
+scribeSuperArg <- methods::setRefClass("scribeSuperArg", contains = "scribeArg")
+
+scribeSuperArg$methods(
+  initialize = function(
+    aliases = "",
+    ...
+  ) {
+    if (!all(startsWith(aliases, "---"))) {
+      stop("super args aliases must start with ---")
+    }
+
+    arg_initialize(
+      self    = .self,
+      aliases = aliases,
+      ...
+    )
   }
 )

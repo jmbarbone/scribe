@@ -1,6 +1,6 @@
 Package: scribe
 Title: Command Argument Parsing
-Version: 0.3.0
+Version: 0.3.0.9001
 Authors@R: 
     person(
       given   = "Jordan Mark",
@@ -33,3 +33,4 @@ Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://jmbarbone.github.io/scribe/, https://github.com/jmbarbone/scribe
 BugReports: https://github.com/jmbarbone/scribe/issues
+Config/testthat/parallel: true

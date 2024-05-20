@@ -14,13 +14,13 @@ test_that("help works", {
     "",
     "USAGE",
     "  help.R [--help | --version]",
-    "  help.R [-f, --foo [ARG]] [-b, --bar [ARG]] ",
+    "  help.R [-f, --foo [ARG]] [-b, --bar [ARG]]",
     "",
     "ARGUMENTS",
-    "  --help          : prints this and quietly exits                   ",
-    "  --version       : prints the version of {scribe} and quietly exits",
-    "  -f, --foo [ARG] :                                                 ",
-    "  -b, --bar [ARG] :                                                 ",
+    "  --help          prints this and quietly exits                   ",
+    "  --version       prints the version of {scribe} and quietly exits",
+    "  -f, --foo [ARG]                                                 ",
+    "  -b, --bar [ARG]                                                 ",
     NULL
   )
   expect_identical(obj, exp)

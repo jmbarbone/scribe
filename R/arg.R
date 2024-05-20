@@ -50,17 +50,12 @@ scribe_help_arg <- function() {
         ca$help()
         return(exit())
       }
-
-      if (isFALSE(self$get_value())) {
-        # remove 'help'
-        values <- ca$get_values()
-        ca$field("values", values[-match("help", names(values))])
-      }
     }
   )
 }
 
 scribe_version_arg <- function() {
+  # TODO deprecate for ---version
   new_arg(
     aliases = "--version",
     action = "flag",
@@ -71,14 +66,9 @@ scribe_version_arg <- function() {
     stop = "hard",
     execute = function(self, ca) {
       if (isTRUE(self$get_value())) {
+        .Deprecated("For {scribe} package version, use ---version instead")
         ca$version()
         return(exit())
-      }
-
-      if (isFALSE(self$get_value())) {
-        # remove 'version'
-        values <- ca$get_values()
-        ca$field("values", values[-match("version", names(values))])
       }
     }
   )
@@ -86,17 +76,18 @@ scribe_version_arg <- function() {
 
 # wrappers ----------------------------------------------------------------
 
-arg_initialize <- function( # nolint: cyclocomp_linter.
-  self,
-  aliases = "",
-  action  = arg_actions(),
-  default = NULL,
-  convert = scribe_convert(),
-  n       = NA_integer_,
-  info    = NA_character_,
-  options = list(),
-  stop    = c("none", "hard", "soft"),
-  execute = invisible
+# nolint next: cyclocomp_linter.
+arg_initialize <- function(
+    self,
+    aliases = "",
+    action  = arg_actions(),
+    default = NULL,
+    convert = scribe_convert(),
+    n       = NA_integer_,
+    info    = NA_character_,
+    options = list(),
+    stop    = c("none", "hard", "soft"),
+    execute = invisible
 ) {
   action  <- match.arg(action, arg_actions())
   info    <- info    %||% NA_character_
@@ -181,9 +172,21 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     }
   )
 
-  if (!is.null(default)) {
-    if (!identical(value_convert(default, to = convert), default)) {
-      stop("default value doesn't convert to itself", call. = FALSE)
+  if (!is.null(default) && !is.null(convert)) {
+    attempt <- value_convert(default, to = convert)
+    if (!identical(attempt, default)) {
+      stop(
+        "default value doesn't convert to itself:\n",
+        "default:\n",
+        utils::capture.output(utils::str(default)),
+        "\nconverted:\n",
+        utils::capture.output(utils::str(attempt)),
+        "\n\n",
+        "to disable this check, use",
+        " `new_arg(convert = scribe_convert(\"none\"))`",
+        " or review the `convert` argument in `?scribe_arg`",
+        call. = FALSE
+      )
     }
   }
 
@@ -213,9 +216,17 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
     positional <- !dash_args
 
     if (action == "flag" && isTRUE(options$no)) {
-      dash2 <- grep("^--", aliases)
-      if (dash2 && length(dash2)) {
-        aliases <- c(aliases, paste0("--no-", sub("^--", "", aliases[dash2])))
+      dashes <- n_dashes(aliases)
+      ok <- dashes >= 2L
+      if (any(ok)) {
+        aliases <- c(
+          aliases,
+          paste0(
+            strrep("-", dashes[ok]),
+            "no-",
+            sub("^-{2,3}", "", aliases[ok])
+          )
+        )
       } else if (positional) {
         aliases <- c(aliases, paste0("no-", aliases))
       }
@@ -251,18 +262,30 @@ arg_initialize <- function( # nolint: cyclocomp_linter.
 }
 
 arg_show <- function(self) {
-  value <- self$get_default()
+  value <-
+    if (self$is_resolved()) {
+      self$get_value()
+    } else {
+      self$get_default()
+    }
+
   value <-
     if (is.null(value)) {
       "<null>"
+    } else if (inherits(value, "scribe_empty_value")) {
+      "<empty>"
     } else {
       paste(vapply(value, format, NA_character_), collapse = " ")
     }
 
   aliases <- self$get_aliases()
   aliases <- to_string(aliases)
-
-  print_line(sprintf("Argument [%s] : %s", aliases, value))
+  print_line(sprintf(
+    "Argument [%s] %s: %s",
+    aliases,
+    if (self$is_resolved()) "R " else "",
+    value
+  ))
   invisible(self)
 }
 
@@ -340,7 +363,12 @@ arg_get_name <- function(self, clean = TRUE) {
   nm <- aliases[n]
 
   if (clean) {
-    nm <- sub("^--?", "", nm)
+    nm <-
+      if (startsWith(nm, "---")) {
+        paste0("_", substr(nm, 4L, nchar(nm)))
+      } else {
+        sub("^-{1,2}", "", nm)
+      }
   }
 
   nm
@@ -372,12 +400,13 @@ arg_is_resolved <- function(self) {
 
 # internal ----------------------------------------------------------------
 
-arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
+# nolint next: cyclocomp_linter.
+arg_parse_value <- function(self, ca) {
   default <-
     if (is_arg(self$default)) {
       self$default$get_value()
     } else {
-      self$default
+      self$get_default()
     }
 
   if (ca$stop == "soft") {
@@ -414,8 +443,10 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
     m <- m[ok]
   }
 
+  default <- FALSE
   if (length(m) == 0L) {
     value <- self$get_default()
+    default <- TRUE
   } else {
     if (length(m) > 1L) {
       warning(
@@ -434,33 +465,34 @@ arg_parse_value <- function(self, ca) { # nolint: cyclocomp_linter.
         ca_remove_working(ca, seq_along(value))
 
         if (!length(value)) {
+          default <- TRUE
           value <- self$get_default()
         }
       },
       list = {
         m <- m + seq.int(0L, self$n)
-        value <- ca_get_working(ca)[m[-off]]
+        value <- ca_get_working(ca, m[-off])
 
-        if (self$positional && is.na(value)) {
+        if (self$positional && !isFALSE(is.na(value))) {
+          default <- TRUE
           value <- self$get_default()
         }
 
         ca_remove_working(ca, m)
       },
       flag = {
-        value <- !grepl("^--?no-", ca_get_working(ca)[m + off])
-        ca_remove_working(ca, m)
+        value <- !grepl("^-{2,3}no-", ca_get_working(ca, m + off))
+        ca_remove_working(ca, m + off)
       }
     )
 
     ca$field("stop", structure(self$stop, arg = self))
-    ca$field("stop", structure(self$stop, arg = self))
   }
 
-  if (self$action == "flag") {
+  if (self$action == "flag" || default) {
     invisible() # do nothing
   } else if (identical(self$convert, value_convert)) {
-    value <- self$convert(value, to = default %||% default_convert)
+    value <- self$convert(value, to = self$get_default() %||% default_convert)
   } else {
     value <- self$convert(value)
   }
@@ -476,7 +508,7 @@ is_arg <- function(x) {
   methods::is(x, "scribeArg")
 }
 
-ARG_PAT <- "^-[a-z]$|^--[a-z]+$|^--[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
+ARG_PAT <- "^-[a-z]$|^---?[a-z]+$|^--?[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
 
 arg_actions <- function() {
   c("default", "list", "flag", "dots")
@@ -484,4 +516,10 @@ arg_actions <- function() {
 
 scribe_empty_value <- function() {
   structure(list(), class = c("scribe_empty_value"))
+}
+
+n_dashes <- function(x) {
+  n <- attr(regexpr("^-+", x), "match.length")
+  n[n == -1] <- 0L
+  n
 }

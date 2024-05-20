@@ -15,8 +15,8 @@
 NULL
 
 # nolint end: line_length_linter.
-
-op.scribe <- list( # nolint: object_name_linter.
+# nolint next: object_name_linter.
+op.scribe <- list(
   scribe.flag.no = TRUE,
   scribe.interactive = NULL,
   scribe.include = c("help", "version")

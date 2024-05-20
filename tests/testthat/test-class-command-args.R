@@ -161,6 +161,46 @@ test_that("$add_argument(arg) [#45]", {
   expect_identical(obj, exp)
 })
 
+test_that("$get_values() [#73]", {
+  # #73 includes super args
+  ca <- command_args(1L)
+  ca$add_argument("foo")
+  ca$add_argument("bar")
+  obj <- ca$get_values()
+  exp <- list()
+  expect_identical(obj, exp)
+
+  ca$resolve()
+
+  obj <- ca$get_values()
+  exp <- list(foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+  obj <- ca$get_values()
+
+  obj <- ca$get_values(included = TRUE)
+  exp <- list(help = FALSE, version = FALSE, foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+
+  obj <- ca$get_values(super = TRUE)
+  exp <- list(`_help` = FALSE, `_version` = FALSE, foo = 1L, bar = NULL)
+  expect_identical(obj, exp)
+})
+
+test_that("$get_values(empty)", {
+  ca <- command_args("--stop")
+  ca$add_argument("foo")
+  ca$add_argument("--stop", stop = TRUE)
+  ca$resolve()
+
+  obj <- ca$get_values()
+  exp <- list(stop = NA)
+  expect_identical(obj, exp)
+
+  obj <- ca$get_values(empty = TRUE)
+  exp <- list(foo = scribe_empty_value(), stop = NA)
+  expect_identical(obj, exp)
+})
+
 test_that("args are returned in original order [#25]", {
   ca <- command_args(
     c("-b", "one", "-c", "two", "-a", "three", "foo", "bar"),
@@ -258,7 +298,7 @@ test_that("--help has early stop", {
   ca <- command_args("--help")
   ca$add_argument("-v")
   ca$add_argument("-f")
-  exp <- list(help = TRUE)
+  exp <- structure(list(), names = character())
   expect_output(obj <- try(ca$parse()))
   expect_identical(obj, exp)
 })
@@ -332,8 +372,11 @@ test_that("versions", {
   ca$add_argument("--foo")
   ca$add_argument("--bar")
   ca$add_description("This does things")
-  expect_output((obj <- ca$parse()))
-  exp <- list(version = TRUE)
+  expect_warning(
+    expect_output((obj <- ca$parse())),
+    class = "deprecatedWarning"
+  )
+  exp <- structure(list(), names = character())
   expect_identical(obj, exp)
   expect_output(ca$version())
 })
@@ -409,4 +452,19 @@ test_that("snapshots", {
   expect_output(ca$help())
   expect_snapshot(ca$show())
   expect_snapshot(ca$help())
+})
+
+test_that("snapshots - empty values", {
+  ca <- command_args(string = "--bar zero")
+  ca$add_argument("--foo", stop = TRUE)
+  ca$add_argument("--bar", action = "list", default = character(), stop = TRUE)
+  ca$add_argument("--fizz", action = "list", default = character())
+  ca$resolve()
+  ca$get_args()
+  expect_snapshot(ca$get_args())
+})
+
+test_that("snapshots - super args", {
+  expect_snapshot(command_args("---help")$parse())
+  expect_snapshot(command_args("---version")$parse())
 })

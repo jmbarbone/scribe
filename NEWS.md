@@ -1,3 +1,21 @@
+# scribe (development version)
+
+- `---help`, `---version` _super_ arguments (`scribeSuperArg` objects) are now included with `scribeCommandArgs`.
+This are objects that (by default) can be called within any `scribeCommandArgs` and intended to hold additional information about the `{scribe}` package.
+These are not meant to be user accessible.
+  - `scribeCommandArgs` gain a new `field`, `supers`; a list of `scribeSuperArg` objects
+  - `command_args(super = included)` added
+  - internal `scribe_version_arg()` function (used with `command_args(include = "verison")` and called with `--version`) is now deprecated.  Using `---version` now returns the version of `{scribe}`
+  - internal `scribe_help_super()` now available via `---help` and returns information about `{scribe}`
+  `ca$get_args(super = TRUE)` returns `scribeSuerArg`s
+- `ca$help()` printing has been improved
+- corrects issue with `ca$parse()`
+- `ca$get_values(empty, super, included)` added to prevent filtering of specific argument types and values
+- internal linting improvements
+- `new_arg()` now throws a more helpful error when _value doesn't convert to itself_
+- `arg$show()` now denotes if the argument is resolves by display an `"R"` before the value
+- `arg$show()` now prints values of class `"scribe_empty_value"` as `<empty>`
+
 # scribe 0.3.0
 
 ## Breaking changes

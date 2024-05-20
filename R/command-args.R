@@ -9,8 +9,10 @@
 #'   Otherwise the value of `x` is converted to a `character`.  If `string` is
 #'   not `NULL`, [scan()] will be used to split the value into a `character`
 #'   vector.
-#' @param include Special default arguments to included.  See `$initialize()`
-#'   in [scribeCommandArgs] for more details.
+#' @param include Special default arguments to included.  See `$initialize()` in
+#'   [scribeCommandArgs] for more details.
+#' @param super When `TRUE` the [scribeCommandArgs] object will be initialized
+#'   with standard _super_ arguments (e.g., `---help`, `---version`)
 #' @examples
 #' command_args()
 #' command_args(c("-a", 1, "-b", 2))
@@ -21,7 +23,8 @@
 command_args <- function(
     x = NULL,
     include = getOption("scribe.include", c("help", "version", NA_character_)),
-    string = NULL
+    string = NULL,
+    super = include
 ) {
   if (is.null(string)) {
     if (is.null(x)) {
@@ -37,7 +40,7 @@ command_args <- function(
     x <- scan(text = string, what = "character", quiet = TRUE)
   }
 
-  scribeCommandArgs(input = x, include = include)
+  scribeCommandArgs(input = x, include = include, super = super)
 }
 
 # wrappers ----------------------------------------------------------------
@@ -45,7 +48,8 @@ command_args <- function(
 ca_initialize <- function(
     self,
     input = NULL,
-    include = c("help", "version", NA_character_)
+    include = c("help", "version", NA_character_),
+    supers = include
 ) {
   # default values
   self$initFields(
@@ -58,6 +62,12 @@ ca_initialize <- function(
 
   include <- match.arg(
     as.character(include),
+    c("help", "version", NA_character_),
+    several.ok = TRUE
+  )
+
+  supers <- match.arg(
+    as.character(supers),
     c("help", "version", NA_character_),
     several.ok = TRUE
   )
@@ -75,6 +85,11 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
+  self$field("supers", c(
+    if ("help" %in% supers) scribe_help_super(),
+    if ("version" %in% supers) scribe_version_super()
+  ) %||% list())
+
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
   self$field("included", include)
@@ -82,7 +97,7 @@ ca_initialize <- function(
   invisible(self)
 }
 
-ca_show <- function(self, ...) {
+ca_show <- function(self, all_values = FALSE, ...) {
   print_line("Initial call: ", to_string(self$get_input()))
 
   if (!self$resolved) {
@@ -105,13 +120,17 @@ ca_help <- function(self) {
     bn <- "{command}"
   }
 
-  lines <- sapply(
-    self$get_args(),
-    function(arg) arg$get_help(),
-    simplify = "array"
-  )
-  lines <- apply(lines, 1L, format) # get consistent width
-  lines <- apply(lines, 1L, paste, collapse = " : ") # middle colon
+  # TODO need to get an indent for the left side
+  args <- sapply(self$get_args(), function(arg) arg$get_help())
+  args <- simplify2array(args)
+  args <- apply(args, 2L, function(row) two_column(row[1L], row[2L]))
+  args <- lapply(args, function(line) matrix(unlist(line), ncol = 2L))
+  args <- Reduce(rbind, args)
+  args <- apply(args, 2L, format)
+  args <- apply(args, 1L, paste, sep = "\n", collapse = " ")
+
+  usage <- two_column(bn, ca_write_usage(self))
+  usage <- apply(Reduce(cbind, usage), 1L, paste, collapse = " ")
 
   print_lines(
     "{scribe} command_args",
@@ -127,10 +146,10 @@ ca_help <- function(self) {
     },
     "USAGE",
     sprintf("  %s [--help | --version]", bn),
-    sprintf("  %s %s ", bn, ca_write_usage(self)),
+    usage,
     "",
     "ARGUMENTS",
-    paste0("  ", lines),
+    args,
     if (length(self$get_examples())) {
       examples <- self$get_examples()
       comments <- self$comments
@@ -145,6 +164,14 @@ ca_help <- function(self) {
   invisible(self)
 }
 
+two_column <- function(x, y, sep = "") {
+  # TODO need to implement a width argument
+  right <- strwrap(y, 0.8 * getOption("width"))
+  left <- character(length(right))
+  left[1L] <- paste0("  ", x, sep)
+  left <- format(left)
+  list(left, right)
+}
 
 ca_resolve <- function(self) {
   # loop through the possibly arg in args.  When found in args, extract and
@@ -166,7 +193,7 @@ ca_resolve <- function(self) {
   # dropped.  Single value arguments are easier to match, should always have
   # that value present if arg is present. Non-multiple value arguments have at
   # least a limit to the number of values that can be found.
-  args <- self$get_args()
+  args <- self$get_args(included = TRUE, super = TRUE)
 
   arg_order <- unique(
     c(
@@ -175,23 +202,24 @@ ca_resolve <- function(self) {
       seq_along(args),
       # dots must always be parsed last
       wapply(args, function(i) i$positional),
-      wapply(args, function(i) i$action == "dots")
+      wapply(args, function(i) i$action == "dots"),
+      wapply(args, function(i) inherits(i, "scribeSuperArg"))
     ),
     fromLast = TRUE
   )
 
   # move stops earlier
-  arg_order <- unique(
-    c(
-      wapply(args, function(i) i$stop == "hard"),
-      wapply(args, function(i) i$stop == "soft"),
-      arg_order
-    )
-  )
+  arg_order <- unique(c(
+    wapply(args, function(i) i$stop == "hard"),
+    wapply(args, function(i) i$stop == "soft"),
+    arg_order
+  ))
 
   arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$field("values", vector("list", length(arg_order)))
-  names(self$values) <- arg_names[arg_order]
+  self$field("values", structure(
+    vector("list", length(arg_order)),
+    names =  arg_names[arg_order]
+  ))
 
   for (arg in args[arg_order]) {
     self$set_values(arg$get_name(), arg_parse_value(arg, self))
@@ -213,15 +241,15 @@ ca_resolve <- function(self) {
 ca_parse <- function(self) {
   self$resolve()
 
-  for (arg in self$get_args()) {
+  for (arg in self$get_args(super = TRUE, included = TRUE)) {
     ca_do_execute(self, arg)
   }
 
   # clean up names
-  values <- self$get_values()
-  regmatches(names(values), regexpr("^-+", names(values))) <- ""
-  regmatches(names(values), gregexpr("-", names(values))) <- "_"
-  values
+  res <- self$get_values()
+  regmatches(names(res), regexpr("^-+", names(res))) <- ""
+  regmatches(names(res), gregexpr("-", names(res))) <- "_"
+  res
 }
 
 ca_get_input <- function(self) {
@@ -235,8 +263,27 @@ ca_set_input <- function(self, value) {
   invisible(self)
 }
 
-ca_get_values <- function(self) {
-  Filter(function(x) !inherits(x, "scribe_empty_value"), self$values)
+ca_get_values <- function(
+    self,
+    empty = FALSE,
+    super = FALSE,
+    included = FALSE
+) {
+  values <- self$values
+
+  if (!included) {
+    values <- values[setdiff(names(values), self$included)]
+  }
+
+  if (!super && !is.null(names(values))) {
+    values <- values[!startsWith(names(values), "_")]
+  }
+
+  if (!empty) {
+    values <- values[vapply(values, Negate(inherits), NA, "scribe_empty_value")]
+  }
+
+  values
 }
 
 ca_set_values <- function(self, i = NULL, value) {
@@ -250,27 +297,33 @@ ca_set_values <- function(self, i = NULL, value) {
   invisible(self)
 }
 
-ca_get_args <- function(self, included = TRUE) {
-  if (included) {
-    return(self$args)
+ca_get_args <- function(self, included = TRUE, super = FALSE) {
+  args <- self$args
+
+  if (!included) {
+    nms <- sapply(args, function(arg) arg$get_name())
+    ok <- match(nms, self$included, 0L) == 0L
+    args <- args[ok]
   }
 
-  nms <- sapply(self$args, function(arg) arg$get_name())
-  ok <- match(nms, self$included, 0L) == 0L
-  self$args[ok]
+  if (super) {
+    args <- c(self$supers, args)
+  }
+
+  args
 }
 
 ca_add_argument <- function(
     self,
-  ...,
-  n = NA_integer_,
-  action = NULL,
-  convert = scribe_convert(),
-  options = NULL,
-  default = NULL,
-  info = NULL,
-  stop = "none",
-  execute = invisible
+    ...,
+    n = NA_integer_,
+    action = NULL,
+    convert = scribe_convert(),
+    options = NULL,
+    default = NULL,
+    info = NULL,
+    stop = "none",
+    execute = invisible
 ) {
   if (is_arg(..1)) {
     arg <- ..1
