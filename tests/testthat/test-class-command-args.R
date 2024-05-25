@@ -381,6 +381,12 @@ test_that("versions", {
   expect_output(ca$version())
 })
 
+test_that("method arguments are correct", {
+  check_methods(scribeCommandArgs, "ca_")
+})
+
+# regressions -------------------------------------------------------------
+
 test_that("positional defaults [#52]", {
   ca <- command_args()
   ca$add_argument("pos", default = 1)
@@ -444,6 +450,8 @@ test_that("'convert' isn't ignored [#70]", {
   ca$add_argument("foo", convert = function(...) stop("success"), default = 1)
   expect_error(ca$parse(), "success")
 })
+
+# snapshots ---------------------------------------------------------------
 
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")

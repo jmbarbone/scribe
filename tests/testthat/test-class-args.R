@@ -19,6 +19,12 @@ test_that("errors", {
   expect_warning(expect_warning(ca$parse()))
 })
 
+test_that("method arguments are correct", {
+  check_methods(scribeArg, "arg_")
+})
+
+# regressions -------------------------------------------------------------
+
 test_that("$get_names() [#10]", {
   x <- new_arg("-f", n = 1L)
   expect_identical(x$get_name(), "f")
