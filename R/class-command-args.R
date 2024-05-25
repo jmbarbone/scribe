@@ -205,12 +205,13 @@ scribeCommandArgs$methods(
 
   add_argument = function(
     ...,
-    action = arg_actions(),
-    options = NULL,
-    convert = scribe_convert(),
+    action  = arg_actions(),
     default = NULL,
-    n = NA_integer_,
-    info = NULL,
+    convert = scribe_convert(),
+    n       = NA_integer_,
+    info    = NULL,
+    options = list(),
+    stop    = c("none", "hard", "soft"),
     execute = invisible
   ) {
     "Add a \\link{scribeArg} to \\code{args}
@@ -220,17 +221,20 @@ scribeCommandArgs$methods(
         all other arguments are ignored.  Note that only the first value
         (\\link{..1}) is used.}
       \\item{\\code{action}, \\code{options}, \\code{convet}, \\code{default},
-        \\code{n}, \\code{info}}{See \\code{\\link[=new_arg]{new_arg()}}}
+        \\code{n}, \\code{info}, \\code{stop}, \\code{execute}}{See
+        \\code{\\link[=new_arg]{new_arg()}}}
     }"
     ca_add_argument(
       self = .self,
       ...,
       action = action,
-      options = options,
-      convert = convert,
       default = default,
+      convert = convert,
       n = n,
-      info = info
+      info = info,
+      options = options,
+      stop = stop,
+      execute = execute
     )
   },
 

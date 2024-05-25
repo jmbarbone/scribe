@@ -47,7 +47,7 @@ command_args <- function(
 
 ca_initialize <- function(
     self,
-    input = NULL,
+    input = "",
     include = c("help", "version", NA_character_),
     supers = include
 ) {
@@ -97,7 +97,7 @@ ca_initialize <- function(
   invisible(self)
 }
 
-ca_show <- function(self, all_values = FALSE, ...) {
+ca_show <- function(self, ...) {
   print_line("Initial call: ", to_string(self$get_input()))
 
   if (!self$resolved) {
@@ -286,7 +286,7 @@ ca_get_values <- function(
   values
 }
 
-ca_set_values <- function(self, i = NULL, value) {
+ca_set_values <- function(self, i = TRUE, value) {
   stopifnot(length(i) == 1)
 
   if (is.null(value)) {
@@ -316,13 +316,13 @@ ca_get_args <- function(self, included = TRUE, super = FALSE) {
 ca_add_argument <- function(
     self,
     ...,
-    n = NA_integer_,
-    action = NULL,
-    convert = scribe_convert(),
-    options = NULL,
+    action  = arg_actions(),
     default = NULL,
-    info = NULL,
-    stop = "none",
+    convert = scribe_convert(),
+    n       = NA_integer_,
+    info    = NULL,
+    options = list(),
+    stop    = c("none", "hard", "soft"),
     execute = invisible
 ) {
   if (is_arg(..1)) {
@@ -343,13 +343,13 @@ ca_add_argument <- function(
 
     arg <- new_arg(
       aliases = aliases,
-      action = action,
-      options = options,
-      convert = convert,
+      action  = action,
       default = default,
-      info = info,
-      stop = stop,
-      n = as.integer(n),
+      convert = convert,
+      n       = as.integer(n),
+      info    = info,
+      options = options,
+      stop    = stop,
       execute = execute
     )
   }
@@ -391,7 +391,7 @@ ca_set_example <- function(self, x = character(), comment = "", prefix = "$ ") {
   invisible(self)
 }
 
-ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
+ca_add_example <- function(self, x, comment = "", prefix = "$ ") {
   if (is.null(x)) {
     return(invisible(self))
   }
