@@ -221,9 +221,11 @@ ca_resolve <- function(self) {
     names =  arg_names[arg_order]
   ))
 
-  for (arg in args[arg_order]) {
-    self$set_values(arg$get_name(), arg_parse_value(arg, self))
+  for (i in arg_order) {
+    self$set_values(i, arg_parse_value(args[[i]], self))
   }
+
+  names(self$values) <- arg_names[arg_order]
 
   if (length(ca_get_working(self)) && self$stop == "none") {
     warning(
@@ -272,7 +274,14 @@ ca_get_values <- function(
   values <- self$values
 
   if (!included) {
-    values <- values[setdiff(names(values), self$included)]
+    # in the event that an arg uses a name like 'version', this will only remove
+    # the first instance -- which should be the 'included' args.  Should
+    # probably be searching by class instead.
+    m <- match(self$included, names(values), 0L)
+    ok <- which(m > 0L)
+    if (length(ok)) {
+      values <- values[-m[ok]]
+    }
   }
 
   if (!super && !is.null(names(values))) {

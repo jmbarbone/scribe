@@ -251,6 +251,16 @@ test_that("$get_args(included)", {
   expect_identical(obj, exp)
 })
 
+test_that("'version' (or other inluced) can be set [#90]", {
+  ca <- command_args(1L)
+  ca$add_argument("version")
+  expect_identical(ca$parse(), list(version = 1L))
+
+  ca <- command_args()
+  ca$add_argument("help", default = "me")
+  expect_identical(ca$parse(), list(help = "me"))
+})
+
 test_that("positional values [#22]", {
   ca <- command_args(1:2)
   ca$add_argument("foo", default = 0)
