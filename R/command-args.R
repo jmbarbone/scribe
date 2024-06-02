@@ -203,29 +203,27 @@ ca_resolve <- function(self) {
       # dots must always be parsed last
       wapply(args, function(i) i$positional),
       wapply(args, function(i) i$action == "dots"),
-      wapply(args, function(i) inherits(i, "scribeSuperArg"))
+      NULL
     ),
     fromLast = TRUE
   )
 
   # move stops earlier
   arg_order <- unique(c(
+    wapply(args, function(i) inherits(i, "scribeSuperArg")),
     wapply(args, function(i) i$stop == "hard"),
     wapply(args, function(i) i$stop == "soft"),
     arg_order
   ))
 
-  arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$field("values", structure(
-    vector("list", length(arg_order)),
-    names =  arg_names[arg_order]
-  ))
-
-  for (i in arg_order) {
-    self$set_values(i, arg_parse_value(args[[i]], self))
+  for (arg in args[arg_order]) {
+    arg_parse_value(arg, self)
   }
 
-  names(self$values) <- arg_names[arg_order]
+  self$field("values", structure(
+    lapply(args, function(arg) arg$get_value()),
+    names = vapply(args, function(arg) arg$get_name(), NA_character_)
+  ))
 
   if (length(ca_get_working(self)) && self$stop == "none") {
     warning(
@@ -235,7 +233,6 @@ ca_resolve <- function(self) {
     )
   }
 
-  self$field("values", self$values[order(arg_order)])
   self$field("resolved", TRUE)
   invisible(self)
 }
