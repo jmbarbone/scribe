@@ -221,14 +221,20 @@ test_that("default values", {
   ca$add_argument("two",   default = 0)
   ca$add_argument("three", default = 0)
   ca$add_argument("four",  default = 0L)
+  ca$add_argument("five",  default = 0)
   obj <- ca$parse()
   exp <- list(
     one   = 1L,
     two   = 2,
     three = 3,
-    four  = 4L
+    four  = 4L,
+    five  = 0
   )
   expect_identical(obj, exp)
+
+  ca <- command_args()
+  ca$add_argument("foo", default = 0)
+  expect_identical(ca$parse(), list(foo = 0))
 })
 
 test_that("$get_args(included)", {
