@@ -61,6 +61,16 @@ test_that("scribe_convert()", {
 
   expect_type(scribe_convert("eval"), "closure")
   expect_type(scribe_convert(function(x) x), "closure")
+
+  e <- scribe_convert("evaluate")
+  expect_identical(e("TRUE"), TRUE)
+  expect_identical(e("TRUE"), e(TRUE))
+  expect_identical(e("1.1"), 1.1)
+  expect_identical(e("1.1"), e(1.1))
+  expect_identical(e("1"), 1)
+  expect_identical(e("1"), e(1))
+  expect_identical(e("1L"), 1L)
+  expect_identical(e("1L"), e(1L))
 })
 
 test_that("command_arg() default conversions", {

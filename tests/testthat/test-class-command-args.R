@@ -397,6 +397,17 @@ test_that("versions", {
   expect_output(ca$version())
 })
 
+test_that("$set_values()", {
+  # updates no longer use ca$set_values(); so maybe this gets deprecated
+  ca <- command_args()
+  ca$add_argument("foo")
+  expect_identical(ca$parse(), list(foo = NULL))
+
+  ca$set_values("foo", TRUE)
+  ca$set_values("foo", NULL)
+  expect_identical(ca$parse(), list(foo = TRUE))
+})
+
 test_that("method arguments are correct", {
   check_methods(scribeCommandArgs, "ca_")
 })

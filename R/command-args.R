@@ -296,7 +296,7 @@ ca_set_values <- function(self, i = TRUE, value) {
   stopifnot(length(i) == 1)
 
   if (is.null(value)) {
-    return(NULL)
+    return(invisible(self))
   }
 
   self$field("values", replace2(self$values, i, value))

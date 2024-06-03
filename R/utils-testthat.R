@@ -19,7 +19,7 @@ check_methods <- function(object, prefix, verbose = getOption("verbose")) {
 
     if (is.null(exp)) {
       if (verbose) {
-        cat("Skipping method: ", method, "()\n", sep = "")
+        cat("Skipping method: ", method, "()\n", sep = "") # nocov
       }
 
       next
