@@ -49,8 +49,6 @@ scribe_help_arg <- function() {
       if (isTRUE(self$get_value())) {
         ca$help()
         return(exit())
-      } else if (isFALSE(self$get_value())) {
-        ca_remove_arg(ca, "help")
       }
     }
   )
@@ -71,24 +69,9 @@ scribe_version_arg <- function() {
         .Deprecated("For {scribe} package version, use ---version instead")
         ca$version()
         return(exit())
-      } else if (isFALSE(self$get_value())) {
-        ca_remove_arg(ca, "version")
       }
     }
   )
-}
-
-ca_remove_arg <- function(ca, name) {
-  if (!startsWith(name, "_")) {
-    name <- paste0("_", name)
-  }
-
-  values <- ca$get_values()
-  m <- match(name, names(values), 0L)
-  if (m > 0L) {
-    ca$field("values", values[-m])
-  }
-  invisible(ca)
 }
 
 # wrappers ----------------------------------------------------------------
