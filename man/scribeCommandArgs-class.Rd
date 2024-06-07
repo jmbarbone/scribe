@@ -75,11 +75,12 @@ track parsing progress and is not meant to be accessed directly.}
 \item{\code{add_argument(
   ...,
   action = arg_actions(),
-  options = NULL,
-  convert = scribe_convert(),
   default = NULL,
+  convert = scribe_convert(),
   n = NA_integer_,
   info = NULL,
+  options = list(),
+  stop = c("none", "hard", "soft"),
   execute = invisible
 )}}{Add a \link{scribeArg} to \code{args}
 
@@ -88,7 +89,8 @@ track parsing progress and is not meant to be accessed directly.}
         all other arguments are ignored.  Note that only the first value
         (\link{..1}) is used.}
       \item{\code{action}, \code{options}, \code{convet}, \code{default},
-        \code{n}, \code{info}}{See \code{\link[=new_arg]{new_arg()}}}
+        \code{n}, \code{info}, \code{stop}, \code{execute}}{See
+        \code{\link[=new_arg]{new_arg()}}}
     }}
 
 \item{\code{add_description(..., sep = "")}}{Add a value to \code{description}

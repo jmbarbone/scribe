@@ -61,6 +61,16 @@ test_that("scribe_convert()", {
 
   expect_type(scribe_convert("eval"), "closure")
   expect_type(scribe_convert(function(x) x), "closure")
+
+  e <- scribe_convert("evaluate")
+  expect_identical(e("TRUE"), TRUE)
+  expect_identical(e("TRUE"), e(TRUE))
+  expect_identical(e("1.1"), 1.1)
+  expect_identical(e("1.1"), e(1.1))
+  expect_identical(e("1"), 1)
+  expect_identical(e("1"), e(1))
+  expect_identical(e("1L"), 1L)
+  expect_identical(e("1L"), e(1L))
 })
 
 test_that("command_arg() default conversions", {
@@ -117,4 +127,19 @@ test_that("command_arg() custom", {
 
 test_that("default_convert(character()) [#5]", {
   expect_identical(default_convert(character()), character())
+})
+
+test_that("scribe_convert('evaluate') with defaults", {
+  ca <- command_args(include = NA)
+  ca$add_argument("foo", default = 1L, convert = scribe_convert("evaluate"))
+  expect_identical(ca$parse(), list(foo = 1L))
+
+  ca$set_input("2")
+  expect_identical(ca$parse(), list(foo = 2))
+
+  ca$set_input("3L")
+  expect_identical(ca$parse(), list(foo = 3L))
+
+  ca$set_input("1:4")
+  expect_identical(ca$parse(), list(foo = 1:4))
 })

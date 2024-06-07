@@ -221,14 +221,20 @@ test_that("default values", {
   ca$add_argument("two",   default = 0)
   ca$add_argument("three", default = 0)
   ca$add_argument("four",  default = 0L)
+  ca$add_argument("five",  default = 0)
   obj <- ca$parse()
   exp <- list(
     one   = 1L,
     two   = 2,
     three = 3,
-    four  = 4L
+    four  = 4L,
+    five  = 0
   )
   expect_identical(obj, exp)
+
+  ca <- command_args()
+  ca$add_argument("foo", default = 0)
+  expect_identical(ca$parse(), list(foo = 0))
 })
 
 test_that("$get_args(included)", {
@@ -243,6 +249,16 @@ test_that("$get_args(included)", {
   obj <- sapply(ca$get_args(included = FALSE), function(arg) arg$get_name())
   exp <- c("foo", "biz")
   expect_identical(obj, exp)
+})
+
+test_that("'version' (or other inluced) can be set [#90]", {
+  ca <- command_args(1L)
+  ca$add_argument("version")
+  expect_identical(ca$parse(), list(version = 1L))
+
+  ca <- command_args()
+  ca$add_argument("help", default = "me")
+  expect_identical(ca$parse(), list(help = "me"))
 })
 
 test_that("positional values [#22]", {
@@ -381,6 +397,23 @@ test_that("versions", {
   expect_output(ca$version())
 })
 
+test_that("$set_values()", {
+  # updates no longer use ca$set_values(); so maybe this gets deprecated
+  ca <- command_args()
+  ca$add_argument("foo")
+  expect_identical(ca$parse(), list(foo = NULL))
+
+  ca$set_values("foo", TRUE)
+  ca$set_values("foo", NULL)
+  expect_identical(ca$parse(), list(foo = TRUE))
+})
+
+test_that("method arguments are correct", {
+  check_methods(scribeCommandArgs, "ca_")
+})
+
+# regressions -------------------------------------------------------------
+
 test_that("positional defaults [#52]", {
   ca <- command_args()
   ca$add_argument("pos", default = 1)
@@ -444,6 +477,8 @@ test_that("'convert' isn't ignored [#70]", {
   ca$add_argument("foo", convert = function(...) stop("success"), default = 1)
   expect_error(ca$parse(), "success")
 })
+
+# snapshots ---------------------------------------------------------------
 
 test_that("snapshots", {
   ca <- command_args(string = "foo bar --fizz")

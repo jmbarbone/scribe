@@ -47,7 +47,7 @@ command_args <- function(
 
 ca_initialize <- function(
     self,
-    input = NULL,
+    input = "",
     include = c("help", "version", NA_character_),
     supers = include
 ) {
@@ -97,7 +97,7 @@ ca_initialize <- function(
   invisible(self)
 }
 
-ca_show <- function(self, all_values = FALSE, ...) {
+ca_show <- function(self, ...) {
   print_line("Initial call: ", to_string(self$get_input()))
 
   if (!self$resolved) {
@@ -203,27 +203,27 @@ ca_resolve <- function(self) {
       # dots must always be parsed last
       wapply(args, function(i) i$positional),
       wapply(args, function(i) i$action == "dots"),
-      wapply(args, function(i) inherits(i, "scribeSuperArg"))
+      NULL
     ),
     fromLast = TRUE
   )
 
   # move stops earlier
   arg_order <- unique(c(
+    wapply(args, function(i) inherits(i, "scribeSuperArg")),
     wapply(args, function(i) i$stop == "hard"),
     wapply(args, function(i) i$stop == "soft"),
     arg_order
   ))
 
-  arg_names <- vapply(args, function(arg) arg$get_name(), NA_character_)
-  self$field("values", structure(
-    vector("list", length(arg_order)),
-    names =  arg_names[arg_order]
-  ))
-
   for (arg in args[arg_order]) {
-    self$set_values(arg$get_name(), arg_parse_value(arg, self))
+    arg_parse_value(arg, self)
   }
+
+  self$field("values", structure(
+    lapply(args, function(arg) arg$get_value()),
+    names = vapply(args, function(arg) arg$get_name(), NA_character_)
+  ))
 
   if (length(ca_get_working(self)) && self$stop == "none") {
     warning(
@@ -233,7 +233,6 @@ ca_resolve <- function(self) {
     )
   }
 
-  self$field("values", self$values[order(arg_order)])
   self$field("resolved", TRUE)
   invisible(self)
 }
@@ -272,7 +271,14 @@ ca_get_values <- function(
   values <- self$values
 
   if (!included) {
-    values <- values[setdiff(names(values), self$included)]
+    # in the event that an arg uses a name like 'version', this will only remove
+    # the first instance -- which should be the 'included' args.  Should
+    # probably be searching by class instead.
+    m <- match(self$included, names(values), 0L)
+    ok <- which(m > 0L)
+    if (length(ok)) {
+      values <- values[-m[ok]]
+    }
   }
 
   if (!super && !is.null(names(values))) {
@@ -286,11 +292,11 @@ ca_get_values <- function(
   values
 }
 
-ca_set_values <- function(self, i = NULL, value) {
+ca_set_values <- function(self, i = TRUE, value) {
   stopifnot(length(i) == 1)
 
   if (is.null(value)) {
-    return(NULL)
+    return(invisible(self))
   }
 
   self$field("values", replace2(self$values, i, value))
@@ -316,13 +322,13 @@ ca_get_args <- function(self, included = TRUE, super = FALSE) {
 ca_add_argument <- function(
     self,
     ...,
-    n = NA_integer_,
-    action = NULL,
-    convert = scribe_convert(),
-    options = NULL,
+    action  = arg_actions(),
     default = NULL,
-    info = NULL,
-    stop = "none",
+    convert = scribe_convert(),
+    n       = NA_integer_,
+    info    = NULL,
+    options = list(),
+    stop    = c("none", "hard", "soft"),
     execute = invisible
 ) {
   if (is_arg(..1)) {
@@ -343,13 +349,13 @@ ca_add_argument <- function(
 
     arg <- new_arg(
       aliases = aliases,
-      action = action,
-      options = options,
-      convert = convert,
+      action  = action,
       default = default,
-      info = info,
-      stop = stop,
-      n = as.integer(n),
+      convert = convert,
+      n       = as.integer(n),
+      info    = info,
+      options = options,
+      stop    = stop,
       execute = execute
     )
   }
@@ -391,7 +397,7 @@ ca_set_example <- function(self, x = character(), comment = "", prefix = "$ ") {
   invisible(self)
 }
 
-ca_add_example <- function(self, x = NULL, comment = "", prefix = "$ ") {
+ca_add_example <- function(self, x, comment = "", prefix = "$ ") {
   if (is.null(x)) {
     return(invisible(self))
   }

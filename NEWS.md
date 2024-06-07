@@ -15,6 +15,8 @@ These are not meant to be user accessible.
 - `new_arg()` now throws a more helpful error when _value doesn't convert to itself_
 - `arg$show()` now denotes if the argument is resolves by display an `"R"` before the value
 - `arg$show()` now prints values of class `"scribe_empty_value"` as `<empty>`
+- `arg$add_argument()` correctly passes all method arguments [#78](https://github.com/jmbarbone/scribe/issues/78)
+- `ca$parse()` correctly deals with new arguments that nave the same _name_ as ones in `included` [#80](https://github.com/jmbarbone/scribe/issues/80)
 
 # scribe 0.3.0
 
