@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   scribe: scribe.html
-last_built: 2024-03-09T21:12Z
+last_built: 2024-06-07T04:28Z
 urls:
   reference: https://jmbarbone.github.io/scribe/reference
   article: https://jmbarbone.github.io/scribe/articles
