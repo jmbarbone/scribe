@@ -22,7 +22,7 @@ test_that("command_args() handles defaults", {
   foo <- function(x = character()) {
     ca <- command_args(x)
     ca$add_argument("-a", "--alpha", default = 1L)
-    ca$add_argument("-b", "--beta",  default = 1L)
+    ca$add_argument("-b", "--beta", default = 1L)
     ca$parse()
   }
 
@@ -204,7 +204,6 @@ test_that("$get_values(empty)", {
 test_that("args are returned in original order [#25]", {
   ca <- command_args(
     c("-b", "one", "-c", "two", "-a", "three", "foo", "bar"),
-
   )
   ca$add_argument("...")
   ca$add_argument("-a", default = "zero")
@@ -217,18 +216,18 @@ test_that("args are returned in original order [#25]", {
 
 test_that("default values", {
   ca <- command_args(c("1", "2.0", "3", "4.0"))
-  ca$add_argument("one",   default = 0L)
-  ca$add_argument("two",   default = 0)
+  ca$add_argument("one", default = 0L)
+  ca$add_argument("two", default = 0)
   ca$add_argument("three", default = 0)
-  ca$add_argument("four",  default = 0L)
-  ca$add_argument("five",  default = 0)
+  ca$add_argument("four", default = 0L)
+  ca$add_argument("five", default = 0)
   obj <- ca$parse()
   exp <- list(
-    one   = 1L,
-    two   = 2,
+    one = 1L,
+    two = 2,
     three = 3,
-    four  = 4L,
-    five  = 0
+    four = 4L,
+    five = 0
   )
   expect_identical(obj, exp)
 

@@ -1,4 +1,3 @@
-
 #' {scribe} command arguments
 #'
 #' Reference class object for managing command line arguments.
@@ -205,13 +204,13 @@ scribeCommandArgs$methods(
 
   add_argument = function(
     ...,
-    action  = arg_actions(),
+    action = arg_actions(),
     default = NULL,
     convert = scribe_convert(),
-    n       = NA_integer_,
-    info    = NULL,
+    n = NA_integer_,
+    info = NULL,
     options = list(),
-    stop    = c("none", "hard", "soft"),
+    stop = c("none", "hard", "soft"),
     execute = invisible
   ) {
     "Add a \\link{scribeArg} to \\code{args}

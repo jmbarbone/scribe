@@ -1,4 +1,3 @@
-
 #' New command argument
 #'
 #' Make a new [scribeArg] object
@@ -13,25 +12,25 @@
 #' @family scribe
 #' @export
 new_arg <- function(
-    aliases = "",
-    action  = arg_actions(),
-    default = NULL,
-    convert = scribe_convert(),
-    n       = NA_integer_,
-    info    = NULL,
-    options = list(),
-    stop    = c("none", "hard", "soft"),
-    execute = invisible
+  aliases = "",
+  action = arg_actions(),
+  default = NULL,
+  convert = scribe_convert(),
+  n = NA_integer_,
+  info = NULL,
+  options = list(),
+  stop = c("none", "hard", "soft"),
+  execute = invisible
 ) {
   scribeArg$new(
     aliases = aliases,
-    action  = action,
+    action = action,
     default = default,
     convert = convert,
-    n       = n,
-    info    = info,
+    n = n,
+    info = info,
     options = options,
-    stop    = stop,
+    stop = stop,
     execute = execute
   )
 }
@@ -78,19 +77,19 @@ scribe_version_arg <- function() {
 
 # nolint next: cyclocomp_linter.
 arg_initialize <- function(
-    self,
-    aliases = "",
-    action  = arg_actions(),
-    default = NULL,
-    convert = scribe_convert(),
-    n       = NA_integer_,
-    info    = NA_character_,
-    options = list(),
-    stop    = c("none", "hard", "soft"),
-    execute = invisible
+  self,
+  aliases = "",
+  action = arg_actions(),
+  default = NULL,
+  convert = scribe_convert(),
+  n = NA_integer_,
+  info = NA_character_,
+  options = list(),
+  stop = c("none", "hard", "soft"),
+  execute = invisible
 ) {
-  action  <- match.arg(action, arg_actions())
-  info    <- info    %||% NA_character_
+  action <- match.arg(action, arg_actions())
+  info <- info %||% NA_character_
   options <- options %||% list()
 
   if (action == "default") {
@@ -314,7 +313,7 @@ arg_get_help <- function(self) {
     list = {
       left <- paste(
         to_string(self$get_aliases(), sep = ", "),
-        sprintf("[%s]", if (self$n == 1) "ARG" else  sprintf("..%i", self$n))
+        sprintf("[%s]", if (self$n == 1) "ARG" else sprintf("..%i", self$n))
       )
 
       right <- self$info
@@ -374,7 +373,7 @@ arg_get_name <- function(self, clean = TRUE) {
   nm
 }
 
-arg_get_action  <- function(self) {
+arg_get_action <- function(self) {
   self$action %||% character()
 }
 
@@ -508,7 +507,7 @@ is_arg <- function(x) {
   methods::is(x, "scribeArg")
 }
 
-ARG_PAT <- "^-[a-z]$|^---?[a-z]+$|^--?[a-z](+[-]?[a-z]+)+$"  # nolint: object_name_linter, line_length_linter.
+ARG_PAT <- "^-[a-z]$|^---?[a-z]+$|^--?[a-z](+[-]?[a-z]+)+$" # nolint: object_name_linter, line_length_linter.
 
 arg_actions <- function() {
   c("default", "list", "flag", "dots")

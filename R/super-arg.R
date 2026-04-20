@@ -13,7 +13,9 @@ scribe_help_super <- function() {
     execute = function(self, ca) {
       if (isTRUE(self$get_value())) {
         cat(
-          "{scribe} v", format(scribe_version()), "\n",
+          "{scribe} v",
+          format(scribe_version()),
+          "\n",
           "For more information, see https://jmbarbone.github.io/scribe/\n",
           sep = ""
         )
