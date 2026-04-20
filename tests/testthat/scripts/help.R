@@ -1,9 +1,12 @@
 #!/usr/bin/Rscript --vanilla
 
-if (!require(
-  scribe,
-  lib.loc = Sys.getenv("R_LIBS_SCRIBE", "~/R/scribe-library")
-)) {
+if (
+  !require(
+    scribe,
+    lib.loc = Sys.getenv("R_LIBS_SCRIBE", "~/R/scribe-library"),
+    quietly = TRUE
+  )
+) {
   warning("expected {scribe} to be installed at R_LIBS_SCRIBE")
   library(scribe)
 }
