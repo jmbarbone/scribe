@@ -23,13 +23,19 @@ test_that("help works", {
     "  -b, --bar [ARG]                                                 ",
     NULL
   )
-  expect_identical(obj, exp)
+  expect_identical(
+    trimws(obj),
+    trimws(exp),
+    info = sprintf(
+      "Maybe try: pak::pak(lib = \"%s\")",
+      Sys.getenv("R_LIBS_SCRIBE", "~/R/scribe-library")
+    )
+  )
 })
 
 test_that("help works", {
   skip_on_cran()
   skip_on_ci()
-  obj <- system2(path, "--version", stdout = TRUE)
-  exp <- utils::capture.output(print_scribe_version())
-  expect_identical(obj, exp)
+  obj <- system2(path, "---version", stdout = TRUE)
+  expect_identical(obj, format(scribe_version()))
 })
