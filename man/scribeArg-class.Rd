@@ -134,9 +134,9 @@ new_arg("values", action = "dots", info = "list of values")
 new_arg("...", info = "list of values") # defaults when alias is "..."
 }
 \seealso{
-Other scribe: 
-\code{\link{command_args}()},
-\code{\link{new_arg}()},
+Other scribe:
+\code{\link[=command_args]{command_args()}},
+\code{\link[=new_arg]{new_arg()}},
 \code{\link{scribeCommandArgs-class}}
 }
 \concept{scribe}
