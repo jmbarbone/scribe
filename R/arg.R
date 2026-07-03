@@ -75,7 +75,6 @@ scribe_version_arg <- function() {
 
 # wrappers ----------------------------------------------------------------
 
-# nolint next: cyclocomp_linter.
 arg_initialize <- function(
   self,
   aliases = "",
@@ -399,7 +398,6 @@ arg_is_resolved <- function(self) {
 
 # internal ----------------------------------------------------------------
 
-# nolint next: cyclocomp_linter.
 arg_parse_value <- function(self, ca) {
   default <-
     if (is_arg(self$default)) {
