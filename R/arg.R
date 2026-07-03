@@ -47,7 +47,7 @@ scribe_help_arg <- function() {
     execute = function(self, ca) {
       if (isTRUE(self$get_value())) {
         ca$help()
-        return(exit())
+        exit()
       }
     }
   )
@@ -67,7 +67,7 @@ scribe_version_arg <- function() {
       if (isTRUE(self$get_value())) {
         .Deprecated("For {scribe} package version, use ---version instead")
         ca$version()
-        return(exit())
+        exit()
       }
     }
   )
