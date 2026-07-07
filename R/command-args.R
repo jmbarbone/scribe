@@ -1,4 +1,3 @@
-
 #' Command line arguments
 #'
 #' Make a new [scribeCommandArgs] object
@@ -21,10 +20,10 @@
 #' @family scribe
 #' @export
 command_args <- function(
-    x = NULL,
-    include = getOption("scribe.include", c("help", "version", NA_character_)),
-    string = NULL,
-    super = include
+  x = NULL,
+  include = getOption("scribe.include", c("help", "version", NA_character_)),
+  string = NULL,
+  super = include
 ) {
   if (is.null(string)) {
     if (is.null(x)) {
@@ -46,10 +45,10 @@ command_args <- function(
 # wrappers ----------------------------------------------------------------
 
 ca_initialize <- function(
-    self,
-    input = "",
-    include = c("help", "version", NA_character_),
-    supers = include
+  self,
+  input = "",
+  include = c("help", "version", NA_character_),
+  supers = include
 ) {
   # default values
   self$initFields(
@@ -85,10 +84,14 @@ ca_initialize <- function(
     self$add_argument(scribe_version_arg())
   }
 
-  self$field("supers", c(
-    if ("help" %in% supers) scribe_help_super(),
-    if ("version" %in% supers) scribe_version_super()
-  ) %||% list())
+  self$field(
+    "supers",
+    c(
+      if ("help" %in% supers) scribe_help_super(),
+      if ("version" %in% supers) scribe_version_super()
+    ) %||%
+      list()
+  )
 
   self$field("input", as.character(input) %||% character())
   self$field("working", self$input)
@@ -182,7 +185,7 @@ ca_resolve <- function(self) {
 
   # reset if not unsuccessful
   on.exit(
-    expr =  if (!self$resolved) {
+    expr = if (!self$resolved) {
       self$field("working", self$get_input())
       self$field("stop", "none")
     },
@@ -220,10 +223,13 @@ ca_resolve <- function(self) {
     arg_parse_value(arg, self)
   }
 
-  self$field("values", structure(
-    lapply(args, function(arg) arg$get_value()),
-    names = vapply(args, function(arg) arg$get_name(), NA_character_)
-  ))
+  self$field(
+    "values",
+    structure(
+      lapply(args, function(arg) arg$get_value()),
+      names = vapply(args, function(arg) arg$get_name(), NA_character_)
+    )
+  )
 
   if (length(ca_get_working(self)) && self$stop == "none") {
     warning(
@@ -263,10 +269,10 @@ ca_set_input <- function(self, value) {
 }
 
 ca_get_values <- function(
-    self,
-    empty = FALSE,
-    super = FALSE,
-    included = FALSE
+  self,
+  empty = FALSE,
+  super = FALSE,
+  included = FALSE
 ) {
   values <- self$values
 
@@ -320,16 +326,16 @@ ca_get_args <- function(self, included = TRUE, super = FALSE) {
 }
 
 ca_add_argument <- function(
-    self,
-    ...,
-    action  = arg_actions(),
-    default = NULL,
-    convert = scribe_convert(),
-    n       = NA_integer_,
-    info    = NULL,
-    options = list(),
-    stop    = c("none", "hard", "soft"),
-    execute = invisible
+  self,
+  ...,
+  action = arg_actions(),
+  default = NULL,
+  convert = scribe_convert(),
+  n = NA_integer_,
+  info = NULL,
+  options = list(),
+  stop = c("none", "hard", "soft"),
+  execute = invisible
 ) {
   if (is_arg(..1)) {
     arg <- ..1
@@ -342,20 +348,21 @@ ca_add_argument <- function(
       warning(
         "Aliases should be passed without names.\n",
         "Check that you have not passed a bad field name:\n",
-        "  names: ", to_string(nms[bad], sep = ", "),
+        "  names: ",
+        to_string(nms[bad], sep = ", "),
         call. = FALSE
       )
     }
 
     arg <- new_arg(
       aliases = aliases,
-      action  = action,
+      action = action,
       default = default,
       convert = convert,
-      n       = as.integer(n),
-      info    = info,
+      n = as.integer(n),
+      info = info,
       options = options,
-      stop    = stop,
+      stop = stop,
       execute = execute
     )
   }

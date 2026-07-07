@@ -221,9 +221,9 @@ my_function <- function(fun, size, absolute = FALSE) {
 do.call(my_function, args)
 }
 \seealso{
-Other scribe: 
-\code{\link{command_args}()},
-\code{\link{new_arg}()},
+Other scribe:
+\code{\link[=command_args]{command_args()}},
+\code{\link[=new_arg]{new_arg()}},
 \code{\link{scribeArg-class}}
 }
 \concept{scribe}

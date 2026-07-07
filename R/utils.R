@@ -1,5 +1,3 @@
-
-
 `%||%` <- function(x, y) {
   # slightly different here
   if (is_empty(x)) y else x

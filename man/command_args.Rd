@@ -37,8 +37,8 @@ command_args(c("-a", 1, "-b", 2))
 command_args(string = "-a 1 -b 2")
 }
 \seealso{
-Other scribe: 
-\code{\link{new_arg}()},
+Other scribe:
+\code{\link[=new_arg]{new_arg()}},
 \code{\link{scribeArg-class}},
 \code{\link{scribeCommandArgs-class}}
 }

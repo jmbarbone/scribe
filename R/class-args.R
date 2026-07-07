@@ -1,4 +1,3 @@
-
 #' {scribe} argument
 #'
 #' ReferenceClass object for managing arguments
@@ -75,32 +74,32 @@
 # nolint next: object_name_linter.
 scribeArg <- methods::setRefClass(
   "scribeArg",
-  fields       = list(
-    aliases    = "character",
-    action     = "character",
-    default    = "ANY",
-    convert    = "ANY",
-    n          = "integer",
-    info       = "character",
-    options    = "list",
+  fields = list(
+    aliases = "character",
+    action = "character",
+    default = "ANY",
+    convert = "ANY",
+    n = "integer",
+    info = "character",
+    options = "list",
     positional = "logical",
-    resolved   = "logical",
-    value      = "ANY",
-    stop       = "character",
-    execute    = "function"
+    resolved = "logical",
+    value = "ANY",
+    stop = "character",
+    execute = "function"
   )
 )
 
 scribeArg$methods(
   initialize = function(
     aliases = "",
-    action  = arg_actions(),
+    action = arg_actions(),
     default = NULL,
     convert = scribe_convert(),
-    n       = NA_integer_,
-    info    = NA_character_,
+    n = NA_integer_,
+    info = NA_character_,
     options = list(),
-    stop    = c("none", "hard", "soft"),
+    stop = c("none", "hard", "soft"),
     execute = invisible
   ) {
     "
@@ -109,15 +108,15 @@ scribeArg$methods(
     See \\strong{fields} for parameter information.
     "
     arg_initialize(
-      self    = .self,
+      self = .self,
       aliases = aliases,
-      action  = action,
+      action = action,
       default = default,
       convert = convert,
-      n       = n,
-      info    = info,
+      n = n,
+      info = info,
       options = options,
-      stop    = stop,
+      stop = stop,
       execute = execute
     )
   },
@@ -186,7 +185,7 @@ scribeSuperArg$methods(
     }
 
     arg_initialize(
-      self    = .self,
+      self = .self,
       aliases = aliases,
       ...
     )

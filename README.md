@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/jmbarbone/scribe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jmbarbone/scribe/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/jmbarbone/scribe/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jmbarbone/scribe?branch=main)
+[![Codecov test
+coverage](https://codecov.io/gh/jmbarbone/scribe/graph/badge.svg)](https://app.codecov.io/gh/jmbarbone/scribe)
 <!-- badges: end -->
 
 The goal of scribe is to provide a detailed argument parser for
@@ -68,7 +70,7 @@ ca$parse()
 #> [1] TRUE
 #> 
 #> $...
-#> integer(0)
+#> [1] 1 1 1
 
 # use functions for more control
 ca <- command_args(c("verbose", "12-9-2022", "12-10-2022"))
@@ -79,7 +81,7 @@ ca$parse()
 #> [1] TRUE
 #> 
 #> $...
-#> Date of length 0
+#> [1] "2022-12-09" "2022-12-10"
 ```
 
 You’ll probably use `{scribe}` within small scripts that can be called
