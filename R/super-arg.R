@@ -52,7 +52,8 @@ scribe_version <- function(dev = TRUE) {
   } else {
     expr <- substitute(cat(expr, "\n", sep = ""), list(expr = expr))
     expr <- as.expression(expr)
-    version <- system2("Rscript", c("-e", shQuote(expr, "sh")), stdout = TRUE)
+    rscript <- Sys.which("Rscript")
+    version <- system2(rscript, c("-e", shQuote(expr, "sh")), stdout = TRUE)
   }
 
   package_version(version)
