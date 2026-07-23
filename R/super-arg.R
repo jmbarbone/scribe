@@ -52,9 +52,19 @@ scribe_version <- function(dev = TRUE) {
   } else {
     expr <- substitute(cat(expr, "\n", sep = ""), list(expr = expr))
     expr <- as.expression(expr)
-    rscript <- file.path(R.home("bin"), "Rscript")
-    version <- system2(rscript, c("-e", shQuote(expr, "sh")), stdout = TRUE)
+    version <- system2(rscript(), c("-e", shQuote(expr, "sh")), stdout = TRUE)
   }
 
   package_version(version)
+}
+
+rscript <- function() {
+  cmd <- file.path(
+    R.home("bin"),
+    if (Sys.info()[["sysname"]] == "Windows") {
+      "Rscript.exe"
+    } else {
+      "Rscript"
+    }
+  )
 }
