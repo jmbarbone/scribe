@@ -21,6 +21,6 @@ jobs:
           packages: any::gh, any::fuj
           pandoc-install: false
 
-      - uses: jmbarbone/actions/r-check-version@main
+      - uses: jmbarbone/actions/r-check-version@refresh
         with:
           ignore-dev-version: true
