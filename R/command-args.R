@@ -26,7 +26,7 @@ command_args <- function(
   if (!missing(string)) {
     .Deprecated(
       msg = sprintf(
-        "command_args(string=) is deprecated.  Use command_args(I(\"%s\")) instead.",
+        "command_args(string=) is deprecated.  Use command_args(I(\"%s\")) instead.", # nolint: line_length_linter.
         string
       )
     )
