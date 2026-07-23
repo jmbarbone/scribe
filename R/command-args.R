@@ -2,41 +2,39 @@
 #'
 #' Make a new [scribeCommandArgs] object
 #'
-#' @param x,string Command line arguments; see [base::commandArgs()] for
-#'   default.  At least one parameter has to be `NULL`.  When `string` is
-#'   `NULL`, `x` is used, which defaults to `commandArgs(trailingOnly = TRUE)`.
-#'   Otherwise the value of `x` is converted to a `character`.  If `string` is
-#'   not `NULL`, [scan()] will be used to split the value into a `character`
-#'   vector.
+#' @param x Command line arguments as a character vector.  Use `I()` to pass a
+#'   single (combined) string of arguments.
 #' @param include Special default arguments to included.  See `$initialize()` in
 #'   [scribeCommandArgs] for more details.
 #' @param super When `TRUE` the [scribeCommandArgs] object will be initialized
 #'   with standard _super_ arguments (e.g., `---help`, `---version`)
+#' @param string Deprecated.  Use `command_args(I())` to pass a single string of
+#'  arguments.
 #' @examples
 #' command_args()
 #' command_args(c("-a", 1, "-b", 2))
-#' command_args(string = "-a 1 -b 2")
+#' command_args(I("-a 1 -b 2"))
 #' @returns A [scribeCommandArgs] object
 #' @family scribe
 #' @export
 command_args <- function(
-  x = NULL,
+  x = commandArgs(trailingOnly = TRUE),
   include = getOption("scribe.include", c("help", "version", NA_character_)),
-  string = NULL,
-  super = include
+  super = include,
+  string
 ) {
-  if (is.null(string)) {
-    if (is.null(x)) {
-      x <- commandArgs(trailingOnly = TRUE)
-    }
-    x <- as.character(x)
-  } else {
-    if (!is.null(x)) {
-      stop("'string' and 'x' cannot both be set", call. = FALSE)
-    }
+  if (!missing(string)) {
+    .Deprecated(
+      msg = sprintf(
+        "command_args(string=) is deprecated.  Use command_args(I(\"%s\")) instead.",
+        string
+      )
+    )
+    x <- I(string)
+  }
 
-    string <- as.character(string)
-    x <- scan(text = string, what = "character", quiet = TRUE)
+  if (inherits(x, "AsIs")) {
+    x <- scan(text = as.character(x), what = character(), quiet = TRUE)
   }
 
   scribeCommandArgs(input = x, include = include, super = super)
