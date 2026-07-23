@@ -10,9 +10,9 @@ test_that("command_args() works", {
   exp <- list(alpha = 1L, beta = 2L)
   expect_identical(obj, exp)
 
-  expect_error(
+  expect_warning(
     command_args("-i", string = "-i"),
-    "cannot both be set"
+    class = "deprecatedWarning"
   )
 
   expect_true(is_command_args(ca))
@@ -57,11 +57,11 @@ test_that("bad arguments don't create NULLs", {
 })
 
 test_that("resolving", {
-  ca <- command_args(string = "--foo a")
+  ca <- command_args(I("--foo a"))
   ca$add_argument("--foo", default = 0)
   expect_warning(ca$resolve())
 
-  ca <- command_args(string = "--foo a")
+  ca <- command_args(I("--foo a"))
   ca$add_argument("--fizz")
   expect_warning(ca$resolve(), "Not all values parsed")
   expect_true(ca$resolved)
@@ -299,12 +299,12 @@ test_that("n args [#20]", {
 })
 
 test_that("string input [#24]", {
-  ca <- command_args(string = "one two 'three four'")
+  ca <- command_args(I("one two 'three four'"))
   obj <- ca$input
   exp <- c("one", "two", "three four")
   expect_identical(obj, exp)
 
-  ca <- command_args(string = 'one two "three four"')
+  ca <- command_args(I('one two "three four"'))
   obj <- ca$input
   expect_identical(obj, exp)
 })
@@ -383,7 +383,7 @@ test_that("examples snaps", {
 })
 
 test_that("versions", {
-  ca <- command_args(string = "--version", include = "version")
+  ca <- command_args(I("--version"), include = "version")
   ca$add_argument("--foo")
   ca$add_argument("--bar")
   ca$add_description("This does things")
@@ -448,14 +448,14 @@ test_that("pass arg as default [#54]", {
 })
 
 test_that("'stop' args [#60]", {
-  ca <- command_args(string = "-a -b")
+  ca <- command_args(I("-a -b"))
   ca$add_argument("-a", action = "flag", stop = "hard")
   ca$add_argument("-b", action = "flag")
   obj <- ca$parse()
   exp <- list(a = TRUE)
   expect_identical(obj, exp)
 
-  ca <- command_args(string = "-a -b")
+  ca <- command_args(I("-a -b"))
   ca$add_argument("-a", action = "flag", stop = "soft")
   ca$add_argument("-b", action = "flag")
   obj <- ca$parse()
@@ -480,7 +480,7 @@ test_that("'convert' isn't ignored [#70]", {
 # snapshots ---------------------------------------------------------------
 
 test_that("snapshots", {
-  ca <- command_args(string = "foo bar --fizz")
+  ca <- command_args(I("foo bar --fizz"))
   ca$add_description("this does a thing")
   expect_output(ca$show())
   expect_output(ca$help())
@@ -489,7 +489,7 @@ test_that("snapshots", {
 })
 
 test_that("snapshots - empty values", {
-  ca <- command_args(string = "--bar zero")
+  ca <- command_args(I("--bar zero"))
   ca$add_argument("--foo", stop = TRUE)
   ca$add_argument("--bar", action = "list", default = character(), stop = TRUE)
   ca$add_argument("--fizz", action = "list", default = character())
