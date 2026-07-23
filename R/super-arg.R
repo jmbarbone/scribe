@@ -50,10 +50,12 @@ scribe_version <- function(dev = TRUE) {
   if (dev) {
     version <- eval(expr)
   } else {
+    # Rscript doesn't always like being used as "Rscript -e 'expr'"
+    temp <- tempfile()
+    on.exit(file.remove(temp))
     expr <- substitute(cat(expr, "\n", sep = ""), list(expr = expr))
-    expr <- as.expression(expr)
-    rscript <- Sys.which("Rscript")
-    version <- system2(rscript, c("-e", shQuote(expr, "sh")), stdout = TRUE)
+    writeLines(deparse(expr), temp)
+    version <- system2("Rscript", temp, stdout = TRUE)
   }
 
   package_version(version)
