@@ -43,8 +43,17 @@ scribe_version_super <- function() {
   )
 }
 
-scribe_version <- function() {
-  package_version(
-    asNamespace("scribe")[[".__NAMESPACE__."]][["spec"]][["version"]]
-  )
+scribe_version <- function(dev = TRUE) {
+  expr <- substitute(asNamespace("scribe")[[".__NAMESPACE__."]][["spec"]][[
+    "version"
+  ]])
+  if (dev) {
+    version <- eval(expr)
+  } else {
+    expr <- substitute(cat(expr, "\n", sep = ""), list(expr = expr))
+    expr <- as.expression(expr)
+    version <- system2("Rscript", c("-e", shQuote(expr, "sh")), stdout = TRUE)
+  }
+
+  package_version(version)
 }

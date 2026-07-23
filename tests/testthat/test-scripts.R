@@ -4,7 +4,7 @@ Sys.chmod(path)
 
 test_that("help works", {
   skip_on_cran()
-  skip_on_ci()
+  # skip_on_ci()
   # lazy testing
   obj <- system2(path, "--help", stdout = TRUE)[-3]
   exp <- c(
@@ -34,8 +34,8 @@ test_that("help works", {
 })
 
 test_that("help works", {
-  skip_on_cran()
+  # skip_on_cran()
   skip_on_ci()
   obj <- system2(path, "---version", stdout = TRUE)
-  expect_identical(obj, format(scribe_version()))
+  expect_identical(obj, format(scribe_version(dev = FALSE)))
 })
