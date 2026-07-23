@@ -102,7 +102,7 @@ my_model <- function(data, correlation = FALSE) {
 
 
 ```{r}
-ca <- command_args(string = "CO2 --levels 3 --sig-figs 2 --q-type 3")
+ca <- command_args(I("CO2 --levels 3 --sig-figs 2 --q-type 3"))
 ca$add_description("Summarise a dataset")
 ca$add_argument(
   "data",
@@ -128,7 +128,7 @@ do.call(my_summary, args)
 ```
 
 ```{r}
-ca <- command_args(string = "attitude --correlation")
+ca <- command_args(I("attitude --correlation"))
 ca$add_argument(
   "data",
   info = "Name of the dataset to find"

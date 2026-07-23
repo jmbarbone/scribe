@@ -43,8 +43,29 @@ scribe_version_super <- function() {
   )
 }
 
-scribe_version <- function() {
-  package_version(
-    asNamespace("scribe")[[".__NAMESPACE__."]][["spec"]][["version"]]
+scribe_version <- function(dev = TRUE) {
+  expr <- substitute(asNamespace("scribe")[[".__NAMESPACE__."]][["spec"]][[
+    "version"
+  ]])
+  if (dev) {
+    version <- eval(expr)
+  } else {
+    expr <- substitute(cat(expr, "\n", sep = ""), list(expr = expr))
+    expr <- as.expression(expr)
+    version <- rscript("-e", shQuote(expr, "sh"))
+  }
+
+  package_version(version)
+}
+
+rscript <- function(...) {
+  cmd <- file.path(
+    R.home("bin"),
+    if (Sys.info()[["sysname"]] == "Windows") {
+      "Rscript.exe"
+    } else {
+      "Rscript"
+    }
   )
+  system2(cmd, c(...), stdout = TRUE)
 }
