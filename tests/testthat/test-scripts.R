@@ -34,8 +34,8 @@ test_that("help works", {
 })
 
 test_that("help works", {
-  # skip_on_cran()
-  skip_on_ci()
+  skip_on_cran()
+  # skip_on_ci()
   obj <- system2(path, "---version", stdout = TRUE)
   expect_identical(obj, format(scribe_version(dev = FALSE)))
 })
