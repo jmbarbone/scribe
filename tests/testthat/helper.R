@@ -5,7 +5,6 @@ library(testthat)
 setup_scribe <- function(frame = parent.frame()) {
   r_libs_scribe <- tempfile("R_LIBS_SCRIBE_TEST_")
   dir.create(r_libs_scribe, recursive = TRUE)
-  Sys.chmod(file.path(r_libs_scribe, "*"))
   Sys.setenv(R_LIBS_SCRIBE_TEST = r_libs_scribe)
   defer(
     try(unlink(r_libs_scribe, recursive = TRUE, force = TRUE)),
@@ -24,11 +23,7 @@ r_libs_scribe_test <- function() {
 }
 
 scribe_path <- function() {
-  path <- normalizePath(test_path("../.."))
-  if (basename(path) == "scribe.Rcheck") {
-    path <- sub("\\.Rcheck$", "", path)
-  }
-  path
+  find.package("scribe")
 }
 
 quick_install <- function(package, lib, quiet = TRUE) {
