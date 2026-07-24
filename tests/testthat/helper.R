@@ -48,11 +48,17 @@ quick_install <- function(package, lib, quiet = TRUE) {
       type = "source",
       quiet = quiet,
       verbose = FALSE,
-      INSTALL_opts = paste(opts, collapse = " ")
+      INSTALL_opts = fuj::collapse(opts, collapse = " ")
     ) |>
       withCallingHandlers(
         simpleWarning = function(w) {
-          stop(simpleError(conditionMessage(w), conditionCall(w)))
+          # Windows complains that the package is currently in use...
+          stop(fuj::new_condition(
+            conditionMessage(w),
+            class = "installation_error",
+            type = "error",
+            call = conditionCall(w)
+          ))
         }
       )
   }

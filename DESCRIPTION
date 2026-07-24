@@ -23,6 +23,7 @@ Imports:
     utils
 Suggests: 
     covr,
+    fuj,
     knitr,
     rmarkdown,
     spelling,
