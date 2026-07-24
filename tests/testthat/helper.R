@@ -24,7 +24,11 @@ r_libs_scribe_test <- function() {
 }
 
 scribe_path <- function() {
-  normalizePath(test_path("../.."))
+  path <- normalizePath(test_path("../.."))
+  if (basename(path) == "scribe.Rcheck") {
+    path <- sub("\\.Rcheck$", "", path)
+  }
+  path
 }
 
 quick_install <- function(package, lib, quiet = TRUE) {
