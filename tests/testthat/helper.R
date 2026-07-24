@@ -48,7 +48,7 @@ quick_install <- function(package, lib, quiet = TRUE) {
       type = "source",
       quiet = quiet,
       verbose = FALSE,
-      INSTALL_opts = fuj::collapse(opts, collapse = " ")
+      INSTALL_opts = paste(opts, collapse = " ")
     ) |>
       withCallingHandlers(
         simpleWarning = function(w) {
