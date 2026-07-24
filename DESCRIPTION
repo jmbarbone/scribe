@@ -33,4 +33,5 @@ VignetteBuilder: knitr
 URL: https://jmbarbone.github.io/scribe/, https://github.com/jmbarbone/scribe
 BugReports: https://github.com/jmbarbone/scribe/issues
 Config/testthat/parallel: true
+Config/testthat/start-first: scripts, class-command-args
 Config/roxygen2/version: 8.0.0

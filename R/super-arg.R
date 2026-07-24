@@ -57,15 +57,3 @@ scribe_version <- function(dev = TRUE) {
 
   package_version(version)
 }
-
-rscript <- function(...) {
-  cmd <- file.path(
-    R.home("bin"),
-    if (Sys.info()[["sysname"]] == "Windows") {
-      "Rscript.exe"
-    } else {
-      "Rscript"
-    }
-  )
-  system2(cmd, c(...), stdout = TRUE)
-}

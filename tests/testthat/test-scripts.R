@@ -2,10 +2,9 @@ path <- test_path("scripts/help.R")
 path <- normalizePath(path)
 Sys.chmod(path)
 
-test_that("help works", {
-  skip_on_cran()
-  # lazy testing
-  obj <- rscript(path, "--help")[-3L]
+test_that("scribe --help works", {
+  setup_scribe()
+  obj <- rscript(path, "--help", .env = r_libs_scribe_test())[-3L]
   exp <- c(
     "{scribe} command_args",
     "",
@@ -22,18 +21,21 @@ test_that("help works", {
     "  -b, --bar [ARG]                                                 ",
     NULL
   )
-  expect_identical(
-    trimws(obj),
-    trimws(exp),
-    info = sprintf(
-      "Maybe try: pak::pak(lib = \"%s\")",
-      Sys.getenv("R_LIBS_SCRIBE", "~/R/scribe-library")
-    )
-  )
+  expect_identical(trimws(obj), trimws(exp))
 })
 
-test_that("help works", {
-  skip_on_cran()
-  obj <- rscript(path, "---version")
-  expect_identical(obj, format(scribe_version(dev = FALSE)))
+test_that("scribe ---help works", {
+  setup_scribe()
+  obj <- rscript(path, "---help", .env = r_libs_scribe_test())
+  exp <- c(
+    paste0("{scribe} v", format(scribe_version(dev = TRUE))),
+    "For more information, see https://jmbarbone.github.io/scribe/"
+  )
+  expect_identical(trimws(obj), trimws(exp))
+})
+
+test_that("scribe ---version works", {
+  setup_scribe()
+  obj <- rscript(path, "---version", .env = r_libs_scribe_test())
+  expect_identical(obj, format(scribe_version(dev = TRUE)))
 })

@@ -1,15 +1,7 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/env -S Rscript
 
-if (
-  !require(
-    scribe,
-    lib.loc = Sys.getenv("R_LIBS_SCRIBE", "~/R/scribe-library"),
-    quietly = TRUE
-  )
-) {
-  warning("expected {scribe} to be installed at R_LIBS_SCRIBE")
-  library(scribe)
-}
+options(scribe.lib_check = FALSE)
+library(scribe, lib = Sys.getenv("R_LIBS_SCRIBE_TEST"))
 
 ca <- command_args()
 ca$add_argument("-f", "--foo")
