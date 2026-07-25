@@ -2,9 +2,14 @@ path <- test_path("scripts/help.R")
 path <- normalizePath(path)
 Sys.chmod(path)
 
+setup_scripts <- function(frame = parent.frame()) {
+  testthat::skip_if(fuj::is_windows())
+  testthat::skip_on_cran()
+  setup_scribe(frame)
+}
+
 test_that("scribe --help works", {
-  skip_if(fuj::is_windows())
-  setup_scribe()
+  setup_scripts()
   obj <- rscript(path, "--help", .env = r_libs_scribe_test())[-3L]
   exp <- c(
     "{scribe} command_args",
@@ -26,8 +31,7 @@ test_that("scribe --help works", {
 })
 
 test_that("scribe ---help works", {
-  skip_if(fuj::is_windows())
-  setup_scribe()
+  setup_scripts()
   obj <- rscript(path, "---help", .env = r_libs_scribe_test())
   exp <- c(
     paste0("{scribe} v", format(scribe_version(dev = TRUE))),
@@ -37,8 +41,7 @@ test_that("scribe ---help works", {
 })
 
 test_that("scribe ---version works", {
-  skip_if(fuj::is_windows())
-  setup_scribe()
+  setup_scripts()
   obj <- rscript(path, "---version", .env = r_libs_scribe_test())
   expect_identical(obj, format(scribe_version(dev = TRUE)))
 })
