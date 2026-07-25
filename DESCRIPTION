@@ -1,6 +1,6 @@
 Package: scribe
 Title: Command Argument Parsing
-Version: 0.3.0.9004
+Version: 0.3.0.9005
 Authors@R: 
     person(
       given   = "Jordan Mark",
@@ -23,6 +23,7 @@ Imports:
     utils
 Suggests: 
     covr,
+    fuj,
     knitr,
     rmarkdown,
     spelling,
@@ -33,4 +34,5 @@ VignetteBuilder: knitr
 URL: https://jmbarbone.github.io/scribe/, https://github.com/jmbarbone/scribe
 BugReports: https://github.com/jmbarbone/scribe/issues
 Config/testthat/parallel: true
+Config/testthat/start-first: scripts, class-command-args
 Config/roxygen2/version: 8.0.0

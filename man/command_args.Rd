@@ -5,25 +5,24 @@
 \title{Command line arguments}
 \usage{
 command_args(
-  x = NULL,
+  x = commandArgs(trailingOnly = TRUE),
   include = getOption("scribe.include", c("help", "version", NA_character_)),
-  string = NULL,
-  super = include
+  super = include,
+  string
 )
 }
 \arguments{
-\item{x, string}{Command line arguments; see \code{\link[base:commandArgs]{base::commandArgs()}} for
-default.  At least one parameter has to be \code{NULL}.  When \code{string} is
-\code{NULL}, \code{x} is used, which defaults to \code{commandArgs(trailingOnly = TRUE)}.
-Otherwise the value of \code{x} is converted to a \code{character}.  If \code{string} is
-not \code{NULL}, \code{\link[=scan]{scan()}} will be used to split the value into a \code{character}
-vector.}
+\item{x}{Command line arguments as a character vector.  Use \code{I()} to pass a
+single (combined) string of arguments.}
 
 \item{include}{Special default arguments to included.  See \verb{$initialize()} in
 \link{scribeCommandArgs} for more details.}
 
 \item{super}{When \code{TRUE} the \link{scribeCommandArgs} object will be initialized
 with standard \emph{super} arguments (e.g., \code{---help}, \code{---version})}
+
+\item{string}{Deprecated.  Use \code{command_args(I())} to pass a single string of
+arguments.}
 }
 \value{
 A \link{scribeCommandArgs} object
@@ -34,7 +33,7 @@ Make a new \link{scribeCommandArgs} object
 \examples{
 command_args()
 command_args(c("-a", 1, "-b", 2))
-command_args(string = "-a 1 -b 2")
+command_args(I("-a 1 -b 2"))
 }
 \seealso{
 Other scribe:

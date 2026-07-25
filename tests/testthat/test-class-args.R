@@ -14,7 +14,7 @@ test_that("errors", {
   expect_error(new_arg(action = "flag", n = 1))
   expect_error(new_arg(c("foo", "--bar")))
 
-  ca <- command_args(string = "-a 2 -a 1")
+  ca <- command_args(I("-a 2 -a 1"))
   ca$add_argument("-a")
   expect_warning(expect_warning(ca$parse()))
 })

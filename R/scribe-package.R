@@ -19,9 +19,24 @@ NULL
 op.scribe <- list(
   scribe.flag.no = TRUE,
   scribe.interactive = NULL,
-  scribe.include = c("help", "version")
+  scribe.include = c("help", "version"),
+  scribe.lib_check = FALSE
 )
 
-.onAttach <- function(libname, pkgname) {
-  options(op.scribe[setdiff(names(op.scribe), names(options()))])
+.onLoad <- function(libname, pkgname) {
+  options(op.scribe[!names(op.scribe) %in% names(options())])
+  if (isTRUE(getOption("scribe.lib_check"))) {
+    tryCatch(
+      find.package(
+        "scribe",
+        lib.loc = Sys.getenv("R_LIBS_SCRIBE", NA_character_)
+      ),
+      packageNotFoundError = function(w) {
+        packageStartupMessage(
+          "The {scribe} package is not installed in the R_LIBS_SCRIBE path. ",
+          "Please install {scribe} to use this package."
+        )
+      }
+    )
+  }
 }

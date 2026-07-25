@@ -65,3 +65,23 @@ print_scribe_version <- function() {
   print_line("{scribe} package version:", format(version))
   invisible(version)
 }
+
+
+rscript <- function(..., .env = character()) {
+  stopifnot(is.null(...names()))
+  cmd <- file.path(
+    R.home("bin"),
+    if (Sys.info()[["sysname"]] == "Windows") {
+      "Rscript.exe"
+    } else {
+      "Rscript"
+    }
+  )
+
+  if (length(.env) > 0) {
+    stopifnot(!is.null(names(.env)), nzchar(names(.env)))
+    .env <- paste0(names(.env), "=", .env)
+  }
+
+  system2(cmd, c(...), stdout = TRUE, env = .env)
+}
