@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scribe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
       <h1>scribe</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/jmbarbone/scribe/blob/v0.3.0.9004/vignettes/scribe.Rmd" class="external-link"><code>vignettes/scribe.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmbarbone/scribe/blob/main/vignettes/scribe.Rmd" class="external-link"><code>vignettes/scribe.Rmd</code></a></small>
       <div class="d-none name"><code>scribe.Rmd</code></div>
     </div>
 
@@ -139,7 +139,7 @@ file path and use a read function first, rather than the
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span>, correlation <span class="op">=</span> <span class="va">correlation</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span>string <span class="op">=</span> <span class="st">"CO2 --levels 3 --sig-figs 2 --q-type 3"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="st">"CO2 --levels 3 --sig-figs 2 --q-type 3"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">add_description</span><span class="op">(</span><span class="st">"Summarise a dataset"</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
 <span>  <span class="st">"data"</span>,</span>
@@ -170,7 +170,7 @@ file path and use a read function first, rather than the
 <span><span class="co">#&gt;                                                3rd Qu.: 675   3rd Qu.:37.1  </span></span>
 <span><span class="co">#&gt;                                                Max.   :1000   Max.   :45.5</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span>string <span class="op">=</span> <span class="st">"attitude --correlation"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/command_args.html">command_args</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="st">"attitude --correlation"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ca</span><span class="op">$</span><span class="fu">add_argument</span><span class="op">(</span></span>
 <span>  <span class="st">"data"</span>,</span>
 <span>  info <span class="op">=</span> <span class="st">"Name of the dataset to find"</span></span>
@@ -224,7 +224,7 @@ file path and use a read function first, rather than the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

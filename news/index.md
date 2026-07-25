@@ -35,7 +35,11 @@
 - `ca$parse()` correctly deals with new arguments that nave the same
   *name* as ones in `included`
   [\#80](https://github.com/jmbarbone/scribe/issues/80)
-- internal documentation updates
+- `command_args(string=)` is now deprecated; pass strings in with
+  [`I()`](https://rdrr.io/r/base/AsIs.html) instead (e.g.,
+  `command_args(I("-a 1 -b 2"))`)
+  [\#83](https://github.com/jmbarbone/scribe/issues/83)
+- internal testing fix for `scribe_version()`
 
 ## scribe 0.3.0
 

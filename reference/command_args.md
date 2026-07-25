@@ -8,25 +8,20 @@ object
 
 ``` r
 command_args(
-  x = NULL,
+  x = commandArgs(trailingOnly = TRUE),
   include = getOption("scribe.include", c("help", "version", NA_character_)),
-  string = NULL,
-  super = include
+  super = include,
+  string
 )
 ```
 
 ## Arguments
 
-- x, string:
+- x:
 
-  Command line arguments; see
-  [`base::commandArgs()`](https://rdrr.io/r/base/commandArgs.html) for
-  default. At least one parameter has to be `NULL`. When `string` is
-  `NULL`, `x` is used, which defaults to
-  `commandArgs(trailingOnly = TRUE)`. Otherwise the value of `x` is
-  converted to a `character`. If `string` is not `NULL`,
-  [`scan()`](https://rdrr.io/r/base/scan.html) will be used to split the
-  value into a `character` vector.
+  Command line arguments as a character vector. Use
+  [`I()`](https://rdrr.io/r/base/AsIs.html) to pass a single (combined)
+  string of arguments.
 
 - include:
 
@@ -40,6 +35,11 @@ command_args(
   [scribeCommandArgs](https://jmbarbone.github.io/scribe/reference/scribeCommandArgs-class.md)
   object will be initialized with standard *super* arguments (e.g.,
   `---help`, `---version`)
+
+- string:
+
+  Deprecated. Use `command_args(I())` to pass a single string of
+  arguments.
 
 ## Value
 
@@ -67,7 +67,7 @@ command_args(c("-a", 1, "-b", 2))
 #> w Call $resolve() or $parse() to resolve arguments
 #> Argument [--help] : FALSE
 #> Argument [--version] : FALSE
-command_args(string = "-a 1 -b 2")
+command_args(I("-a 1 -b 2"))
 #> Initial call:  -a 1 -b 2
 #> w Call $resolve() or $parse() to resolve arguments
 #> Argument [--help] : FALSE

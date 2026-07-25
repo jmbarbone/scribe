@@ -8,15 +8,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jmbarbone/scribe/blob/v0.3.0.9004/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/jmbarbone/scribe/blob/main/DESCRIPTION)
 
 Barbone J (2026). *scribe: Command Argument Parsing*. R package version
-0.3.0.9004, <https://jmbarbone.github.io/scribe/>.
+0.3.0.9005, <https://jmbarbone.github.io/scribe/>.
 
     @Manual{,
       title = {scribe: Command Argument Parsing},
       author = {Jordan Mark Barbone},
       year = {2026},
-      note = {R package version 0.3.0.9004},
+      note = {R package version 0.3.0.9005},
       url = {https://jmbarbone.github.io/scribe/},
     }
