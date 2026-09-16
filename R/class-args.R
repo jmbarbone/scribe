@@ -2,10 +2,10 @@
 #'
 #' ReferenceClass object for managing arguments
 #'
-#' @details The [scribeArg] class sets specifications and controls for how
+#' @details The [scribe::scribeArg] class sets specifications and controls for how
 #'   command line arguments are to be parsed.  These are meant to be used in
-#'   conjunction with [scribeCommandArgs] and specifically with the [Rscript]
-#'   utility.  However, a use can define their own [scribeArg] separately.
+#'   conjunction with [scribe::scribeCommandArgs] and specifically with the [Rscript]
+#'   utility.  However, a use can define their own [scribe::scribeArg] separately.
 #'
 #' @section Options:
 #'
@@ -50,8 +50,8 @@
 #' @field stop `[character]`\cr `"none"`, `"hard"`, or `"soft"`
 #' @field execute `[function]`\cr (For advanced use).  A `function` to be
 #'   evaluated along with the arg.  The function can have no parameters, a
-#'   single parameter for the [scribeArg] object, or accept the [scribeArg]
-#'   object as its first argument, and the [scribeCommandArgs] object as its
+#'   single parameter for the [scribe::scribeArg] object, or accept the [scribe::scribeArg]
+#'   object as its first argument, and the [scribe::scribeCommandArgs] object as its
 #'   second.  Both objects will be passed by position
 #'
 #' @examples

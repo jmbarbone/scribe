@@ -1,6 +1,8 @@
-#' {scribe} command arguments
+#' @include class-command.R
 #'
-#' Reference class object for managing command line arguments.
+#' @title {scribe} command arguments
+#'
+#' @description Reference class object for managing command line arguments.
 #'
 #' @details This class manages the command line argument inputs when passed via
 #'   the [Rscript] utility.  Take the simple script below which adds two
@@ -29,7 +31,7 @@
 #'   [base::commandArgs()], so use with the [Rscript] utility doesn't require
 #'   any extra steps.
 #'
-#'   Most methods are designed to return `.self`, or the [scribeCommandArgs]
+#'   Most methods are designed to return `.self`, or the [scribe::scribeCommandArgs]
 #'   class. The exceptions to these are the the `$get_*()` methods, which return
 #'   their corresponding values, and `$parse()` which returns a named `list` of
 #'   the parsed input values.
@@ -38,9 +40,9 @@
 #'   See also [command_args()]
 #' @field values `[list]`\cr A named `list` of values.  Empty on initialization
 #'   and populated during argument resolving.
-#' @field args `[list]`\cr A List of [scribeArg]s
+#' @field args `[list]`\cr A List of [scribe::scribeArg]s
 #' @field description `[character]`\cr Additional help information
-#' @field included `[character]`\cr Default [scribeArg]s to include
+#' @field included `[character]`\cr Default [scribe::scribeArg]s to include
 #' @field examples `[character]`\cr Examples to print with help
 #' @field comments `[character]`\cr Comments printed with
 #' @field resolved `[logical]`\cr A `logical` value indicated if the
@@ -87,10 +89,12 @@
 # nolint next: object_name_linter.
 scribeCommandArgs <- methods::setRefClass(
   "scribeCommandArgs",
+  contains = "scribeCommand",
   fields = list(
     input = "character",
     values = "list",
     args = "list",
+    commands = "list",
     description = "character",
     included = "character",
     examples = "character",
@@ -235,6 +239,10 @@ scribeCommandArgs$methods(
       stop = stop,
       execute = execute
     )
+  },
+
+  set_commands = function(...) {
+    ca_set_commands(self = .self, ...)
   },
 
   set_description = function(..., sep = "") {

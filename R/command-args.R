@@ -1,12 +1,12 @@
 #' Command line arguments
 #'
-#' Make a new [scribeCommandArgs] object
+#' Make a new [scribe::scribeCommandArgs] object
 #'
 #' @param x Command line arguments as a character vector.  Use `I()` to pass a
 #'   single (combined) string of arguments.
 #' @param include Special default arguments to included.  See `$initialize()` in
-#'   [scribeCommandArgs] for more details.
-#' @param super When `TRUE` the [scribeCommandArgs] object will be initialized
+#'   [scribe::scribeCommandArgs] for more details.
+#' @param super When `TRUE` the [scribe::scribeCommandArgs] object will be initialized
 #'   with standard _super_ arguments (e.g., `---help`, `---version`)
 #' @param string Deprecated.  Use `command_args(I())` to pass a single string of
 #'  arguments.
@@ -14,7 +14,7 @@
 #' command_args()
 #' command_args(c("-a", 1, "-b", 2))
 #' command_args(I("-a 1 -b 2"))
-#' @returns A [scribeCommandArgs] object
+#' @returns A [scribe::scribeCommandArgs] object
 #' @family scribe
 #' @export
 command_args <- function(
@@ -379,6 +379,21 @@ ca_set_description <- function(self, ..., sep = "") {
     return(invisible(self))
   }
   self$field("description", paste0(x, collapse = sep))
+  invisible(self)
+}
+
+ca_set_commands <- function(self, ...) {
+  # overwrite -- there cannot be more than 1 command given
+  commands <- list(...)
+  if (!all(vapply(commands, is_command, NA))) {
+    stop("All commands must be of class 'scribeCommand'")
+  }
+
+  if (!all(nzchar(names(commands)))) {
+    stop("All commands must have names")
+  }
+
+  self$field("commands", commands)
   invisible(self)
 }
 
