@@ -35,4 +35,16 @@ URL: https://jmbarbone.github.io/scribe/, https://github.com/jmbarbone/scribe
 BugReports: https://github.com/jmbarbone/scribe/issues
 Config/testthat/parallel: true
 Config/testthat/start-first: scripts, class-command-args
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
+Collate: 
+    'arg.R'
+    'class-args.R'
+    'class-command.R'
+    'class-command-args.R'
+    'command-args.R'
+    'command.R'
+    'convert.R'
+    'scribe-package.R'
+    'super-arg.R'
+    'utils-testthat.R'
+    'utils.R'
