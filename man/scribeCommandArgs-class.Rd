@@ -184,6 +184,8 @@ is called prior to $parse()}
       \item{\code{value}}{The value to set}
     }}
 
+\item{\code{show(...)}}{Print the \link{scribeCommandArgs} object}
+
 \item{\code{version()}}{Print the \link{scribe-package} version}
 }}
 
