@@ -1,55 +1,20 @@
-substitute({
-  cmd_version <- command_args()
-  cmd_version$add_argument("-s", "--short", action = "flag")
-
-  cmd_list <- command_args()
-  cmd_list$add_argument("-a", "--all", action = "flag")
-  cmd_list$add_argument("-l", "--long", action = "flag")
-
-  main <- command_args()
-  main$set_commands(
-    version = cmd_version,
-    list = cmd_list
-  )
-
-  gh <- command_args()
-  gh_auth <- command()
-  gh_auth_login <- command()
-  gh_auth_login$add_argument("-w", "--web", action = "flag")
-  gh_auth_login$add_argument("--with-token", action = "list")
-  gh_auth_login$add_argument("-h", "--host-name", action = "list")
-  gh_auth_logout <- command()
-  gh_auth_logout$add_argument("-h", "--host-name", action = "list")
-  gh_auth_logout$add_argument("-u", "--user", action = "list")
-  gh_auth$set_commands(login = gh_auth_login, logout = gh_auth_logout)
-  gh_pr <- command()
-  gh_pr$set_commands(
-    create = scribeCommand(
-      args = list(
-        scribeArg("-a", "--assignee", action = "list"),
-        scribeArg("-B", "--base", action = "list"),
-      )
-    ),
-    list = scribeCommand(),
-    status = scribeCommand()
-  )
-
-  args <- gh$parse()
-  list(
-    # all commands
-    .commands = c("pr", "create"),
-    assignee = "jmbarbone",
-    base = "main"
-  )
-  # USAGE
-  #   main [COMMAND] [ARGS]
-  #   main list [-a,--all] [-l,--long]
-  #   main version [-s,--short]
-  #
-  # COMMANDS
-  #   version Prints out version
-  #   list    Lists components
-})
+#' Scribe command
+#'
+#' Create a new [scribe::scribeCommand] object
+#'
+#' @param input `[character]`\cr A character vector of command line arguments to
+#'   parse
+#' @param include `[character]`\cr A character vector denoting which default
+#'   arguments to include
+#' @param supers `[character]`\cr A character vector denoting which default
+#'   super arguments to include
+command <- function(
+  input = "",
+  include = c("help", "version", NA_character_),
+  supers = include
+) {
+  scribeCommand$new(input = input, include = include, supers = supers)
+}
 
 # wrappers ----------------------------------------------------------------
 
@@ -431,6 +396,27 @@ cmd_set_commands <- function(self, ...) {
   }
 
   self$field("commands", commands)
+  invisible(self)
+}
+
+cmd_add_commands <- function(self, ...) {
+  commands <- list(...)
+  if (!all(vapply(commands, is_command, NA))) {
+    stop("All commands must be of class 'scribeCommand'")
+  }
+
+  if (!all(nzchar(names(commands)))) {
+    stop("All commands must have names")
+  }
+
+  self$field(
+    "commands",
+    replace2(
+      self$commands,
+      length(self$commands) + seq_along(commands),
+      commands
+    )
+  )
   invisible(self)
 }
 

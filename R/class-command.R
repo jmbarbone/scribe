@@ -1,10 +1,13 @@
 # this will be the parent class of scribeCommandArgs
 #
 # this will do the basic features, but probably just return as strings
-#  -- generate help
+#  - generate help
 #  - generate examples
 #  -
 
+#' @family scribe
+#' @export
+# nolint next: object_name_linter.
 scribeCommand <- methods::setRefClass(
   "scribeCommand",
   fields = list(
@@ -13,7 +16,13 @@ scribeCommand <- methods::setRefClass(
     args = "list",
     commands = "list",
     examples = "character",
-    comments = "character"
+    comments = "character",
+    resolved = "logical",
+    supers = "list",
+    input = "character",
+    working = "character",
+    included = "character",
+    stop = "character"
   )
 )
 
@@ -152,8 +161,12 @@ scribeCommand$methods(
     )
   },
 
-  add_commands = function(commands) {
-    cmd_add_commands(self = .self, commands = commands)
+  set_commands = function(...) {
+    cmd_set_commands(.self, ...)
+  },
+
+  add_commands = function(...) {
+    cmd_add_commands(.self, ...)
   },
 
   set_description = function(..., sep = "") {
@@ -218,3 +231,8 @@ scribeCommand$methods(
     cmd_get_examples(.self)
   }
 )
+
+
+is_command <- function(x) {
+  inherits(x, "scribeCommand")
+}
