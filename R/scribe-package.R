@@ -31,7 +31,7 @@ op.scribe <- list(
         "scribe",
         lib.loc = Sys.getenv("R_LIBS_SCRIBE", NA_character_)
       ),
-      packageNotFoundError = function(w) {
+      packageNotFoundError = function(.) {
         packageStartupMessage(
           "The {scribe} package is not installed in the R_LIBS_SCRIBE path. ",
           "Please install {scribe} to use this package."
@@ -40,3 +40,5 @@ op.scribe <- list(
     )
   }
 }
+
+utils::globalVariables(".self")
